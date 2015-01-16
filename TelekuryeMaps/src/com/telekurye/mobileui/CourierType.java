@@ -34,6 +34,7 @@ public class CourierType extends Activity implements OnClickListener {
 		dbHelper.CreateDatabase(this);
 	}
 
+	
 	@Override
 	public void onClick(View v) {
 
