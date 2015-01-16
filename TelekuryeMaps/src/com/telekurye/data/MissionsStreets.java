@@ -15,6 +15,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
 import com.telekurye.data.typetoken.SyncRequest;
 import com.telekurye.database.DatabaseHelper;
@@ -132,6 +133,31 @@ public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>,
 			Dao<MissionsStreets, Integer> dao = DatabaseHelper.getDbHelper().getMissionsStreetsDataHelper();
 			QueryBuilder<MissionsStreets, Integer> qBuilder = dao.queryBuilder();
 			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false);
+
+			PreparedQuery<MissionsStreets> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+		}
+
+		return data;
+	}
+	
+	public static List<MissionsStreets> GetAllDataForShape()
+	{
+		List<MissionsStreets> data = new ArrayList<MissionsStreets>();
+
+		try {
+
+			Dao<MissionsStreets, Integer> dao = DatabaseHelper.getDbHelper().getMissionsStreetsDataHelper();
+			QueryBuilder<MissionsStreets, Integer> qBuilder = dao.queryBuilder();
+			Where<MissionsStreets, Integer> w = qBuilder.where();//.eq("IsDeleted", false);
+			w.and(
+					w.eq("IsDeleted", false),
+					w.eq("BuildingNumber_IsOdd", true)
+				);
 
 			PreparedQuery<MissionsStreets> pQuery = qBuilder.prepare();
 			data = dao.query(pQuery);

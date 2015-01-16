@@ -149,7 +149,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	List<com.telekurye.kml.Polygon>	polygons;
 	private String					db_path								= "/data/data/com.telekurye.mobileui/databases/";
-	private String					db_name								= "geolocation_db";
+	private String					db_name								= "geolocation2_db";
 	List<Polygon>					polList								= new ArrayList<Polygon>();
 	Polygon							currentPolygon						= null;
 	List<Polygon>					SelectedPolygonList					= new ArrayList<Polygon>();
@@ -622,6 +622,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		shapeControl = new ShapeControl(ShapeIdList);
 
+		LoadShapes();
+		
 		fillComponent();
 		tabsProperties();
 	}
@@ -964,7 +966,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 							btnStreetOrBuildingType.setText("Seçilmiþ");
 							btnStreetOrBuildingType.setEnabled(false);
 							btnTypeStatus = true;
-
 						}
 						else {
 							TypeId = mMissionForFeedback.get(MissionCounter).getStreetTypeId();
@@ -2045,30 +2046,118 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		// myMap.animateCamera(CameraUpdateFactory.zoomTo(minZoom));
 		// }
 
-		for (Polygon pol : polList) {
-			pol.remove();
-		}
-		polList = new ArrayList<Polygon>();
+//		for (Polygon pol : polList) {
+//			pol.remove();
+//		}
+//		polList = new ArrayList<Polygon>();
 
 		// Salihy: Sefa bu kontrolü hiç bir koþulda açma!
 		// if (!Info.ISTEST)
-		{
-			if (myMap.getCameraPosition().zoom < Info.MAP_ZOOM_LEVEL) {
-				return;
-			}
-		}
+//		{
+//			if (myMap.getCameraPosition().zoom < Info.MAP_ZOOM_LEVEL) {
+//				return;
+//			}
+//		}
 
 		// progress.show();
 
-		final LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
+//		final LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
+//		final ArrayList<PolygonOptions> polygonOptionsList = new ArrayList<PolygonOptions>();
+//
+//		new Thread(new Runnable() {
+//			public void run() {
+//				final Context ctx = getApplicationContext();
+//
+////				polygons = com.telekurye.kml.Polygon.GetAround((float) bounds.southwest.latitude, (float) bounds.northeast.latitude, (float) bounds.southwest.longitude,
+////						(float) bounds.northeast.longitude, ms.getDistrictId(), ShapeIdList, ctx, db_path, db_name);
+//				
+//				polygons = com.telekurye.kml.Polygon.GetByDistrictId(ctx, (long)ms.getDistrictId(), db_path, db_name);
+//
+//				int visibleShapeCount;
+//				if (isZoomOpen) {
+//					visibleShapeCount = 600;
+//				}
+//				else {
+//					visibleShapeCount = 300;
+//				}
+//
+//				for (Polygon poly : SelectedPolygonList) {
+//					poly.setVisible(true);
+//				}
+//
+//				for (com.telekurye.kml.Polygon polygon : polygons) {
+//					polygon.coors = new ArrayList<LatLng>();
+//
+//					final PolygonOptions polygonOptions = new PolygonOptions();
+//
+//					String[] coors = SplitUsingTokenizer(polygon.coordinates, "||");
+//
+//					for (String string : coors) {
+//						String[] coor = string.split(",");
+//
+//						final LatLng point = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
+//
+//						polygon.coors.add(point);
+//
+//						polygonOptions.add(point);
+//					}
+//
+//					// if (shapeControl.weHaveThisShape(polygon)) {
+//					// polygonOptions.strokeColor(Color.RED);
+//					// }
+//					// else {
+//					// polygonOptions.strokeColor(Color.GREEN);
+//					// }
+//					polygonOptions.strokeColor(Color.RED);
+//
+//					polygonOptions.fillColor(Color.TRANSPARENT);
+//
+//					for (Long shapeId : shapeIdHistory) {
+//						if (shapeId.equals(polygon.polygonid)) {
+//							polygonOptions.fillColor(0x802EFE64);
+//						}
+//					}
+//
+//					polygonOptions.strokeWidth(3);
+//					polygonOptionsList.add(polygonOptions);
+//				}
+//
+//				if (ctx != null) {
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//							GoogleMap map = myMap;
+//							for (int i = 0; i < polygonOptionsList.size(); i++) {
+//								polList.add(map.addPolygon(polygonOptionsList.get(i)));
+//							}
+//							// progress.dismiss();
+//						}
+//					});
+//				}
+//			}
+//		}).start();
+	}
+	
+	public void LoadShapes() {
 		final ArrayList<PolygonOptions> polygonOptionsList = new ArrayList<PolygonOptions>();
-
+		
+		//Bina ve sokak shapeleri basýlýyor
 		new Thread(new Runnable() {
 			public void run() {
 				final Context ctx = getApplicationContext();
 
-				polygons = com.telekurye.kml.Polygon.GetAround((float) bounds.southwest.latitude, (float) bounds.northeast.latitude, (float) bounds.southwest.longitude,
-						(float) bounds.northeast.longitude, ms.getDistrictId(), ShapeIdList, ctx, db_path, db_name);
+//				polygons = com.telekurye.kml.Polygon.GetAround((float) bounds.southwest.latitude, (float) bounds.northeast.latitude, (float) bounds.southwest.longitude,
+//						(float) bounds.northeast.longitude, ms.getDistrictId(), ShapeIdList, ctx, db_path, db_name);
+				
+				List<MissionsStreets> missStreets = MissionsStreets.GetAllDataForShape();
+				List<Integer> missionStreetIdList = new ArrayList<Integer>();
+				
+				for (MissionsStreets str : missStreets) {
+					missionStreetIdList.add(new Integer(str.getStreetId()));
+				}
+				
+				polygons = com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name);
+				
+				polygons.addAll(com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long)ms.getDistrictId(), db_path, db_name));
 
 				int visibleShapeCount;
 				if (isZoomOpen) {
@@ -2077,35 +2166,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				else {
 					visibleShapeCount = 300;
 				}
-
-				if (polygons.size() > visibleShapeCount) {
-					if (ctx != null) {
-						runOnUiThread(new Runnable() {
-							public void run() {
-								// progress.dismiss();
-								if (isZoomOpen) {
-									Toast.makeText(ctx, "Lütfen Yakýnlaþtýrýnýz.", Toast.LENGTH_SHORT).show();
-								}
-							}
-						});
-					}
-					return;
-				}
-				// else if (polygons.size() == 0)
-				// {
-				// if (ctx != null)
-				// {
-				// ctx.runOnUiThread(new Runnable()
-				// {
-				// public void run()
-				// {
-				// progress.dismiss();
-				// }
-				// });
-				// }
-				// return;
-				// }
-				//
 
 				for (Polygon poly : SelectedPolygonList) {
 					poly.setVisible(true);
@@ -2134,13 +2194,27 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					// else {
 					// polygonOptions.strokeColor(Color.GREEN);
 					// }
-					polygonOptions.strokeColor(Color.RED);
+					
+					if (polygon.type == 2) {
+						polygonOptions.strokeColor(Color.RED);
 
-					polygonOptions.fillColor(Color.TRANSPARENT);
+						polygonOptions.fillColor(Color.TRANSPARENT);
 
-					for (Long shapeId : shapeIdHistory) {
-						if (shapeId.equals(polygon.polygonid)) {
-							polygonOptions.fillColor(0x802EFE64);
+						for (Long shapeId : shapeIdHistory) {
+							if (shapeId.equals(polygon.polygonid)) {
+								polygonOptions.fillColor(0x802EFE64);
+							}
+						}
+					}
+					else {
+						if (polygon.polygonid == ms.getStreetId()) {
+							polygonOptions.strokeColor(Color.YELLOW);
+						}
+						else if (CheckCompletionStatus(polygon, missStreets)) {
+							polygonOptions.strokeColor(Color.GREEN);
+						}
+						else {
+							polygonOptions.strokeColor(Color.WHITE);
 						}
 					}
 
@@ -2159,6 +2233,23 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						}
 					});
 				}
+			}
+
+			private boolean CheckCompletionStatus(com.telekurye.kml.Polygon polygon, List<MissionsStreets> missStreets) {
+				
+				for (MissionsStreets mstr : missStreets) {
+					if (polygon.polygonid == mstr.getStreetId()) {
+						
+						if (mstr.getIsCompleted()) {
+							return true;
+						}
+						else {
+							return false;
+						}
+					}
+				}
+				
+				return false;
 			}
 		}).start();
 	}
@@ -2281,7 +2372,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			uiSettings.setMapToolbarEnabled(false);
 			btnMapZoom.setBackgroundColor(Color.argb(255, 0, 150, 45));
 
-			Info.MAP_ZOOM_LEVEL = 17.0f;
+			Info.MAP_ZOOM_LEVEL = 18.0f;
 
 		}
 		else {
@@ -2289,15 +2380,19 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 45f);
 			llMapFragment.setLayoutParams(layoutParams2);
 
-			uiSettings.setAllGesturesEnabled(false);
-			uiSettings.setZoomControlsEnabled(false);
-			uiSettings.setCompassEnabled(true);
-			uiSettings.setIndoorLevelPickerEnabled(true);
-			uiSettings.setMyLocationButtonEnabled(true);
-			uiSettings.setMapToolbarEnabled(false);
+			//salihy: test ederken sýkýntý yaratýyordu.
+			if (!Info.ISTEST) {
+				uiSettings.setAllGesturesEnabled(false);
+				uiSettings.setZoomControlsEnabled(false);
+				uiSettings.setCompassEnabled(true);
+				uiSettings.setIndoorLevelPickerEnabled(true);
+				uiSettings.setMyLocationButtonEnabled(true);
+				uiSettings.setMapToolbarEnabled(false);
+			}
+
 			btnMapZoom.setBackgroundColor(Color.RED);
 
-			Info.MAP_ZOOM_LEVEL = 19.0f;
+			Info.MAP_ZOOM_LEVEL = 20.0f;
 
 		}
 
