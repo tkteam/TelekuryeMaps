@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="tabletfont">25sp</dimen>
+    <dimen name="phonefont">25sp</dimen>
+    <dimen name="streetinfo">15sp</dimen>
+    <dimen name="phone_form_font">18sp</dimen>
+    <dimen name="phone_form_font2">20sp</dimen>
+    <dimen name="phone_form_min_height">53dp</dimen>
+    <dimen name="phone_form_endpoint">16sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+</resources>

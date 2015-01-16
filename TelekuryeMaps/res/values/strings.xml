@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Telekurye Maps</string>
+    <string name="album_name">telekurye</string>
+    <string name="new_building">Yeni Dış Kapı No Görevi Ekle</string>
+    <string name="new_building2">Vazgeç</string>
+
+</resources>
