@@ -18,7 +18,7 @@ public class FinishedShapeHistory {
 
 	@DatabaseField(id = true) private int	UserDailyMissionId;
 	@DatabaseField private int				UserId;
-	@DatabaseField private int				ShapeId;
+	@DatabaseField private Long				ShapeId;
 
 	public void Insert() {
 		try {
@@ -39,8 +39,8 @@ public class FinishedShapeHistory {
 		}
 	}
 
-	public List<Integer> GetShapeIdList(int userId) {
-		List<Integer> data = new ArrayList<Integer>();
+	public List<Long> GetShapeIdList(int userId) {
+		List<Long> data = new ArrayList<Long>();
 
 		List<FinishedShapeHistory> results = null;
 		try {
@@ -173,7 +173,7 @@ public class FinishedShapeHistory {
 		return UserId;
 	}
 
-	public int getShapeId() {
+	public Long getShapeId() {
 		return ShapeId;
 	}
 
@@ -185,7 +185,7 @@ public class FinishedShapeHistory {
 		UserId = userId;
 	}
 
-	public void setShapeId(int shapeId) {
+	public void setShapeId(Long shapeId) {
 		ShapeId = shapeId;
 	}
 

@@ -96,6 +96,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	// List<PolygonOptions> fillPolygon;
 	// PolygonOptions polyOptions;
 
+	List<Long>						shapeIdHistory;
 	FinishedShapeHistory			finishedShapes;
 
 	int								selectedBuildingType				= 0;
@@ -537,6 +538,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		else {
 			mMissionForFeedback = MissionListCreator(childid);
 		}
+
+		shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
 
 		// for (int i = 0; i < mMissionForFeedback.size(); i++) {
 		// System.out.println(mMissionForFeedback.get(i).getBuildingNumber() + " - " + mMissionForFeedback.get(i).getOrderIndex());
@@ -1643,7 +1646,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		for (com.telekurye.kml.Polygon pol : polygons) {
 			if (PolyUtil.containsLocation(point, pol.coors, true)) {
 				isPolygonSelected = true;
-				basarShapeId = pol.id;
+				basarShapeId = pol.polygonid.intValue();
 				final PolygonOptions polygonOptions = new PolygonOptions();
 				String[] coors = SplitUsingTokenizer(pol.coordinates, "||");
 
@@ -1655,7 +1658,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				shapeControl.CompareShapes(pol);
 
-				finishedShapes.setShapeId(basarShapeId);
+				finishedShapes.setShapeId(pol.polygonid);
 				finishedShapes.setUserId(Info.UserId);
 				finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
 				finishedShapes.Insert();
@@ -2125,25 +2128,23 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						polygonOptions.add(point);
 					}
 
-					if (shapeControl.weHaveThisShape(polygon)) {
-						polygonOptions.strokeColor(Color.RED);
-					}
-					else {
-						polygonOptions.strokeColor(Color.GREEN);
-					}
+					// if (shapeControl.weHaveThisShape(polygon)) {
+					// polygonOptions.strokeColor(Color.RED);
+					// }
+					// else {
+					// polygonOptions.strokeColor(Color.GREEN);
+					// }
+					polygonOptions.strokeColor(Color.RED);
 
 					polygonOptions.fillColor(Color.TRANSPARENT);
 
-					List<Integer> shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
-
-					for (Integer shapeId : shapeIdHistory) {
-						if (polygon.id.equals(shapeId)) {
+					for (Long shapeId : shapeIdHistory) {
+						if (shapeId.equals(polygon.polygonid)) {
 							polygonOptions.fillColor(0x802EFE64);
 						}
 					}
 
 					polygonOptions.strokeWidth(3);
-
 					polygonOptionsList.add(polygonOptions);
 				}
 
