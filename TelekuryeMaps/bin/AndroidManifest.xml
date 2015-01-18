@@ -64,7 +64,9 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBYc8F77zDt3d8TXHndp9AN05SMyb_3WeY" />
+            android:value="AIzaSyBFtJOaEAFnW-RnhCheD-yT_RTPO8us-Is" />
+        <!-- android:value="AIzaSyAVts6fTzl-zhHh6D-vjRUPMDalEHvxFA4" /> salihtest -->
+        <!-- android:value="AIzaSyBYc8F77zDt3d8TXHndp9AN05SMyb_3WeY" /> salihyayin -->
         <!-- android:value="AIzaSyBFtJOaEAFnW-RnhCheD-yT_RTPO8us-Is" /> yayın -->
         <!-- android:value="AIzaSyCoYWgoSTLHOUcHuxtqwPExe7-01MBzrPg" /> test -->
 
