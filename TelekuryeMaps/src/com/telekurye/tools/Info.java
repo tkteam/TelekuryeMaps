@@ -14,7 +14,7 @@ public class Info {
 
 	// _________________________________________________________
 
-	public final static Boolean	ISTEST					= true;
+	public final static Boolean	ISTEST					= false;
 
 	// _________________________________________________________
 
