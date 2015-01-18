@@ -14,7 +14,7 @@ public class Info {
 
 	// _________________________________________________________
 
-	public final static Boolean	ISTEST					= false;
+	public final static Boolean	ISTEST					= true;
 
 	// _________________________________________________________
 
@@ -35,7 +35,7 @@ public class Info {
 	public final static String	UPDATE_DOWNLOAD_PATH	= "Download";
 	public static final String	PHOTO_STORAGE_PATH		= "TelekuryeMaps";
 	
-	public static final String	MAP_DBNAME				= "geolocation3_db";
+	public static final String	MAP_DBNAME				= "geolocation4_db";
 
 	// public final static String UPDATE_DOWNLOAD_PATH = "/storage/emulated/0/Download/";
 	// public static final String PHOTO_STORAGE_PATH = "/sdcard/TelekuryeMaps/";
