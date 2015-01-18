@@ -16,6 +16,7 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
 import com.telekurye.database.DatabaseHelper;
 import com.telekurye.database.MapDatabaseHelper;
+import com.telekurye.tools.Info;
 import com.telekurye.tools.Tools;
 
 @DatabaseTable(tableName = "Polygon")
@@ -35,7 +36,7 @@ public class Polygon {
 	public ArrayList<LatLng>					coors;
 
 	private static String						db_path	= "/data/data/com.telekurye.mobileui/databases/";
-	private static String						db_name	= "geolocation2_db";
+	private static String						db_name	= Info.MAP_DBNAME;
 
 	public Polygon() {
 

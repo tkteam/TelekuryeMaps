@@ -22,7 +22,7 @@ public class Info {
 
 	public static int			SYNCPERIOD				= 1000 * 60 * 2;
 
-	public final static int		CURRENT_VERSION			= 55;
+	public final static int		CURRENT_VERSION			= 58;
 
 	public final static int		SCALED_PHOTO_PERCENT	= 70;
 
@@ -34,6 +34,8 @@ public class Info {
 
 	public final static String	UPDATE_DOWNLOAD_PATH	= "Download";
 	public static final String	PHOTO_STORAGE_PATH		= "TelekuryeMaps";
+	
+	public static final String	MAP_DBNAME				= "geolocation3_db";
 
 	// public final static String UPDATE_DOWNLOAD_PATH = "/storage/emulated/0/Download/";
 	// public static final String PHOTO_STORAGE_PATH = "/sdcard/TelekuryeMaps/";
