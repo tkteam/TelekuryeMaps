@@ -305,12 +305,12 @@ public class Login extends Activity implements OnClickListener {
 	public void saveLastSyncDate(Activity act) {
 		String lastSyncDate;
 		Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-		String json = new HttpRequestForJson(Info.tagServerTime, Info.GetSyncDateRange(act)).getJson();
+		String json = new HttpRequestForJson(Info.tagServerTime, Tools.GetSyncDateRange(act)).getJson();
 		Type listType = new TypeToken<SyncResult<String>>() {
 		}.getType();
 		SyncResult<String> date = gson.fromJson(json, listType);
 
-		Info.SetLastSyncDate(act, date.getTargetObject());
+		Tools.SetLastSyncDate(act, date.getTargetObject());
 	}
 
 	private void asyncTaskLogin() {
@@ -411,7 +411,7 @@ public class Login extends Activity implements OnClickListener {
 				String json;
 				jto = new JsonToDatabase();
 
-				gson = new GsonBuilder().setPrettyPrinting().setDateFormat(Info.DATE_FORMAT).create();
+				gson = new GsonBuilder().setPrettyPrinting().setDateFormat(LiveData.DATE_FORMAT).create();
 				json = new HttpRequestForJson(Info.tagLogin, Login.this).getJson();
 
 				if (json.compareTo("401") == 0) {

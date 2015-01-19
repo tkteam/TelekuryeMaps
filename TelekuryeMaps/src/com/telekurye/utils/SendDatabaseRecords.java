@@ -129,7 +129,7 @@ public class SendDatabaseRecords {
 
 				String FilePath = Environment.getExternalStorageDirectory() + File.separator + Info.PHOTO_STORAGE_PATH + File.separator + mfbp.getPhoto();
 
-				new sendImage(Integer.toString(sayac), TypeId, UserDailyMissionId, Info.PHOTO_SYNC_URL, FilePath); // gönder
+				new SendImage(Integer.toString(sayac), TypeId, UserDailyMissionId, Info.PHOTO_SYNC_URL, FilePath); // gönder
 
 				File file = new File(FilePath); // fotoyu sil
 				file.delete();
@@ -151,7 +151,7 @@ public class SendDatabaseRecords {
 
 				for (ExceptionFeedBack exceptionFeedBack : excFBack) {
 
-					new sendErrors(exceptionFeedBack);
+					new SendErrors(exceptionFeedBack);
 
 					exceptionFeedBack.setIsCompleted(true);
 					exceptionFeedBack.Update();

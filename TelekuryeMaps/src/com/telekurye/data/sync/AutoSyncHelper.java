@@ -9,11 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -26,8 +22,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.app.Activity;
@@ -44,26 +38,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.telekurye.data.VersionUpdate;
-import com.telekurye.data.typetoken.SyncRequest;
 import com.telekurye.data.typetoken.SyncResult;
-import com.telekurye.data_send.ExceptionFeedBack;
-import com.telekurye.data_send.MissionFeedBack;
-import com.telekurye.data_send.MissionFeedBackPhoto;
-import com.telekurye.data_send.VehicleFeedBack;
-import com.telekurye.data_send.VisitFeedBack;
-import com.telekurye.database.DatabaseHelper;
 import com.telekurye.mobileui.Login;
-import com.telekurye.observer.OnMissionUpdated;
 import com.telekurye.tools.Info;
 import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 import com.telekurye.utils.HttpRequestForJson;
-import com.telekurye.utils.JSONHelper;
 import com.telekurye.utils.JsonToDatabase;
+import com.telekurye.utils.OnMissionUpdated;
 import com.telekurye.utils.SendDatabaseRecords;
-import com.telekurye.utils.SendFeedback;
-import com.telekurye.utils.sendErrors;
-import com.telekurye.utils.sendImage;
 
 public class AutoSyncHelper {
 
@@ -233,7 +216,7 @@ public class AutoSyncHelper {
 			private String getCurrentDate() {
 				String lastSyncDate;
 				Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-				String json = new HttpRequestForJson(Info.tagServerTime, Info.GetSyncDateRange(act)).getJson();
+				String json = new HttpRequestForJson(Info.tagServerTime, Tools.GetSyncDateRange(act)).getJson();
 				Type listType = new TypeToken<SyncResult<String>>() {
 				}.getType();
 				SyncResult<String> date = gson.fromJson(json, listType);
@@ -264,7 +247,7 @@ public class AutoSyncHelper {
 		// SyncResult<String> date = gson.fromJson(json, listType);
 
 		if (date != null && !date.isEmpty()) {
-			Info.SetLastSyncDate(act, date);
+			Tools.SetLastSyncDate(act, date);
 		}
 	}
 

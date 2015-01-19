@@ -24,6 +24,7 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.telekurye.tools.Info;
+import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 
 public class SendImageForVehicle {
@@ -55,7 +56,7 @@ public class SendImageForVehicle {
 
 		try {
 
-			DateFormat df = new SimpleDateFormat(Info.DATE_FORMAT);
+			DateFormat df = new SimpleDateFormat(LiveData.DATE_FORMAT);
 			String dateNow = null;
 			try {
 				dateNow = df.format(new Date());

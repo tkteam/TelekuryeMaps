@@ -32,9 +32,10 @@ import com.telekurye.expandablelist.AnimatedExpandableListView;
 import com.telekurye.expandablelist.AnimatedExpandableListView.AnimatedExpandableListAdapter;
 import com.telekurye.expandablelist.Child;
 import com.telekurye.expandablelist.Parent;
-import com.telekurye.observer.OnMissionUpdated;
 import com.telekurye.tools.Info;
+import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
+import com.telekurye.utils.OnMissionUpdated;
 
 public class ExpandableList extends Activity {
 	// Initialize variables
@@ -63,7 +64,7 @@ public class ExpandableList extends Activity {
 
 		// Adding ArrayList data to ExpandableListView values
 
-		Info.mStreetsAll = new ArrayList<MissionsStreets>();
+		LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
 
 		FillData();
 
@@ -90,7 +91,7 @@ public class ExpandableList extends Activity {
 
 	private void showEmpty() {
 
-		if (Info.mStreetsAll.size() <= 0) {
+		if (LiveData.mStreetsAll.size() <= 0) {
 			tvShowEmpty.setVisibility(View.VISIBLE);
 			listView.setVisibility(View.GONE);
 		}
@@ -119,8 +120,8 @@ public class ExpandableList extends Activity {
 
 		// if(Info.mStreetsAll == null)
 		{
-			Info.mStreetsAll = new ArrayList<MissionsStreets>();
-			Info.mStreetsAll.addAll(mStreetsAll);
+			LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
+			LiveData.mStreetsAll.addAll(mStreetsAll);
 		}
 		/*
 		 * else{ for(MissionsStreets mStreet : mStreetsAll){ for(MissionsStreets mStreet2 : Info.mStreetsAll) { if(mStreet.getUserDailyMissionId() == mStreet2.getUserDailyMissionId() &&
@@ -258,8 +259,8 @@ public class ExpandableList extends Activity {
 
 				// if(Info.mStreetsAll == null)
 				{
-					Info.mStreetsAll = new ArrayList<MissionsStreets>();
-					Info.mStreetsAll.addAll(mStreetsAll);
+					LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
+					LiveData.mStreetsAll.addAll(mStreetsAll);
 				}
 				/*
 				 * else{ for(MissionsStreets mStreet : mStreetsAll){ for(MissionsStreets mStreet2 : Info.mStreetsAll) { if(mStreet.getUserDailyMissionId() == mStreet2.getUserDailyMissionId() &&
@@ -371,7 +372,7 @@ public class ExpandableList extends Activity {
 
 		};
 
-		Info.syncBack2 = syncBack2;
+		LiveData.syncBack2 = syncBack2;
 
 		int corePoolSize = 60;
 		int maximumPoolSize = 80;

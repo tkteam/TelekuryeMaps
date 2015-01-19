@@ -36,8 +36,8 @@ import com.telekurye.tools.Tools;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-	private static final int		DATABASE_VERSION	= 55;
-	private static final String		DATABASE_NAME		= "telekuryemaps797.db";
+	private static final int		DATABASE_VERSION	= Info.DATABASE_VERSION;
+	private static final String		DATABASE_NAME		= Info.DATABASE_NAME;
 	private static final String		MAP_DATABASE_NAME	= Info.MAP_DBNAME;
 	private final Context			myContext;
 	private static DatabaseHelper	dbHelper;

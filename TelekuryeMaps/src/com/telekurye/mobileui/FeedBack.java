@@ -66,7 +66,6 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -89,214 +88,211 @@ import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 import com.telekurye.utils.CameraHelper;
 import com.telekurye.utils.PhotoInfo;
-import com.telekurye.utils.Point;
 import com.telekurye.utils.ShapeControl;
 
-public class FeedBack extends Activity implements OnTabChangeListener,
-		android.location.GpsStatus.Listener, OnCameraChangeListener,
-		OnMarkerDragListener, LocationListener, OnMapClickListener,
-		OnMapLongClickListener, OnMarkerClickListener, OnClickListener,
-		SensorEventListener {
+public class FeedBack extends Activity implements OnTabChangeListener, android.location.GpsStatus.Listener, OnCameraChangeListener, OnMarkerDragListener, LocationListener, OnMapClickListener,
+		OnMapLongClickListener, OnMarkerClickListener, OnClickListener, SensorEventListener {
 
 	// List<PolygonOptions> fillPolygon;
 	// PolygonOptions polyOptions;
 
-	List<Long> shapeIdHistory;
-	FinishedShapeHistory finishedShapes;
+	List<Long>						shapeIdHistory;
+	FinishedShapeHistory			finishedShapes;
 
-	int selectedBuildingType = 0;
-	int selectedFloorCount = 0;
+	int								selectedBuildingType				= 0;
+	int								selectedFloorCount					= 0;
 
-	private Boolean isZoomOpen = false;
+	private Boolean					isZoomOpen							= false;
 
-	LinearLayout llMapFragment;
+	LinearLayout					llMapFragment;
 
-	private Dialog dialogZoom;
+	private Dialog					dialogZoom;
 
-	Integer firstStreetTypeId = null;
+	Integer							firstStreetTypeId					= null;
 
-	LatLng currentLocation;
+	LatLng							currentLocation;
 
-	ShapeControl shapeControl;
-	private List<Integer> ShapeIdList = null;
-	private Boolean isFinishRedShapes = true;
+	ShapeControl					shapeControl;
+	private List<Integer>			ShapeIdList							= null;
+	private Boolean					isFinishRedShapes					= true;
 
-	Marker mPositionMarker;
+	Marker							mPositionMarker;
 
-	Thread thread;
-	int selectType;
-	Boolean isNewBuilding = false;
+	Thread							thread;
+	int								selectType;
+	Boolean							isNewBuilding						= false;
 
-	private SensorManager mSensorManager;
+	private SensorManager			mSensorManager;
 
-	CameraHelper tp;
-	List<PhotoInfo> photoInfo;
+	CameraHelper					tp;
+	List<PhotoInfo>					photoInfo;
 
 	// ------ GOOGLE MAP -------
-	private final int RQS_GooglePlayServices = 1;
-	private GoogleMap myMap;
+	private final int				RQS_GooglePlayServices				= 1;
+	private GoogleMap				myMap;
 
-	private Location myLocation;
-	private TextView tvLocInfo;
-	private boolean markerClicked;
-	private PolygonOptions polygonOptions;
-	private Polygon polygon;
-	private ArrayList<LatLng> points;
-	private ArrayList<LatLng> points2;
-	private Point p1, p2;
-	private Boolean isThereAMarker = true;
-	private Boolean isMarkerDrag = false;
+	private Location				myLocation;
+	private TextView				tvLocInfo;
+	private boolean					markerClicked;
+	private PolygonOptions			polygonOptions;
+	private Polygon					polygon;
+	private ArrayList<LatLng>		points;
+	private ArrayList<LatLng>		points2;
+	// private Point p1, p2;
+	private Boolean					isThereAMarker						= true;
+	private Boolean					isMarkerDrag						= false;
 	// private Marker markerLastPoint;
-	private Marker currentMarker;
-	private int basarShapeId = 0;
-	private Boolean isMarkerSet = false;
-	MapFragment map;
+	private Marker					currentMarker;
+	private int						basarShapeId						= 0;
+	private Boolean					isMarkerSet							= false;
+	MapFragment						map;
 
-	List<com.telekurye.kml.Polygon> polygons;
+	List<com.telekurye.kml.Polygon>	polygons;
 
-	private String db_path = "/data/data/com.telekurye.mobileui/databases/";
-	private String db_name = Info.MAP_DBNAME;
-	List<Polygon> polList = new ArrayList<Polygon>();
-	List<Polyline> polylineList = new ArrayList<Polyline>();
-	Polygon currentPolygon = null;
-	List<Polygon> SelectedPolygonList = new ArrayList<Polygon>();
+	private String					db_path								= "/data/data/com.telekurye.mobileui/databases/";
+	private String					db_name								= Info.MAP_DBNAME;
+	List<Polygon>					polList								= new ArrayList<Polygon>();
+	List<Polyline>					polylineList						= new ArrayList<Polyline>();
+	Polygon							currentPolygon						= null;
+	List<Polygon>					SelectedPolygonList					= new ArrayList<Polygon>();
 
 	// tr orta nokta 39.1116091,35.0272779
 	// 40.647256, 29.274982
 
 	// ------ TABS -------
-	private TabHost tabHost;
-	private int valueTab;
+	private TabHost					tabHost;
+	private int						valueTab;
 
 	// ------ CAMERA -------
-	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-	private static final int MEDIA_TYPE_IMAGE = 1;
-	private static final String IMAGE_DIRECTORY_NAME = "TelekuryeMaps";
+	private static final int		CAMERA_CAPTURE_IMAGE_REQUEST_CODE	= 100;
+	private static final int		MEDIA_TYPE_IMAGE					= 1;
+	private static final String		IMAGE_DIRECTORY_NAME				= "TelekuryeMaps";
 
-	private Uri fileUri;
+	private Uri						fileUri;
 	// private ImageView imgPreview1;
 	// private ImageView imgPreview2;
 	// private ImageView imgPreview3;
 	// private ImageView imgPreview4;
 
-	private LinearLayout llImages;
-	private Button btnCapturePicture;
-	int sayac = 0;
-	ProgressDialog progress;
+	private LinearLayout			llImages;
+	private Button					btnCapturePicture;
+	int								sayac								= 0;
+	// ProgressDialog progress;
 
 	// ----- FeedBack -------
-	private TextView tv_mission_status_value;
-	private TextView tv_apno;
-	private TextView tv_apno_value;
-	private EditText new_et_apno_value;
-	private TextView tv_apname;
-	private TextView tv_apname_value;
-	private EditText new_et_apname_value;
-	private TextView tv_address;
-	private TextView tv_address_value;
-	private TextView tv_StreetOrBuildingType;
-	private Button btnStreetOrBuildingType;
-	private Button btnSaveFeedback;
-	private TextView tv_persons;
-	private TextView tv_persons_values;
-	private EditText et_independent_section_count;
-	private EditText et_floor_count;
-	private TextView tv_independent_section_count;
-	private TextView tv_floor_count;
-	LinearLayout ll_user_feedback;
-	LinearLayout ll_mission_type_info;
-	LinearLayout ll_apno;
-	private TextView tv_building_type_info;
-	private TextView tv_building_type_info_value;
-	private Button btnMapZoom;
+	private TextView				tv_mission_status_value;
+	private TextView				tv_apno;
+	private TextView				tv_apno_value;
+	private EditText				new_et_apno_value;
+	private TextView				tv_apname;
+	private TextView				tv_apname_value;
+	private EditText				new_et_apname_value;
+	private TextView				tv_address;
+	private TextView				tv_address_value;
+	private TextView				tv_StreetOrBuildingType;
+	private Button					btnStreetOrBuildingType;
+	private Button					btnSaveFeedback;
+	private TextView				tv_persons;
+	private TextView				tv_persons_values;
+	private EditText				et_independent_section_count;
+	private EditText				et_floor_count;
+	private TextView				tv_independent_section_count;
+	private TextView				tv_floor_count;
+	LinearLayout					ll_user_feedback;
+	LinearLayout					ll_mission_type_info;
+	LinearLayout					ll_apno;
+	private TextView				tv_building_type_info;
+	private TextView				tv_building_type_info_value;
+	private Button					btnMapZoom;
 
 	// ----- GPS Location -----
-	protected LocationManager locationManager;
-	private long lastTime;
-	private GpsStatus mStatus;
-	private long mLastLocationMillis;
-	private Location mLastLocation;
-	private Location tempLocation = null;
-	private boolean isGPSFix = false;
-	private boolean isGpsStatus = false;
+	protected LocationManager		locationManager;
+	private long					lastTime;
+	private GpsStatus				mStatus;
+	private long					mLastLocationMillis;
+	private Location				mLastLocation;
+	private Location				tempLocation						= null;
+	private boolean					isGPSFix							= false;
+	private boolean					isGpsStatus							= false;
 
 	// ----- StatusBar ------
-	public TextView tv_info_welcome;
-	public TextView tvNetworkStatus;
-	public TextView tv_info_time;
-	public TextView tv_info_battery;
-	public TextView tv_info_accuracy;
-	public TextView tv_info_version;
-	public TextView tv_Score;
-	public TextView tv_earnings;
-	public TextView tv_last_sync_date;
+	public TextView					tv_info_welcome;
+	public TextView					tvNetworkStatus;
+	public TextView					tv_info_time;
+	public TextView					tv_info_battery;
+	public TextView					tv_info_accuracy;
+	public TextView					tv_info_version;
+	public TextView					tv_Score;
+	public TextView					tv_earnings;
+	public TextView					tv_last_sync_date;
 
-	private String name;
-	private String surname;
-	private String username;
+	private String					name;
+	private String					surname;
+	private String					username;
 
-	private Thread uiUpdateThread;
+	private Thread					uiUpdateThread;
 
 	// ----- FEEDBACK ------
 
-	private static float UserAccuracy = 5000;
-	private static double GPSLat;
-	private static double GPSLng;
-	private static double GPSAlt;
+	private static float			UserAccuracy						= 5000;
+	private static double			GPSLat;
+	private static double			GPSLng;
+	private static double			GPSAlt;
 
-	private static double GPSBearing;
-	private static double GPSSpeed;
-	private static Date GPSTime;
+	private static double			GPSBearing;
+	private static double			GPSSpeed;
+	private static Date				GPSTime;
 
-	private static double SignedLat;
-	private static double SignedLng;
-	private static int TypeId;
+	private static double			SignedLat;
+	private static double			SignedLng;
+	private static int				TypeId;
 
-	private Boolean btnTypeStatus = false;
+	private Boolean					btnTypeStatus						= false;
 
 	// ---------------------
 	// private static Boolean photoStatus1 = false;
 	// private static Boolean photoStatus2 = false;
 	// private static Boolean photoStatus3 = false;
 	// private static Boolean photoStatus4 = false;
-	private static int photoCount = 0;
+	private static int				photoCount							= 0;
 
-	public String imgPath;
-	public static int selectImgview = 0;
-	private int MissionCounter = 0;
+	public String					imgPath;
+	public static int				selectImgview						= 0;
+	private int						MissionCounter						= 0;
 	// public int photoCounter = 0;
 
-	private int grupid, childid;
-	ArrayList<IMission> mMissionForFeedback;
+	private int						grupid, childid;
+	ArrayList<IMission>				mMissionForFeedback;
 
-	private List<String> photoUrlList;
+	private List<String>			photoUrlList;
 
 	// private List<Integer> mbTypesId; // bina tip id leri
 	// private List<String> mbTypesName; // bina tip isim leri
 	// private List<Integer> msTypesId; // sokak tip id leri
 	// private List<String> msTypesName; // sokak tip isim leri
 
-	List<MissionsStreets> mAllStreets; // tüm sokaklar
-	List<MissionsStreets> mThisMissionStreets; // bu göreve ait iki sokak
-	List<MissionsBuildings> mBuildingsOddNo; // seçilen sokaða ait tek sayýlý
-												// binalar
-	List<MissionsBuildings> mBuildingsEvenNo; // seçilen sokaða ait çift sayýlý
-												// binalar
-	MissionsStreets ms; // kiþinin seçtiði sokak
-	List<MissionsStreets> completedMissionStreets = new ArrayList<MissionsStreets>();
+	List<MissionsStreets>			mAllStreets;																			// tüm sokaklar
+	List<MissionsStreets>			mThisMissionStreets;																	// bu göreve ait iki sokak
+	List<MissionsBuildings>			mBuildingsOddNo;																		// seçilen sokaða ait tek sayýlý
+																															// binalar
+	List<MissionsBuildings>			mBuildingsEvenNo;																		// seçilen sokaða ait çift sayýlý
+																															// binalar
+	MissionsStreets					ms;																					// kiþinin seçtiði sokak
+	List<MissionsStreets>			completedMissionStreets				= new ArrayList<MissionsStreets>();
 
-	CheckBox cbSagKapi;
-	CheckBox cbOnKapi;
-	CheckBox cbSolKapi;
+	CheckBox						cbSagKapi;
+	CheckBox						cbOnKapi;
+	CheckBox						cbSolKapi;
 
-	TextView tv_street_name;
+	TextView						tv_street_name;
 
-	private int checkboxStatus = 0;
+	private int						checkboxStatus						= 0;
 
-	private int streettype;
-	List<MissionsBuildings> mBuilds;
+	private int						streettype;
+	List<MissionsBuildings>			mBuilds;
 
-	UiSettings uiSettings;
+	UiSettings						uiSettings;
+	private ProgressDialog			progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -395,7 +391,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (namesurname.length() < 30) {
 			tv_info_welcome.setTextSize(18f);
-		} else {
+		}
+		else {
 			tv_info_welcome.setTextSize(13f);
 		}
 
@@ -414,10 +411,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		Boolean hasMapCreated = showMapOnActivity();
 
 		if (!hasMapCreated) {
-			Toast.makeText(
-					this,
-					"Lütfen Google Play Hizmetlerini güncellemek üzere Ali Bahadýr Kuþ ile iletiþime geçiniz.",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Lütfen Google Play Hizmetlerini güncellemek üzere Ali Bahadýr Kuþ ile iletiþime geçiniz.", Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -450,12 +444,9 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		// ms = msTemp2.get(grupid);
 		// mAllStreets = LiveData.misStreets;
 		/*
-		 * mAllStreets = data.GetAllData(); mThisMissionStreets = new
-		 * ArrayList<MissionsStreets>();
+		 * mAllStreets = data.GetAllData(); mThisMissionStreets = new ArrayList<MissionsStreets>();
 		 * 
-		 * // ++++++++++ seçilen sokaðýn tek ve çift sýrasý alýndý for (int i =
-		 * 0; i < mAllStreets.size(); i++) { if
-		 * (mAllStreets.get(i).getStreetId() == ms.getStreetId()) {
+		 * // ++++++++++ seçilen sokaðýn tek ve çift sýrasý alýndý for (int i = 0; i < mAllStreets.size(); i++) { if (mAllStreets.get(i).getStreetId() == ms.getStreetId()) {
 		 * mThisMissionStreets.add(mAllStreets.get(i)); } }
 		 */
 		mThisMissionStreets = data.GetStreetsByStreetId(grupid);
@@ -500,11 +491,13 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			for (int j = 0; j < mBuilds.size(); j++) {
 				if (mBuilds.get(j).getBuildingNumber_IsOdd()) {
 					mBuildingsOddNo.add(mBuilds.get(j));
-				} else {
+				}
+				else {
 					mBuildingsEvenNo.add(mBuilds.get(j));
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Tools.saveErrors(e);
 		}
 
@@ -561,17 +554,12 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		// " - " + mBuildingsEvenNo.get(i).getOrderIndex());
 		// }
 
-		if (streettype == 0 || streettype == 1 || streettype == 5) { // küme ev
-																		// mi
-																		// normal
-																		// mi
-																		// kontrolü
+		if (streettype == 0 || streettype == 1 || streettype == 5) { // küme ev mi normal mi kontrolü
 			mMissionForFeedback = MissionListCreator2(childid);
-		} else {
+		}
+		else {
 			mMissionForFeedback = MissionListCreator(childid);
 		}
-
-		shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
 
 		// for (int i = 0; i < mMissionForFeedback.size(); i++) {
 		// System.out.println(mMissionForFeedback.get(i).getBuildingNumber() +
@@ -619,9 +607,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); // pusula
 																			// kodlarý
-		mSensorManager.registerListener(this,
-				mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-				SensorManager.SENSOR_DELAY_GAME);
+		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
 
 		uiSettings = myMap.getUiSettings();
 
@@ -639,11 +625,11 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			// u.setTiltGesturesEnabled(false);
 			// u.setZoomGesturesEnabled(false);
 
-		} else {
+		}
+		else {
 			// myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new
 			// LatLng(41.0756, 28.9744), Info.MAP_ZOOM_LEVEL));
-			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					36.9786680000, 37.7365860000), Info.MAP_ZOOM_LEVEL));
+			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(36.9786680000, 37.7365860000), Info.MAP_ZOOM_LEVEL));
 		}
 
 		// uiSettings.setAllGesturesEnabled(true); // *-*
@@ -651,19 +637,12 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		// myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new
 		// LatLng(41.0756, 28.9744), Info.MAP_ZOOM_LEVEL));// *-*
 
-		tv_street_name.setText("<-- "
-				+ mMissionForFeedback.get(MissionCounter).getName()
-				+ " SOKAK -->");
+		tv_street_name.setText("<-- " + mMissionForFeedback.get(MissionCounter).getName() + " SOKAK -->");
 		// Info.ImageCount = 0;
-
-		progress = new ProgressDialog(getApplicationContext());
-		progress.setMessage("Lütfen bekleyiniz");
-		progress.setCancelable(false);
 
 		ShapeIdList = new ArrayList<Integer>();
 		ShapeIdList = FillShapeIds();
-		ShapeIdList = com.telekurye.kml.Polygon.GetNonMatchedShapeIdList(
-				ShapeIdList, this);
+		ShapeIdList = com.telekurye.kml.Polygon.GetNonMatchedShapeIdList(ShapeIdList, this);
 
 		shapeControl = new ShapeControl(ShapeIdList);
 
@@ -796,17 +775,18 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				temp.add(mThisMissionStreets.get(0));
 				temp.addAll(mBuildingsEvenNo);
 
-				if (mThisMissionStreets.size() > 1
-						&& mThisMissionStreets.get(1) != null) {
+				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
 					temp.add(mThisMissionStreets.get(1));
 				}
 
 				temp.addAll(mBuildingsOddNo);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 			}
 
-		} else if (chId == 1) { // azalan çift -> artan tek
+		}
+		else if (chId == 1) { // azalan çift -> artan tek
 
 			try {
 
@@ -821,16 +801,17 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				temp.add(mThisMissionStreets.get(0));
 				temp.addAll(mBuildingsEvenNo);
 
-				if (mThisMissionStreets.size() > 1
-						&& mThisMissionStreets.get(1) != null) {
+				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
 					temp.add(mThisMissionStreets.get(1));
 				}
 				temp.addAll(mBuildingsOddNo);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 			}
 
-		} else if (chId == 2) { // artan tek -> azalan çift
+		}
+		else if (chId == 2) { // artan tek -> azalan çift
 
 			try {
 
@@ -845,18 +826,19 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				temp.add(mThisMissionStreets.get(0));
 				temp.addAll(mBuildingsOddNo);
 
-				if (mThisMissionStreets.size() > 1
-						&& mThisMissionStreets.get(1) != null) {
+				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
 					temp.add(mThisMissionStreets.get(1));
 				}
 
 				temp.addAll(mBuildingsEvenNo);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 
 			}
 
-		} else if (chId == 3) { // azalan tek -> artan çift
+		}
+		else if (chId == 3) { // azalan tek -> artan çift
 
 			try {
 
@@ -874,12 +856,12 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 				temp.addAll(mBuildingsOddNo);
 
-				if (mThisMissionStreets.size() > 1
-						&& mThisMissionStreets.get(1) != null) {
+				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
 					temp.add(mThisMissionStreets.get(1));
 				}
 				temp.addAll(mBuildingsEvenNo);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 
 			}
@@ -904,17 +886,18 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 				temp.addAll(mBuilds);
 
-				if (mThisMissionStreets.size() > 1
-						&& mThisMissionStreets.get(1) != null) {
+				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
 					temp.add(mThisMissionStreets.get(1));
 				}
 
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 
 			}
 
-		} else if (chId == 1) { // azalan çift -> artan tek
+		}
+		else if (chId == 1) { // azalan çift -> artan tek
 
 			try {
 				Collections.sort(mBuilds, new MissionsBuildings()); // büyükten
@@ -926,11 +909,11 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 				temp.addAll(mBuilds);
 
-				if (mThisMissionStreets.size() > 1
-						&& mThisMissionStreets.get(1) != null) {
+				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
 					temp.add(mThisMissionStreets.get(1));
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 
 			}
@@ -957,8 +940,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		try {
 
-			if (mMissionForFeedback.get(MissionCounter)
-					.getUserDailyMissionTypeId() == 1) {
+			if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1) {
 
 				Info.PHOTO_COUNT = 2;
 				llImages.setWeightSum(Info.PHOTO_COUNT);
@@ -970,13 +952,10 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				tv_apname_value.setVisibility(View.VISIBLE);
 				new_et_apname_value.setVisibility(View.GONE);
 
-				if (mMissionForFeedback.get(MissionCounter).getName() != null
-						&& !mMissionForFeedback.get(MissionCounter).getName()
-								.trim().equalsIgnoreCase("")) {
-					tv_apname_value.setText(mMissionForFeedback.get(
-							MissionCounter).getName()
-							+ " Sokak");
-				} else {
+				if (mMissionForFeedback.get(MissionCounter).getName() != null && !mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
+					tv_apname_value.setText(mMissionForFeedback.get(MissionCounter).getName() + " Sokak");
+				}
+				else {
 					tv_apname_value.setText("");
 				}
 				// ------
@@ -999,16 +978,14 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				// ----
 				tv_address.setVisibility(View.VISIBLE);
 				tv_address_value.setVisibility(View.VISIBLE);
-				tv_address_value.setText(mMissionForFeedback
-						.get(MissionCounter).getAddressText().trim());
+				tv_address_value.setText(mMissionForFeedback.get(MissionCounter).getAddressText().trim());
 				// ----
 				tv_persons.setVisibility(View.VISIBLE);
 				tv_persons_values.setVisibility(View.VISIBLE);
 				tv_persons_values.setText("");
 				// ---
 
-				tv_Score.setText("Durum : " + (MissionCounter + 1) + "/"
-						+ mMissionForFeedback.size());
+				tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" + mMissionForFeedback.size());
 
 				// if (shapeControl != null || shapeControl.getListSize() > 0) {
 				// tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" +
@@ -1029,30 +1006,25 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				// }
 
 				for (int i = 0; i < Constant.StreetTypes.Id().size(); i++) {
-					if (mMissionForFeedback.get(MissionCounter)
-							.getStreetTypeId() == Constant.StreetTypes.Id()
-							.get(i)) {
-						tv_building_type_info_value
-								.setText(Constant.StreetTypes.Name().get(i));
+					if (mMissionForFeedback.get(MissionCounter).getStreetTypeId() == Constant.StreetTypes.Id().get(i)) {
+						tv_building_type_info_value.setText(Constant.StreetTypes.Name().get(i));
 
 						if (firstStreetTypeId != null) {
 							TypeId = firstStreetTypeId.intValue();
-							tv_building_type_info_value
-									.setText(Constant.StreetTypes.Name().get(
-											TypeId));
+							tv_building_type_info_value.setText(Constant.StreetTypes.Name().get(TypeId));
 							btnStreetOrBuildingType.setText("Seçilmiþ");
 							btnStreetOrBuildingType.setEnabled(false);
 							btnTypeStatus = true;
-						} else {
-							TypeId = mMissionForFeedback.get(MissionCounter)
-									.getStreetTypeId();
+						}
+						else {
+							TypeId = mMissionForFeedback.get(MissionCounter).getStreetTypeId();
 							btnStreetOrBuildingType.setEnabled(true);
 						}
 					}
 				}
 
-			} else if (mMissionForFeedback.get(MissionCounter)
-					.getUserDailyMissionTypeId() == 2) {
+			}
+			else if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) {
 
 				Info.PHOTO_COUNT = 3;
 				llImages.setWeightSum(Info.PHOTO_COUNT);
@@ -1062,13 +1034,10 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				// ----
 				tv_apname_value.setVisibility(View.VISIBLE);
 				new_et_apname_value.setVisibility(View.GONE);
-				if (mMissionForFeedback.get(MissionCounter).getName() != null
-						&& !mMissionForFeedback.get(MissionCounter).getName()
-								.trim().equalsIgnoreCase("")) {
-					tv_apname_value.setText(mMissionForFeedback.get(
-							MissionCounter).getName()
-							+ " Apartmaný");
-				} else {
+				if (mMissionForFeedback.get(MissionCounter).getName() != null && !mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
+					tv_apname_value.setText(mMissionForFeedback.get(MissionCounter).getName() + " Apartmaný");
+				}
+				else {
 					tv_apname_value.setText("");
 				}
 				tv_apname.setText("Bina Adý : ");
@@ -1080,9 +1049,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				tv_StreetOrBuildingType.setText("Bina Tipi : ");
 
 				btnStreetOrBuildingType.setText("Seçiniz");
-				et_independent_section_count.setText(""
-						+ mMissionForFeedback.get(MissionCounter)
-								.getIndependentSectionCount());
+				et_independent_section_count.setText("" + mMissionForFeedback.get(MissionCounter).getIndependentSectionCount());
 				et_floor_count.setText("");
 
 				// ---
@@ -1094,21 +1061,18 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				tv_apno_value.setVisibility(View.VISIBLE);
 				new_et_apno_value.setVisibility(View.GONE);
 				tv_apno.setText("Dýþ Kapý No : ");
-				tv_apno_value.setText(mMissionForFeedback.get(MissionCounter)
-						.getBuildingNumber());
+				tv_apno_value.setText(mMissionForFeedback.get(MissionCounter).getBuildingNumber());
 				// tv_apno_value.setText(mMissionForFeedback.get(MissionCounter).getBuildingNumber()
 				// + " / " +
 				// mMissionForFeedback.get(MissionCounter).getIndependentSectionType());
 
 				tv_address.setVisibility(View.VISIBLE);
 				tv_address_value.setVisibility(View.VISIBLE);
-				tv_address_value.setText(mMissionForFeedback
-						.get(MissionCounter).getAddressText().trim());
+				tv_address_value.setText(mMissionForFeedback.get(MissionCounter).getAddressText().trim());
 
 				// ---
 
-				String nameSurname = mMissionForFeedback.get(MissionCounter)
-						.getPersonNameSurname();
+				String nameSurname = mMissionForFeedback.get(MissionCounter).getPersonNameSurname();
 				if (nameSurname == null) {
 					nameSurname = "";
 				}
@@ -1117,8 +1081,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				tv_persons_values.setVisibility(View.VISIBLE);
 				tv_persons_values.setText(nameSurname);
 
-				tv_Score.setText("Durum : " + (MissionCounter + 1) + "/"
-						+ mMissionForFeedback.size());
+				tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" + mMissionForFeedback.size());
 
 				// if (shapeControl != null || shapeControl.getListSize() > 0) {
 				// tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" +
@@ -1130,8 +1093,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				// mMissionForFeedback.size() + "  [0]");
 				// }
 
-				tv_building_type_info_value.setText(mMissionForFeedback.get(
-						MissionCounter).getIndependentSectionType());
+				tv_building_type_info_value.setText(mMissionForFeedback.get(MissionCounter).getIndependentSectionType());
 
 				// for (int i = 0; i < Constant.BuildingTypes.Id().size(); i++)
 				// {
@@ -1172,12 +1134,12 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			cbSolKapi.setChecked(false);
 			cbSagKapi.setChecked(false);
 
-			LiveData.userDailyMissionId = mMissionForFeedback.get(
-					MissionCounter).getUserDailyMissionId();
+			LiveData.userDailyMissionId = mMissionForFeedback.get(MissionCounter).getUserDailyMissionId();
 
 			ShowSelectedMarkers();
 			isThereAMarker = true;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Tools.saveErrors(e);
 		}
 
@@ -1189,16 +1151,15 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				try {
 					MarkerOptions mo = new MarkerOptions();
 
-					mo.snippet(LiveData.streetMarkers.get(i).getSnippet()
-							.trim());
+					mo.snippet(LiveData.streetMarkers.get(i).getSnippet().trim());
 					mo.title(LiveData.streetMarkers.get(i).getTitle().trim());
-					mo.icon(BitmapDescriptorFactory
-							.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+					mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 					mo.draggable(false);
 					mo.position(LiveData.streetMarkers.get(i).getPosition());
 
 					myMap.addMarker(mo);
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					Tools.saveErrors(e);
 				}
 
@@ -1218,35 +1179,25 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		if (!Info.ISTEST) {
 
 			if (!isMarkerSet) {
-				Tools.showShortCustomToast(this,
-						"Harita üzerinden konum seçilmedi!");
+				Tools.showShortCustomToast(this, "Harita üzerinden konum seçilmedi!");
 				return;
 			}
 			if (!btnTypeStatus) {
 				Tools.showShortCustomToast(this, "Bina/Sokak Tipi seçilmedi.");
 				return;
 			}
-			if ((et_floor_count.getText().toString().trim()
-					.equalsIgnoreCase("") && (isNewBuilding || mMissionForFeedback
-					.get(MissionCounter).getUserDailyMissionTypeId() == 2)) //
-					&& (TypeId != 1 && TypeId != 2 && TypeId != 12
-							&& TypeId != 13 && TypeId != 15)) {
+			if ((et_floor_count.getText().toString().trim().equalsIgnoreCase("") && (isNewBuilding || mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2)) //
+					&& (TypeId != 1 && TypeId != 2 && TypeId != 12 && TypeId != 13 && TypeId != 15)) {
 				Tools.showShortCustomToast(this, "Lütfen Kat Sayýsýný Giriniz.");
 				return;
 			}
 			if (LiveData.photoinfo.size() != Info.PHOTO_COUNT) {
-				Tools.showShortCustomToast(this, Info.PHOTO_COUNT
-						+ " adet fotoðraf çekilmelidir.");
+				Tools.showShortCustomToast(this, Info.PHOTO_COUNT + " adet fotoðraf çekilmelidir.");
 				return;
 			}
 
-			if (!cbOnKapi.isChecked()
-					&& !cbSolKapi.isChecked()
-					&& !cbSagKapi.isChecked()
-					&& (isNewBuilding || mMissionForFeedback
-							.get(MissionCounter).getUserDailyMissionTypeId() == 2)) {
-				Tools.showShortCustomToast(this,
-						"Kapýnýn bulunduðu cepheyi seçiniz.");
+			if (!cbOnKapi.isChecked() && !cbSolKapi.isChecked() && !cbSagKapi.isChecked() && (isNewBuilding || mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2)) {
+				Tools.showShortCustomToast(this, "Kapýnýn bulunduðu cepheyi seçiniz.");
 				return;
 			}
 		}
@@ -1272,9 +1223,9 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 				if (isNewBuilding) {
 					mFeedBackPhoto.setUserDailyMissionId(lDateTime);
-				} else {
-					mFeedBackPhoto.setUserDailyMissionId(mMissionForFeedback
-							.get(MissionCounter - 1).getUserDailyMissionId());
+				}
+				else {
+					mFeedBackPhoto.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter - 1).getUserDailyMissionId());
 				}
 
 				// mFeedBackPhoto.setPhoto(imgPreview1.getTag().toString());
@@ -1282,7 +1233,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				mFeedBackPhoto.Insert();
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Tools.saveErrors(e);
 
 		}
@@ -1293,35 +1245,27 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				MissionFeedBack mNewFeedback = new MissionFeedBack();
 
 				mNewFeedback.setUserDailyMissionId(lDateTime);
-				mNewFeedback.setStreetId(mMissionForFeedback.get(0)
-						.getStreetId());
+				mNewFeedback.setStreetId(mMissionForFeedback.get(0).getStreetId());
 
-				if (!new_et_apname_value.getText().toString().trim()
-						.equalsIgnoreCase("")) {
-					mNewFeedback.setBuildingName(new_et_apname_value.getText()
-							.toString());
+				if (!new_et_apname_value.getText().toString().trim().equalsIgnoreCase("")) {
+					mNewFeedback.setBuildingName(new_et_apname_value.getText().toString());
 				}
 
-				if (!new_et_apno_value.getText().toString().trim()
-						.equalsIgnoreCase("")) {
-					mNewFeedback.setBuildingNumber(new_et_apno_value.getText()
-							.toString());
+				if (!new_et_apno_value.getText().toString().trim().equalsIgnoreCase("")) {
+					mNewFeedback.setBuildingNumber(new_et_apno_value.getText().toString());
 				}
 
-				if (!et_floor_count.getText().toString().trim()
-						.equalsIgnoreCase("")) {
-					mNewFeedback.setFloorCount(Integer.parseInt(et_floor_count
-							.getText().toString()));
-				} else {
+				if (!et_floor_count.getText().toString().trim().equalsIgnoreCase("")) {
+					mNewFeedback.setFloorCount(Integer.parseInt(et_floor_count.getText().toString()));
+				}
+				else {
 					mNewFeedback.setFloorCount(0);
 				}
 
-				if (!et_independent_section_count.getText().toString().trim()
-						.equalsIgnoreCase("")) {
-					mNewFeedback.setIndependentSectionCount(Integer
-							.parseInt(et_independent_section_count.getText()
-									.toString()));
-				} else {
+				if (!et_independent_section_count.getText().toString().trim().equalsIgnoreCase("")) {
+					mNewFeedback.setIndependentSectionCount(Integer.parseInt(et_independent_section_count.getText().toString()));
+				}
+				else {
 					mNewFeedback.setIndependentSectionCount(0);
 				}
 
@@ -1349,11 +1293,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				new_et_apname_value.setText("");
 				new_et_apno_value.setText("");
 
-				currentMarker.setTitle(mMissionForFeedback.get(0).getName()
-						+ " Sokak, Dýþ Kapý No: "
-						+ new_et_apno_value.getText().toString());
-				currentMarker.setSnippet(new_et_apname_value.getText()
-						.toString() + " Apartmaný");
+				currentMarker.setTitle(mMissionForFeedback.get(0).getName() + " Sokak, Dýþ Kapý No: " + new_et_apno_value.getText().toString());
+				currentMarker.setSnippet(new_et_apname_value.getText().toString() + " Apartmaný");
 
 				llImages.removeAllViews();
 				LiveData.photoinfo = new ArrayList<PhotoInfo>();
@@ -1368,7 +1309,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				isMarkerSet = false;
 
 				// ShowSelectedMarkers();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 			}
 
@@ -1387,28 +1329,25 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		llImages.removeAllViews();
 		LiveData.photoinfo = new ArrayList<PhotoInfo>();
 
-		if (mMissionForFeedback.get(MissionCounter - 1)
-				.getUserDailyMissionTypeId() == 1) {
+		if (mMissionForFeedback.get(MissionCounter - 1).getUserDailyMissionTypeId() == 1) {
 			firstStreetTypeId = TypeId;
 			// ((MissionsStreets)
 			// mMissionForFeedback.get(MissionCounter)).Update();
-			completedMissionStreets.add(((MissionsStreets) mMissionForFeedback
-					.get(MissionCounter - 1)));
-		} else {
+			completedMissionStreets.add(((MissionsStreets) mMissionForFeedback.get(MissionCounter - 1)));
+		}
+		else {
 			mMissionForFeedback.get(MissionCounter - 1).setIsCompleted(true);
-			((MissionsBuildings) mMissionForFeedback.get(MissionCounter - 1))
-					.Update();
+			((MissionsBuildings) mMissionForFeedback.get(MissionCounter - 1)).Update();
 		}
 
 		MissionFeedBack mFeedBack = new MissionFeedBack();
 		mFeedBack.setIsCompleted(false);
-		mFeedBack.setUserDailyMissionId(mMissionForFeedback.get(
-				MissionCounter - 1).getUserDailyMissionId());
+		mFeedBack.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter - 1).getUserDailyMissionId());
 
-		if (mMissionForFeedback.get(MissionCounter - 1)
-				.getUserDailyMissionTypeId() == 1) {
+		if (mMissionForFeedback.get(MissionCounter - 1).getUserDailyMissionTypeId() == 1) {
 			mFeedBack.setTypeId(TypeId);
-		} else {
+		}
+		else {
 			// mFeedBack.setBuildingName(mMissionForFeedback.get(MissionCounter
 			// - 1).getName());
 			// mFeedBack.setBuildingNumber(mMissionForFeedback.get(MissionCounter
@@ -1416,17 +1355,15 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			mFeedBack.setIndependentSectionTypeId(TypeId);
 
 			if (!et_floor_count.getText().toString().equalsIgnoreCase("")) {
-				mFeedBack.setFloorCount(Integer.parseInt(et_floor_count
-						.getText().toString()));
-			} else {
+				mFeedBack.setFloorCount(Integer.parseInt(et_floor_count.getText().toString()));
+			}
+			else {
 				mFeedBack.setFloorCount(0);
 			}
-			if (!et_independent_section_count.getText().toString()
-					.equalsIgnoreCase("")) {
-				mFeedBack.setIndependentSectionCount(Integer
-						.parseInt(et_independent_section_count.getText()
-								.toString()));
-			} else {
+			if (!et_independent_section_count.getText().toString().equalsIgnoreCase("")) {
+				mFeedBack.setIndependentSectionCount(Integer.parseInt(et_independent_section_count.getText().toString()));
+			}
+			else {
 				mFeedBack.setIndependentSectionCount(0);
 			}
 		}
@@ -1434,8 +1371,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		mFeedBack.setGPSLat(GPSLat);
 		mFeedBack.setGPSLng(GPSLng);
 		mFeedBack.setGPSAltitude(GPSAlt);
-		mFeedBack.setStreetId(mMissionForFeedback.get(MissionCounter - 1)
-				.getStreetId());
+		mFeedBack.setStreetId(mMissionForFeedback.get(MissionCounter - 1).getStreetId());
 		mFeedBack.setGPSBearing(GPSBearing);
 		mFeedBack.setGPSSpeed(GPSSpeed);
 		mFeedBack.setGPSTime(GPSTime);
@@ -1493,7 +1429,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			}
 
 			finish();
-		} else {
+		}
+		else {
 			fillComponent(); // sonraki görevin bilgileri yükleniyor
 		}
 	}
@@ -1506,9 +1443,9 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (isNewBuilding) {
 			selectType = 2;
-		} else {
-			selectType = mMissionForFeedback.get(MissionCounter)
-					.getUserDailyMissionTypeId();
+		}
+		else {
+			selectType = mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId();
 		}
 
 		if (selectType == 1) {
@@ -1518,36 +1455,32 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			// CharSequence[] choiceList = msTypesName.toArray(new
 			// CharSequence[msTypesName.size()]);
 
-			CharSequence[] choiceList = Constant.StreetTypes.Name().toArray(
-					new CharSequence[Constant.StreetTypes.Name().size()]);
+			CharSequence[] choiceList = Constant.StreetTypes.Name().toArray(new CharSequence[Constant.StreetTypes.Name().size()]);
 			builder.setItems(choiceList, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					btnTypeStatus = true;
 
 					TypeId = Constant.StreetTypes.Id().get(item);
-					btnStreetOrBuildingType.setText(Constant.StreetTypes.Name()
-							.get(item));
+					btnStreetOrBuildingType.setText(Constant.StreetTypes.Name().get(item));
 
 					// TypeId = msTypesId.get(item);
 					// btnStreetOrBuildingType.setText(msTypesName.get(item));
 				}
 			});
 
-		} else if (selectType == 2) {
+		}
+		else if (selectType == 2) {
 
-			CharSequence[] choiceList = Constant.BuildingTypes.Name().toArray(
-					new CharSequence[Constant.BuildingTypes.Name().size()]);
+			CharSequence[] choiceList = Constant.BuildingTypes.Name().toArray(new CharSequence[Constant.BuildingTypes.Name().size()]);
 
 			builder.setItems(choiceList, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					btnTypeStatus = true;
 
 					TypeId = Constant.BuildingTypes.Id().get(item);
-					btnStreetOrBuildingType.setText(Constant.BuildingTypes
-							.Name().get(item));
+					btnStreetOrBuildingType.setText(Constant.BuildingTypes.Name().get(item));
 
-					if (TypeId == 1 || TypeId == 2 || TypeId == 12
-							|| TypeId == 13 || TypeId == 15) {
+					if (TypeId == 1 || TypeId == 2 || TypeId == 12 || TypeId == 13 || TypeId == 15) {
 						et_independent_section_count.setEnabled(false);
 						et_independent_section_count.setText("");
 						et_independent_section_count.setHint("Seçilemez");
@@ -1557,11 +1490,10 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 						et_floor_count.setHint("Seçilemez");
 
 						new_et_apno_value.setText("");
-					} else {
+					}
+					else {
 						et_independent_section_count.setEnabled(true);
-						et_independent_section_count.setText(""
-								+ mMissionForFeedback.get(MissionCounter)
-										.getIndependentSectionCount());
+						et_independent_section_count.setText("" + mMissionForFeedback.get(MissionCounter).getIndependentSectionCount());
 						et_independent_section_count.setHint("");
 
 						et_floor_count.setEnabled(true);
@@ -1593,12 +1525,9 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		setupTab(R.id.tab2, R.drawable.tick, "Foto");
 		setupTab(R.id.tab3, R.drawable.camera1, "Kapý");
 
-		tabHost.getTabWidget().getChildAt(0)
-				.setLayoutParams(new LinearLayout.LayoutParams(0, 60, 0.33f));
-		tabHost.getTabWidget().getChildAt(1)
-				.setLayoutParams(new LinearLayout.LayoutParams(0, 60, 0.34f));
-		tabHost.getTabWidget().getChildAt(2)
-				.setLayoutParams(new LinearLayout.LayoutParams(0, 60, 0.33f));
+		tabHost.getTabWidget().getChildAt(0).setLayoutParams(new LinearLayout.LayoutParams(0, 60, 0.33f));
+		tabHost.getTabWidget().getChildAt(1).setLayoutParams(new LinearLayout.LayoutParams(0, 60, 0.34f));
+		tabHost.getTabWidget().getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(0, 60, 0.33f));
 
 		tabHost.setCurrentTab(valueTab);
 		tabHost.setOnTabChangedListener(this);
@@ -1613,15 +1542,13 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 	private void setupTab(int tab, int icon, final String text) {
 
-		View view = LayoutInflater.from(tabHost.getContext()).inflate(
-				R.layout.tabs_bg, null);
+		View view = LayoutInflater.from(tabHost.getContext()).inflate(R.layout.tabs_bg, null);
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
 		tv.setTextSize(25);
 		// tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
 		tv.setText(text);
 
-		TabSpec setContent = tabHost.newTabSpec(text).setIndicator(view)
-				.setContent(tab);
+		TabSpec setContent = tabHost.newTabSpec(text).setIndicator(view).setContent(tab);
 		tabHost.addTab(setContent);
 
 	}
@@ -1633,17 +1560,17 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 			if (tabId.equals("Bilgi")) {
 
-			} else if (tabId.equals("Foto")) {
+			}
+			else if (tabId.equals("Foto")) {
 				if (!isMarkerSet) {
-					Tools.showShortCustomToast(this,
-							"Harita üzerinden konum seçilmedi!");
+					Tools.showShortCustomToast(this, "Harita üzerinden konum seçilmedi!");
 					tabHost.setCurrentTab(0);
 					return;
 				}
-			} else if (tabId.equals("Kapý")) {
+			}
+			else if (tabId.equals("Kapý")) {
 
-				if (mMissionForFeedback.get(MissionCounter)
-						.getUserDailyMissionTypeId() == 1 && !isNewBuilding) {
+				if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1 && !isNewBuilding) {
 					tabHost.setCurrentTab(1);
 					return;
 				}
@@ -1679,55 +1606,50 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (!Info.ISTEST) {
 			if (LiveData.photoinfo.size() > 0) {
-				Tools.showShortCustomToast(this,
-						"Fotoðraf çekildikten sonra konum güncellenemez!");
+				Tools.showShortCustomToast(this, "Fotoðraf çekildikten sonra konum güncellenemez!");
 				return;
 			}
 
-		} else {
+		}
+		else {
 			UserAccuracy = 1;
 		}
 
 		if (isNewBuilding) {
 			pressShape(point);
-		} else {
-			if (mMissionForFeedback.get(MissionCounter)
-					.getUserDailyMissionTypeId() == 2) {
+		}
+		else {
+			if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) {
 				pressShape(point);
 			}
 		}
 
 		if (UserAccuracy <= Info.GPS_ACCURACY) {
 			MarkerOptions mo = new MarkerOptions();
-			mo.icon(BitmapDescriptorFactory
-					.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+			mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
 			if (!isNewBuilding) {
 
-				if (mMissionForFeedback.get(MissionCounter)
-						.getUserDailyMissionTypeId() == 1) {
+				if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1) {
 
-					if (!mMissionForFeedback.get(MissionCounter).getName()
-							.trim().equalsIgnoreCase("")) {
-						mo.snippet(mMissionForFeedback.get(MissionCounter)
-								.getName() + " Sokak");
-					} else {
+					if (!mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
+						mo.snippet(mMissionForFeedback.get(MissionCounter).getName() + " Sokak");
+					}
+					else {
 						mo.snippet("");
 					}
 
-				} else if (mMissionForFeedback.get(MissionCounter)
-						.getUserDailyMissionTypeId() == 2) {
-					if (!mMissionForFeedback.get(MissionCounter).getName()
-							.trim().equalsIgnoreCase("")) {
-						mo.snippet(mMissionForFeedback.get(MissionCounter)
-								.getName() + " Apartmaný");
-					} else {
+				}
+				else if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) {
+					if (!mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
+						mo.snippet(mMissionForFeedback.get(MissionCounter).getName() + " Apartmaný");
+					}
+					else {
 						mo.snippet("");
 					}
 				}
 
-				mo.title(mMissionForFeedback.get(MissionCounter)
-						.getAddressText());
+				mo.title(mMissionForFeedback.get(MissionCounter).getAddressText());
 
 			}
 
@@ -1800,8 +1722,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 				for (String string : coors) {
 					String[] coor = string.split(",");
-					final LatLng p = new LatLng(Float.valueOf(coor[0]),
-							Float.valueOf(coor[1]));
+					final LatLng p = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
 					polygonOptions.add(p);
 				}
 
@@ -1809,8 +1730,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 				finishedShapes.setShapeId(pol.polygonid);
 				finishedShapes.setUserId(Info.UserId);
-				finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(
-						MissionCounter).getUserDailyMissionId());
+				finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
 				finishedShapes.Insert();
 
 				polygonOptions.strokeColor(Color.GREEN);
@@ -1904,27 +1824,21 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		boolean isGPSEnabled = false;
 		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		isGPSEnabled = locationManager
-				.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		if (isGPSEnabled) {
 
-			locationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, Info.GPS_UPDATE_TIME,
-					Info.GPS_MIN_DISTANCE, this);
-			Location location = locationManager
-					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Info.GPS_UPDATE_TIME, Info.GPS_MIN_DISTANCE, this);
+			Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			locationManager.addGpsStatusListener(this);
 
 		}
 
-		int resultCode = GooglePlayServicesUtil
-				.isGooglePlayServicesAvailable(getApplicationContext());
+		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 
 		if (resultCode == ConnectionResult.SUCCESS) {
 
 			if (map == null)
-				map = ((MapFragment) getFragmentManager().findFragmentById(
-						R.id.map));
+				map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
 
 			if (myMap == null)
 				myMap = map.getMap();
@@ -1938,12 +1852,11 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			myMap.setOnMarkerDragListener(this);
 			myMap.setOnCameraChangeListener(this);
 
-		} else {
-			GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-					RQS_GooglePlayServices);
+		}
+		else {
+			GooglePlayServicesUtil.getErrorDialog(resultCode, this, RQS_GooglePlayServices);
 			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-				GooglePlayServicesUtil.getErrorDialog(resultCode, this, 9000)
-						.show();
+				GooglePlayServicesUtil.getErrorDialog(resultCode, this, 9000).show();
 
 			}
 			return false;
@@ -1971,8 +1884,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		double pY = tap.latitude;
 		double pX = tap.longitude;
 
-		if ((aY > pY && bY > pY) || (aY < pY && bY < pY)
-				|| (aX < pX && bX < pX)) {
+		if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
 			return false;
 		}
 
@@ -1991,9 +1903,9 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		if (LiveData.photoinfo.size() < Info.PHOTO_COUNT) {
 			tp = new CameraHelper(FeedBack.this);
 			startActivityForResult(tp.startCamera(), tp.getRequestCode());
-		} else {
-			Tools.showShortCustomToast(FeedBack.this,
-					"Fotoðraf ekleme limiti doldu!");
+		}
+		else {
+			Tools.showShortCustomToast(FeedBack.this, "Fotoðraf ekleme limiti doldu!");
 		}
 
 		// try {
@@ -2065,12 +1977,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 						llImages.removeView(pInfo.getImageview());
 						// pInfo.getImageview().setImageResource(android.R.color.transparent);
 						// photoStatus1 = false;
-						File file = new File(Environment
-								.getExternalStorageDirectory()
-								+ File.separator
-								+ Info.PHOTO_STORAGE_PATH
-								+ File.separator
-								+ pInfo.getName());
+						File file = new File(Environment.getExternalStorageDirectory() + File.separator + Info.PHOTO_STORAGE_PATH + File.separator + pInfo.getName());
 						file.delete();
 						LiveData.photoinfo.remove(pInfo);
 					}
@@ -2078,7 +1985,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 					else if (items[item].equals("Vazgeç")) {
 						dialog.dismiss();
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					Tools.saveErrors(e);
 
 				}
@@ -2093,8 +2001,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (LiveData.photoinfo.size() < Info.PHOTO_COUNT && tp != null) {
 			ImageView iv = new ImageView(this);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-					0, LayoutParams.MATCH_PARENT, 1f);
+			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f);
 			iv.setLayoutParams(layoutParams);
 			// tp = new CameraHelper(FeedBack.this);
 			final PhotoInfo info = tp.showImage(iv, 1, requestCode, resultCode);
@@ -2122,20 +2029,19 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 	@Override
 	public void onLocationChanged(Location location) {
 
-		currentLocation = new LatLng(location.getLatitude(),
-				location.getLongitude());
+		currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
 		try {
 			if (mPositionMarker != null) {
 				mPositionMarker.remove();
 				mPositionMarker = null;
-				mPositionMarker = myMap
-						.addMarker(getMarkerOptions(currentLocation));
-			} else {
-				mPositionMarker = myMap
-						.addMarker(getMarkerOptions(currentLocation));
+				mPositionMarker = myMap.addMarker(getMarkerOptions(currentLocation));
 			}
-		} catch (Exception e) {
+			else {
+				mPositionMarker = myMap.addMarker(getMarkerOptions(currentLocation));
+			}
+		}
+		catch (Exception e) {
 			Tools.saveErrors(e);
 		}
 
@@ -2145,25 +2051,20 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		mLastLocation = location;
 
 		if (!Info.ISTEST && !isZoomOpen) { // *-*
-			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-					currentLocation, Info.MAP_ZOOM_LEVEL), 1000,
-					new CancelableCallback() {
+			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, Info.MAP_ZOOM_LEVEL), 1000, new CancelableCallback() {
 
-						@Override
-						public void onFinish() {
-							Projection projection = myMap.getProjection();
-							android.graphics.Point point = projection
-									.toScreenLocation(currentLocation);
-							LatLng offsetPosition = projection
-									.fromScreenLocation(point);
-							myMap.animateCamera(CameraUpdateFactory
-									.newLatLng(offsetPosition), 300, null);
-						}
+				@Override
+				public void onFinish() {
+					Projection projection = myMap.getProjection();
+					android.graphics.Point point = projection.toScreenLocation(currentLocation);
+					LatLng offsetPosition = projection.fromScreenLocation(point);
+					myMap.animateCamera(CameraUpdateFactory.newLatLng(offsetPosition), 300, null);
+				}
 
-						@Override
-						public void onCancel() {
-						}
-					});
+				@Override
+				public void onCancel() {
+				}
+			});
 		}
 
 		GPSLat = location.getLatitude();
@@ -2189,9 +2090,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		// Tools.saveErrors(e);
 		// }
 
-		if (tempLocation == null
-				|| (tempLocation.getLatitude() != location.getLatitude() && tempLocation
-						.getLongitude() != location.getLongitude())) {
+		if (tempLocation == null || (tempLocation.getLatitude() != location.getLatitude() && tempLocation.getLongitude() != location.getLongitude())) {
 			try {
 				VisitFeedBack mVisitFeedBack = new VisitFeedBack();
 				mVisitFeedBack.setCourierId(Info.UserId);
@@ -2204,12 +2103,11 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				mVisitFeedBack.setGPSBearing(GPSBearing);
 				mVisitFeedBack.setGPSSpeed(GPSSpeed);
 				mVisitFeedBack.setGPSTime(GPSTime);
-				mVisitFeedBack
-						.setUserDailyMissionId(LiveData.userDailyMissionId);
-				mVisitFeedBack.setSimCardNo(Tools
-						.getSimCardNumber(FeedBack.this));
+				mVisitFeedBack.setUserDailyMissionId(LiveData.userDailyMissionId);
+				mVisitFeedBack.setSimCardNo(Tools.getSimCardNumber(FeedBack.this));
 				mVisitFeedBack.Insert();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Tools.saveErrors(e);
 			}
 
@@ -2329,6 +2227,17 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 	}
 
 	public void LoadShapes() {
+
+		progressDialog = new ProgressDialog(FeedBack.this);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog.setTitle("Lütfen Bekleyiniz...");
+		progressDialog.setMessage("Þekiller Yükleniyor...");
+		progressDialog.setCancelable(false);
+		progressDialog.setIndeterminate(false);
+		progressDialog.show();
+
+		shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
+
 		final ArrayList<PolygonOptions> polygonOptionsList = new ArrayList<PolygonOptions>();
 		final ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<PolylineOptions>();
 
@@ -2343,8 +2252,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				// (float) bounds.northeast.longitude, ms.getDistrictId(),
 				// ShapeIdList, ctx, db_path, db_name);
 
-				List<MissionsStreets> missStreets = MissionsStreets
-						.GetAllDataForShape();
+				List<MissionsStreets> missStreets = MissionsStreets.GetAllDataForShape();
 				List<Integer> missionStreetIdList = new ArrayList<Integer>();
 
 				for (MissionsStreets str : missStreets) {
@@ -2352,17 +2260,14 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				}
 
 				polygons = new ArrayList<com.telekurye.kml.Polygon>();
-				polygons.addAll(com.telekurye.kml.Polygon
-						.GetStreetShapeByStreetIdList(ctx, missionStreetIdList,
-								db_path, db_name));
-				polygons.addAll(com.telekurye.kml.Polygon
-						.GetBuildingShapeByDistrictId(ctx,
-								(long) ms.getDistrictId(), db_path, db_name));
+				polygons.addAll(com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name));
+				polygons.addAll(com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long) ms.getDistrictId(), db_path, db_name));
 
 				int visibleShapeCount;
 				if (isZoomOpen) {
 					visibleShapeCount = 600;
-				} else {
+				}
+				else {
 					visibleShapeCount = 300;
 				}
 
@@ -2376,14 +2281,12 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 					if (polygon.type == 1) {
 						final PolylineOptions polygonOptions = new PolylineOptions();
 
-						String[] coors = SplitUsingTokenizer(
-								polygon.coordinates, "||");
+						String[] coors = SplitUsingTokenizer(polygon.coordinates, "||");
 
 						for (String string : coors) {
 							String[] coor = string.split(",");
 
-							final LatLng point = new LatLng(Float
-									.valueOf(coor[0]), Float.valueOf(coor[1]));
+							final LatLng point = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
 
 							polygon.coors.add(point);
 
@@ -2392,25 +2295,26 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 						if (polygon.polygonid == ms.getStreetId()) {
 							polygonOptions.color(Color.YELLOW);
-						} else if (CheckCompletionStatus(polygon, missStreets)) {
+						}
+						else if (CheckCompletionStatus(polygon, missStreets)) {
 							polygonOptions.color(Color.GREEN);
-						} else {
+						}
+						else {
 							polygonOptions.color(Color.WHITE);
 						}
 
 						polygonOptions.width(3);
 						polylineOptionsList.add(polygonOptions);
-					} else if (polygon.type == 2) {
+					}
+					else if (polygon.type == 2) {
 						final PolygonOptions polygonOptions = new PolygonOptions();
 
-						String[] coors = SplitUsingTokenizer(
-								polygon.coordinates, "||");
+						String[] coors = SplitUsingTokenizer(polygon.coordinates, "||");
 
 						for (String string : coors) {
 							String[] coor = string.split(",");
 
-							final LatLng point = new LatLng(Float
-									.valueOf(coor[0]), Float.valueOf(coor[1]));
+							final LatLng point = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
 
 							polygon.coors.add(point);
 
@@ -2437,30 +2341,28 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 						public void run() {
 							GoogleMap map = myMap;
 							for (int i = 0; i < polygonOptionsList.size(); i++) {
-								polList.add(map.addPolygon(polygonOptionsList
-										.get(i)));
+								polList.add(map.addPolygon(polygonOptionsList.get(i)));
 							}
-							
+
 							for (int i = 0; i < polylineOptionsList.size(); i++) {
-								polylineList.add(map.addPolyline(polylineOptionsList
-										.get(i)));
+								polylineList.add(map.addPolyline(polylineOptionsList.get(i)));
 							}
+							progressDialog.dismiss();
 							// progress.dismiss();
 						}
 					});
 				}
 			}
 
-			private boolean CheckCompletionStatus(
-					com.telekurye.kml.Polygon polygon,
-					List<MissionsStreets> missStreets) {
+			private boolean CheckCompletionStatus(com.telekurye.kml.Polygon polygon, List<MissionsStreets> missStreets) {
 
 				for (MissionsStreets mstr : missStreets) {
 					if (polygon.polygonid == mstr.getStreetId()) {
 
 						if (mstr.getIsCompleted()) {
 							return true;
-						} else {
+						}
+						else {
 							return false;
 						}
 					}
@@ -2480,10 +2382,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		double earthRadius = 3958.75;
 		double latDiff = Math.toRadians(lat_b - lat_a);
 		double lngDiff = Math.toRadians(lng_b - lng_a);
-		double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2)
-				+ Math.cos(Math.toRadians(lat_a))
-				* Math.cos(Math.toRadians(lat_b)) * Math.sin(lngDiff / 2)
-				* Math.sin(lngDiff / 2);
+		double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2) + Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) * Math.sin(lngDiff / 2) * Math.sin(lngDiff / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double distance = earthRadius * c;
 
@@ -2526,34 +2425,43 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (v.getId() == R.id.btn_save_feedback) {
 			saveFeedback();
-		} else if (v.getId() == R.id.btn_map_zoom) {
+		}
+		else if (v.getId() == R.id.btn_map_zoom) {
 			mapZoom();
-		} else if (v.getId() == R.id.btnSavePhoto) {
+		}
+		else if (v.getId() == R.id.btnSavePhoto) {
 			takePhoto();
-		} else if (v.getId() == R.id.btn_StreetOrBuildingType) {
+		}
+		else if (v.getId() == R.id.btn_StreetOrBuildingType) {
 			selectType();
-		} else if (v.getId() == R.id.cbOnKapi) {
+		}
+		else if (v.getId() == R.id.cbOnKapi) {
 			if (((CheckBox) v).isChecked()) {
 				cbSagKapi.setChecked(false);
 				cbSolKapi.setChecked(false);
 				checkboxStatus = 1;
-			} else {
+			}
+			else {
 				cbOnKapi.setChecked(true);
 			}
-		} else if (v.getId() == R.id.cbSagKapi) {
+		}
+		else if (v.getId() == R.id.cbSagKapi) {
 			if (((CheckBox) v).isChecked()) {
 				cbOnKapi.setChecked(false);
 				cbSolKapi.setChecked(false);
 				checkboxStatus = 2;
-			} else {
+			}
+			else {
 				cbSagKapi.setChecked(true);
 			}
-		} else if (v.getId() == R.id.cbSolKapi) {
+		}
+		else if (v.getId() == R.id.cbSolKapi) {
 			if (((CheckBox) v).isChecked()) {
 				cbSagKapi.setChecked(false);
 				cbOnKapi.setChecked(false);
 				checkboxStatus = 3;
-			} else {
+			}
+			else {
 				cbSolKapi.setChecked(true);
 			}
 		}
@@ -2564,15 +2472,15 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (isZoomOpen) {
 			isZoomOpen = false;
-		} else {
+		}
+		else {
 			isZoomOpen = true;
 		}
 
 		if (isZoomOpen) {
 			tabHost.setVisibility(View.GONE);
 
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			llMapFragment.setLayoutParams(layoutParams);
 
 			// uiSettings.setAllGesturesEnabled(true);
@@ -2590,10 +2498,10 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 			Info.MAP_ZOOM_LEVEL = 18.0f;
 
-		} else {
+		}
+		else {
 			tabHost.setVisibility(View.VISIBLE);
-			LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, 0, 45f);
+			LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 45f);
 			llMapFragment.setLayoutParams(layoutParams2);
 
 			// salihy: test ederken sýkýntý yaratýyordu.
@@ -2628,7 +2536,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 			if (isGPSFix) { // A fix has been acquired.
 
-			} else {
+			}
+			else {
 				UserAccuracy = 5000;
 			}
 
@@ -2638,7 +2547,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		isGPSFix = true;
 	}
 
-	float lastDegreeX = 0;
+	float	lastDegreeX	= 0;
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
@@ -2651,7 +2560,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 					lastDegreeX = x;
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Tools.saveErrors(e);
 		}
 
@@ -2668,7 +2578,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (Info.ISTEST) {
 			finish();
-		} else {
+		}
+		else {
 			return;
 		}
 
@@ -2732,13 +2643,15 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 		if (hour < 10) {
 			mHour = "0" + hour;
-		} else {
+		}
+		else {
 			mHour = "" + hour;
 		}
 
 		if (minute < 10) {
 			mMinute = "0" + minute;
-		} else {
+		}
+		else {
 			mMinute = "" + minute;
 		}
 
@@ -2754,26 +2667,30 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		if (info == null || !info.isConnected()) {
 			tvNetworkStatus.setBackgroundColor(Color.RED);
-		} else {
+		}
+		else {
 			tvNetworkStatus.setBackgroundColor(Color.GREEN);
 		}
 
 		if (LiveData.Earnings != null) {
 
 			tv_earnings.setText(LiveData.Earnings);
-		} else {
+		}
+		else {
 			tv_earnings.setText("Bilgi Yok");
 		}
 
 		if (isGPSFix && UserAccuracy != 0 && UserAccuracy < 100) {
 			tv_info_accuracy.setText("" + UserAccuracy);
-		} else {
+		}
+		else {
 			tv_info_accuracy.setText("Gps Yok");
 		}
 
-		if (UserAccuracy < LiveData.MAX_ACCURACY) {
+		if (UserAccuracy < Info.GPS_ACCURACY) {
 			tv_info_accuracy.setBackgroundColor(Color.GREEN);
-		} else {
+		}
+		else {
 			tv_info_accuracy.setBackgroundColor(Color.RED);
 		}
 
@@ -2782,9 +2699,9 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 		if (lastSync != null) {
 			Date lastSyncDate = null;
 			try {
-				lastSyncDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-						.parse(lastSync);
-			} catch (ParseException e) {
+				lastSyncDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(lastSync);
+			}
+			catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -2793,8 +2710,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 
 			Date dt = new Date();
 
-			long timeRange = (dt.getTime() - lastSyncDate.getTime())
-					- (1000 * 60 * 60 * 2);
+			long timeRange = (dt.getTime() - lastSyncDate.getTime()) - (1000 * 60 * 60 * 2);
 			// calendar2.setTimeInMillis(timeRange);
 
 			calendar2.setTimeInMillis(timeRange);
@@ -2803,14 +2719,15 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 			int dk = calendar2.get(Calendar.MINUTE);
 
 			if (saat > 0) {
-				tv_last_sync_date.setText("Son Senk. : " + saat + " saat " + dk
-						+ " dk önce");
-			} else {
+				tv_last_sync_date.setText("Son Senk. : " + saat + " saat " + dk + " dk önce");
+			}
+			else {
 				tv_last_sync_date.setText("Son Senk. : " + dk + " dk önce");
 			}
 			if (saat == 0 && dk <= 30) {
 				tv_last_sync_date.setBackgroundColor(Color.GREEN);
-			} else {
+			}
+			else {
 				tv_last_sync_date.setBackgroundColor(Color.RED);
 			}
 		}
@@ -2826,11 +2743,8 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1
-				&& mMissionForFeedback.get(MissionCounter)
-						.getBuildingNumber_IsOdd()) {
-			Tools.showShortCustomToast(FeedBack.this,
-					"Ýlk Sokak Görevinde Yeni Bina ekleyemezsiniz");
+		if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1 && mMissionForFeedback.get(MissionCounter).getBuildingNumber_IsOdd()) {
+			Tools.showShortCustomToast(FeedBack.this, "Ýlk Sokak Görevinde Yeni Bina ekleyemezsiniz");
 			return false;
 		}
 
@@ -2841,13 +2755,15 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 				tabHost.setCurrentTab(0);
 				isNewBuilding = true;
 			}
-		} else if (item.getItemId() == R.id.new_building_menu2) {
+		}
+		else if (item.getItemId() == R.id.new_building_menu2) {
 
 			if (isNewBuilding && isFinishRedShapes) {
 				fillComponent();
 				tabHost.setCurrentTab(0);
 				// isNewBuilding = false;
-			} else {
+			}
+			else {
 				closeOptionsMenu();
 			}
 		}
@@ -2909,8 +2825,7 @@ public class FeedBack extends Activity implements OnTabChangeListener,
 	private MarkerOptions getMarkerOptions(LatLng position) {
 		MarkerOptions markerOptions = new MarkerOptions();
 		markerOptions.flat(true);
-		markerOptions.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.arrowred));
+		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrowred));
 		markerOptions.anchor(0.5f, 0.5f);
 		markerOptions.position(position);
 

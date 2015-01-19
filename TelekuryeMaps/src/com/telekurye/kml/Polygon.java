@@ -28,7 +28,7 @@ public class Polygon {
 	@DatabaseField public Float					minlongitude;
 	@DatabaseField public Float					maxlongitude;
 	@DatabaseField public String				coordinates;
-	@DatabaseField public Integer				type; //1 -> Sokak, 2 -> Bina
+	@DatabaseField public Integer				type;														// 1 -> Sokak, 2 -> Bina
 	@DatabaseField public Long					polygonid;
 	// @DatabaseField public Long streetid;
 	@DatabaseField public Long					districtid;
@@ -106,10 +106,7 @@ public class Polygon {
 			// chapterDatabases = db.queryForAll();
 			QueryBuilder<Polygon, Integer> qBuilder = db.queryBuilder();
 			Where<Polygon, Integer> clause = qBuilder.where();
-			clause.and(
-					clause.eq("streetid", streetId),
-					clause.eq("type", 2)
-				);
+			clause.and(clause.eq("streetid", streetId), clause.eq("type", 2));
 			PreparedQuery<Polygon> pQuery = qBuilder.prepare();
 			chapterDatabases = db.query(pQuery);
 		}
@@ -119,9 +116,8 @@ public class Polygon {
 
 		return chapterDatabases;
 	}
-	
-	public static List<Polygon> GetStreetShapeByStreetIdList(Context context, List<Integer> streetIdList, String db_path, String db_name)
-	{
+
+	public static List<Polygon> GetStreetShapeByStreetIdList(Context context, List<Integer> streetIdList, String db_path, String db_name) {
 		List<Polygon> chapterDatabases = null;
 
 		try {
@@ -139,10 +135,7 @@ public class Polygon {
 			// chapterDatabases = db.queryForAll();
 			QueryBuilder<Polygon, Integer> qBuilder = db.queryBuilder();
 			Where<Polygon, Integer> clause = qBuilder.where();
-			clause.and(
-					clause.in("polygonid", streetIdList),
-					clause.eq("type", 1)
-			);
+			clause.and(clause.in("polygonid", streetIdList), clause.eq("type", 1));
 			PreparedQuery<Polygon> pQuery = qBuilder.prepare();
 			chapterDatabases = db.query(pQuery);
 		}
@@ -152,7 +145,7 @@ public class Polygon {
 
 		return chapterDatabases;
 	}
-	
+
 	public static List<Polygon> GetBuildingShapeByDistrictId(Context context, Long districtId, String db_path, String db_name) {
 
 		List<Polygon> chapterDatabases = null;
@@ -172,10 +165,7 @@ public class Polygon {
 			// chapterDatabases = db.queryForAll();
 			QueryBuilder<Polygon, Integer> qBuilder = db.queryBuilder();
 			Where<Polygon, Integer> clause = qBuilder.where();
-			clause.and(
-					clause.eq("districtid", districtId),
-					clause.eq("type", 2)
-			);
+			clause.and(clause.eq("districtid", districtId), clause.eq("type", 2));
 			PreparedQuery<Polygon> pQuery = qBuilder.prepare();
 			chapterDatabases = db.query(pQuery);
 		}
@@ -245,10 +235,7 @@ public class Polygon {
 
 			Where<Polygon, Integer> where = qBuilder.where();
 
-			where.and(
-					where.eq("type", 2),
-					where.in("polygonid", excludeShapeIdList)
-				);
+			where.and(where.eq("type", 2), where.in("polygonid", excludeShapeIdList));
 
 			PreparedQuery<Polygon> pQuery = qBuilder.prepare();
 

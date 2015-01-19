@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -19,6 +20,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
@@ -42,6 +44,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.telekurye.data.SyncTime;
 import com.telekurye.data_send.ExceptionFeedBack;
 import com.telekurye.mobileui.R;
 
@@ -242,7 +245,7 @@ public class Tools {
 	}
 
 	public static String getDateNow() {
-		DateFormat df = new SimpleDateFormat(Info.DATE_FORMAT);
+		DateFormat df = new SimpleDateFormat(LiveData.DATE_FORMAT);
 		String dateNow = df.format(new Date());
 
 		return dateNow;
@@ -330,4 +333,38 @@ public class Tools {
 		return "?";
 	}
 
+	public static String GetSyncDateRange(Activity act) {
+		// SharedPreferences sharedPref = act.getPreferences(Context.MODE_PRIVATE);
+		// String lastSyncDate = sharedPref.getString("LastSyncDate_" + Info.USERNAME, "1986-08-22T00:30:00");
+		String lastSyncDate = null;
+		SyncTime syncFetcherObj = new SyncTime();
+		// List<SyncTime> fetchedObjects = syncFetcherObj.GetAllData();
+		List<SyncTime> fetchedObjects = syncFetcherObj.GetDataForUser(Info.UserId);
+		if (fetchedObjects.size() > 0) {
+			lastSyncDate = fetchedObjects.get(0).getLastSyncDate();
+		}
+		else {
+			lastSyncDate = "1987-03-03T03:00:00";
+		}
+
+		return "{\"EndSyncDate\":\"2034-08-25T10:13:09\",\"LastSyncDate\":\"" + lastSyncDate + "\"}";
+	}
+
+	public static void SetLastSyncDate(Activity act, String date) {
+		// SharedPreferences sharedPref = act.getPreferences(Context.MODE_PRIVATE);
+		//
+		// SharedPreferences.Editor editor = sharedPref.edit();
+		// editor.putString("LastSyncDate_" + Info.USERNAME, date);
+		// editor.commit();
+		SyncTime syncFetcherObj = new SyncTime();
+		// List<SyncTime> fetchedObjects = syncFetcherObj.GetAllData();
+		List<SyncTime> fetchedObjects = syncFetcherObj.GetDataForUser(Info.UserId);
+
+		if (fetchedObjects.size() == 0) {
+			fetchedObjects.add(new SyncTime());
+		}
+		fetchedObjects.get(0).setLastSyncDate(date);
+		fetchedObjects.get(0).setUserId(Info.UserId);
+		fetchedObjects.get(0).Insert();
+	}
 }

@@ -19,9 +19,9 @@ import com.telekurye.data_send.ExceptionFeedBack;
 import com.telekurye.tools.Info;
 import com.telekurye.tools.Tools;
 
-public class sendErrors {
+public class SendErrors {
 
-	public sendErrors(ExceptionFeedBack exfb) {
+	public SendErrors(ExceptionFeedBack exfb) {
 
 		try {
 

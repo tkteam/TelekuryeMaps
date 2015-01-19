@@ -80,7 +80,7 @@ public class JsonToDatabase {
 
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-			String json = new HttpRequestForJson(Info.tagSyncMissions, Info.GetSyncDateRange(act)).getJson();
+			String json = new HttpRequestForJson(Info.tagSyncMissions, Tools.GetSyncDateRange(act)).getJson();
 			Type listType = new TypeToken<SyncResult<ArrayList<MissionsBuildings>>>() {
 			}.getType();
 			SyncResult<ArrayList<MissionsBuildings>> missions = gson.fromJson(json, listType);

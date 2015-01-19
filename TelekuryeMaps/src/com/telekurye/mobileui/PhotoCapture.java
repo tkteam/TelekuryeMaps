@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.telekurye.tools.Tools;
-import com.telekurye.utils.sendErrors;
+import com.telekurye.utils.SendErrors;
 
 public class PhotoCapture extends Activity {
 

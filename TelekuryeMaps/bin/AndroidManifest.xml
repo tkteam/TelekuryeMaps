@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.telekurye.mobileui"
-    android:versionCode="58"
-    android:versionName="58.0" >
+    android:versionCode="59"
+    android:versionName="59.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -51,8 +51,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    
-    
 
     <application
         android:allowBackup="true"
@@ -64,7 +62,7 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBYc8F77zDt3d8TXHndp9AN05SMyb_3WeY" />
+            android:value="AIzaSyCoYWgoSTLHOUcHuxtqwPExe7-01MBzrPg" />
         <!-- android:value="AIzaSyBFtJOaEAFnW-RnhCheD-yT_RTPO8us-Is" /> yayın -->
         <!-- android:value="AIzaSyCoYWgoSTLHOUcHuxtqwPExe7-01MBzrPg" /> test -->
 
@@ -73,7 +71,7 @@
             android:value="@integer/google_play_services_version" />
 
         <uses-library android:name="com.google.android.maps" />
-        
+
         <activity
             android:name=".Login"
             android:label="@string/app_name" >

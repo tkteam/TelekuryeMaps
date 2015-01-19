@@ -28,12 +28,13 @@ import com.google.gson.reflect.TypeToken;
 import com.telekurye.data.Person;
 import com.telekurye.data.typetoken.SyncResult;
 import com.telekurye.tools.Info;
+import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 
-public class sendImage {
+public class SendImage {
 	public Boolean	hasError	= false;
 
-	public sendImage(String order, String UserDailyMissionTypeId, String UserDailyMissionId, String urlTo, String filepath) throws Exception {
+	public SendImage(String order, String UserDailyMissionTypeId, String UserDailyMissionId, String urlTo, String filepath) throws Exception {
 
 		HttpURLConnection conn = null;
 		DataOutputStream outputStream = null;
@@ -60,7 +61,7 @@ public class sendImage {
 
 		try {
 
-			DateFormat df = new SimpleDateFormat(Info.DATE_FORMAT);
+			DateFormat df = new SimpleDateFormat(LiveData.DATE_FORMAT);
 			String dateNow = null;
 			try {
 				dateNow = df.format(new Date());
