@@ -93,206 +93,117 @@ import com.telekurye.utils.ShapeControl;
 public class FeedBack extends Activity implements OnTabChangeListener, android.location.GpsStatus.Listener, OnCameraChangeListener, OnMarkerDragListener, LocationListener, OnMapClickListener,
 		OnMapLongClickListener, OnMarkerClickListener, OnClickListener, SensorEventListener {
 
-	// List<PolygonOptions> fillPolygon;
-	// PolygonOptions polyOptions;
+	// ----- GUI -------
+	private TextView						tv_info_welcome;
+	private TextView						tv_networkStatus;
+	private TextView						tv_info_time;
+	private TextView						tv_info_battery;
+	private TextView						tv_info_accuracy;
+	private TextView						tv_info_version;
+	private TextView						tv_Score;
+	private TextView						tv_earnings;
+	private TextView						tv_last_sync_date;
+	private TextView						tv_mission_status_value;
+	private TextView						tv_apno;
+	private TextView						tv_apno_value;
+	private TextView						tv_apname;
+	private TextView						tv_apname_value;
+	private TextView						tv_address;
+	private TextView						tv_address_value;
+	private TextView						tv_StreetOrBuildingType;
+	private TextView						tv_persons;
+	private TextView						tv_persons_values;
+	private TextView						tv_independent_section_count;
+	private TextView						tv_floor_count;
+	private TextView						tv_building_type_info;
+	private TextView						tv_building_type_info_value;
+	private TextView						tv_street_name;
+	private TextView						tvLocInfo;
+	private LinearLayout					ll_user_feedback;
+	private LinearLayout					ll_mission_type_info;
+	private LinearLayout					ll_apno;
+	private LinearLayout					llMapFragment;
+	private LinearLayout					llImages;
+	private EditText						new_et_apno_value;
+	private EditText						new_et_apname_value;
+	private EditText						et_independent_section_count;
+	private EditText						et_floor_count;
+	private Button							btnStreetOrBuildingType;
+	private Button							btnSaveFeedback;
+	private Button							btnMapZoom;
+	private Button							btnCapturePicture;
+	private CheckBox						cbSagKapi;
+	private CheckBox						cbOnKapi;
+	private CheckBox						cbSolKapi;
+	private ProgressDialog					progressDialog;
+	private TabHost							tabHost;
+	// -----------------------------------------------------------------------------
 
-	List<Long>						shapeIdHistory;
-	FinishedShapeHistory			finishedShapes;
-
-	int								selectedBuildingType				= 0;
-	int								selectedFloorCount					= 0;
-
-	private Boolean					isZoomOpen							= false;
-
-	LinearLayout					llMapFragment;
-
-	private Dialog					dialogZoom;
-
-	Integer							firstStreetTypeId					= null;
-
-	LatLng							currentLocation;
-
-	ShapeControl					shapeControl;
-	private List<Integer>			ShapeIdList							= null;
-	private Boolean					isFinishRedShapes					= true;
-
-	Marker							mPositionMarker;
-
-	Thread							thread;
-	int								selectType;
-	Boolean							isNewBuilding						= false;
-
-	private SensorManager			mSensorManager;
-
-	CameraHelper					tp;
-	List<PhotoInfo>					photoInfo;
+	private int								valueTab;
+	private int								checkboxStatus			= 0;
+	private int								selectType;
+	private Boolean							btnTypeStatus			= false;
+	private Boolean							isZoomOpen				= false;
+	private Boolean							isNewBuilding			= false;
+	private Integer							firstStreetTypeId		= null;
+	private SensorManager					mSensorManager;
+	private CameraHelper					tp;
+	private List<PhotoInfo>					photoInfo;
 
 	// ------ GOOGLE MAP -------
-	private final int				RQS_GooglePlayServices				= 1;
-	private GoogleMap				myMap;
+	private final int						RQS_GooglePlayServices	= 1;
+	private GoogleMap						myMap;
+	private LatLng							currentLocation;
+	private Marker							mPositionMarker;
+	private Marker							currentMarker;
+	private int								basarShapeId			= 0;
+	private Boolean							isMarkerSet				= false;
+	private MapFragment						map;
 
-	private Location				myLocation;
-	private TextView				tvLocInfo;
-	private boolean					markerClicked;
-	private PolygonOptions			polygonOptions;
-	private Polygon					polygon;
-	private ArrayList<LatLng>		points;
-	private ArrayList<LatLng>		points2;
-	// private Point p1, p2;
-	private Boolean					isThereAMarker						= true;
-	private Boolean					isMarkerDrag						= false;
-	// private Marker markerLastPoint;
-	private Marker					currentMarker;
-	private int						basarShapeId						= 0;
-	private Boolean					isMarkerSet							= false;
-	MapFragment						map;
+	// ------- KML & Shape --------
 
-	List<com.telekurye.kml.Polygon>	polygons;
-
-	private String					db_path								= "/data/data/com.telekurye.mobileui/databases/";
-	private String					db_name								= Info.MAP_DBNAME;
-	List<Polygon>					polList								= new ArrayList<Polygon>();
-	List<Polyline>					polylineList						= new ArrayList<Polyline>();
-	Polygon							currentPolygon						= null;
-	List<Polygon>					SelectedPolygonList					= new ArrayList<Polygon>();
-
-	// tr orta nokta 39.1116091,35.0272779
-	// 40.647256, 29.274982
-
-	// ------ TABS -------
-	private TabHost					tabHost;
-	private int						valueTab;
-
-	// ------ CAMERA -------
-	private static final int		CAMERA_CAPTURE_IMAGE_REQUEST_CODE	= 100;
-	private static final int		MEDIA_TYPE_IMAGE					= 1;
-	private static final String		IMAGE_DIRECTORY_NAME				= "TelekuryeMaps";
-
-	private Uri						fileUri;
-	// private ImageView imgPreview1;
-	// private ImageView imgPreview2;
-	// private ImageView imgPreview3;
-	// private ImageView imgPreview4;
-
-	private LinearLayout			llImages;
-	private Button					btnCapturePicture;
-	int								sayac								= 0;
-	// ProgressDialog progress;
-
-	// ----- FeedBack -------
-	private TextView				tv_mission_status_value;
-	private TextView				tv_apno;
-	private TextView				tv_apno_value;
-	private EditText				new_et_apno_value;
-	private TextView				tv_apname;
-	private TextView				tv_apname_value;
-	private EditText				new_et_apname_value;
-	private TextView				tv_address;
-	private TextView				tv_address_value;
-	private TextView				tv_StreetOrBuildingType;
-	private Button					btnStreetOrBuildingType;
-	private Button					btnSaveFeedback;
-	private TextView				tv_persons;
-	private TextView				tv_persons_values;
-	private EditText				et_independent_section_count;
-	private EditText				et_floor_count;
-	private TextView				tv_independent_section_count;
-	private TextView				tv_floor_count;
-	LinearLayout					ll_user_feedback;
-	LinearLayout					ll_mission_type_info;
-	LinearLayout					ll_apno;
-	private TextView				tv_building_type_info;
-	private TextView				tv_building_type_info_value;
-	private Button					btnMapZoom;
+	private List<Long>						shapeIdHistory;
+	private FinishedShapeHistory			finishedShapes;
+	private ShapeControl					shapeControl;
+	private List<Integer>					ShapeIdList				= null;
+	private Boolean							isFinishRedShapes		= true;
+	private List<com.telekurye.kml.Polygon>	polygons;
+	private String							db_path					= "/data/data/com.telekurye.mobileui/databases/";
+	private String							db_name					= Info.MAP_DBNAME;
+	private List<Polygon>					polList					= new ArrayList<Polygon>();
+	private List<Polyline>					polylineList			= new ArrayList<Polyline>();
+	private Polygon							currentPolygon			= null;
+	private List<Polygon>					SelectedPolygonList		= new ArrayList<Polygon>();
 
 	// ----- GPS Location -----
-	protected LocationManager		locationManager;
-	private long					lastTime;
-	private GpsStatus				mStatus;
-	private long					mLastLocationMillis;
-	private Location				mLastLocation;
-	private Location				tempLocation						= null;
-	private boolean					isGPSFix							= false;
-	private boolean					isGpsStatus							= false;
+	protected LocationManager				locationManager;
+	private long							mLastLocationMillis;
+	private Location						mLastLocation;
+	private Location						tempLocation			= null;
+	private boolean							isGPSFix				= false;
+	private float							UserAccuracy			= 5000;
+	private double							GPSLat;
+	private double							GPSLng;
+	private double							GPSAlt;
+	private double							GPSBearing;
+	private double							GPSSpeed;
+	private Date							GPSTime;
+	private double							SignedLat;
+	private double							SignedLng;
+	private int								TypeId;
 
-	// ----- StatusBar ------
-	public TextView					tv_info_welcome;
-	public TextView					tvNetworkStatus;
-	public TextView					tv_info_time;
-	public TextView					tv_info_battery;
-	public TextView					tv_info_accuracy;
-	public TextView					tv_info_version;
-	public TextView					tv_Score;
-	public TextView					tv_earnings;
-	public TextView					tv_last_sync_date;
-
-	private String					name;
-	private String					surname;
-	private String					username;
-
-	private Thread					uiUpdateThread;
-
-	// ----- FEEDBACK ------
-
-	private static float			UserAccuracy						= 5000;
-	private static double			GPSLat;
-	private static double			GPSLng;
-	private static double			GPSAlt;
-
-	private static double			GPSBearing;
-	private static double			GPSSpeed;
-	private static Date				GPSTime;
-
-	private static double			SignedLat;
-	private static double			SignedLng;
-	private static int				TypeId;
-
-	private Boolean					btnTypeStatus						= false;
-
-	// ---------------------
-	// private static Boolean photoStatus1 = false;
-	// private static Boolean photoStatus2 = false;
-	// private static Boolean photoStatus3 = false;
-	// private static Boolean photoStatus4 = false;
-	private static int				photoCount							= 0;
-
-	public String					imgPath;
-	public static int				selectImgview						= 0;
-	private int						MissionCounter						= 0;
-	// public int photoCounter = 0;
-
-	private int						grupid, childid;
-	ArrayList<IMission>				mMissionForFeedback;
-
-	private List<String>			photoUrlList;
-
-	// private List<Integer> mbTypesId; // bina tip id leri
-	// private List<String> mbTypesName; // bina tip isim leri
-	// private List<Integer> msTypesId; // sokak tip id leri
-	// private List<String> msTypesName; // sokak tip isim leri
-
-	List<MissionsStreets>			mAllStreets;																			// tüm sokaklar
-	List<MissionsStreets>			mThisMissionStreets;																	// bu göreve ait iki sokak
-	List<MissionsBuildings>			mBuildingsOddNo;																		// seçilen sokaða ait tek sayýlý
-																															// binalar
-	List<MissionsBuildings>			mBuildingsEvenNo;																		// seçilen sokaða ait çift sayýlý
-																															// binalar
-	MissionsStreets					ms;																					// kiþinin seçtiði sokak
-	List<MissionsStreets>			completedMissionStreets				= new ArrayList<MissionsStreets>();
-
-	CheckBox						cbSagKapi;
-	CheckBox						cbOnKapi;
-	CheckBox						cbSolKapi;
-
-	TextView						tv_street_name;
-
-	private int						checkboxStatus						= 0;
-
-	private int						streettype;
-	List<MissionsBuildings>			mBuilds;
-
-	UiSettings						uiSettings;
-	private ProgressDialog			progressDialog;
+	private int								MissionCounter			= 0;
+	private int								grupid, childid;
+	private ArrayList<IMission>				mMissionForFeedback;
+	private List<MissionsStreets>			mThisMissionStreets;														// bu göreve ait iki sokak
+	private List<MissionsBuildings>			mBuildingsOddNo;															// seçilen sokaða ait tek sayýlý binalar
+	private List<MissionsBuildings>			mBuildingsEvenNo;															// seçilen sokaða ait çift sayýlý binalar
+	private List<MissionsStreets>			completedMissionStreets	= new ArrayList<MissionsStreets>();
+	private List<MissionsBuildings>			mBuilds;
+	private MissionsStreets					ms;																		// kiþinin seçtiði sokak
+	private int								streettype;
+	private UiSettings						uiSettings;
+	private Thread							uiUpdateThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -300,60 +211,36 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		setContentView(R.layout.feedback);
 		Tools.disableScreenLock(this);
 
-		// fillPolygon = new ArrayList<PolygonOptions>();
-		// polyOptions = new PolygonOptions();
-
 		// ******** Components ********
 		btnStreetOrBuildingType = (Button) findViewById(R.id.btn_StreetOrBuildingType);
 		btnSaveFeedback = (Button) findViewById(R.id.btn_save_feedback);
 		btnCapturePicture = (Button) findViewById(R.id.btnSavePhoto);
-
-		btnCapturePicture.setOnClickListener(this);
-		btnSaveFeedback.setOnClickListener(this);
-		btnStreetOrBuildingType.setOnClickListener(this);
-
-		finishedShapes = new FinishedShapeHistory();
-		// imgPreview1 = (ImageView) findViewById(R.id.iv_PhotoPreview1);
-		// imgPreview2 = (ImageView) findViewById(R.id.iv_PhotoPreview2);
-		// imgPreview3 = (ImageView) findViewById(R.id.iv_PhotoPreview3);
-		// imgPreview4 = (ImageView) findViewById(R.id.iv_PhotoPreview4);
-
-		// imgPreview1.setOnClickListener(this);
-		// imgPreview2.setOnClickListener(this);
-		// imgPreview3.setOnClickListener(this);
-		// imgPreview4.setOnClickListener(this);
+		btnMapZoom = (Button) findViewById(R.id.btn_map_zoom);
 
 		llImages = (LinearLayout) findViewById(R.id.llImages);
-		llImages.setWeightSum(Info.PHOTO_COUNT);
-
 		llMapFragment = (LinearLayout) findViewById(R.id.ll_mapfragment);
-
-		btnMapZoom = (Button) findViewById(R.id.btn_map_zoom);
-		btnMapZoom.setOnClickListener(this);
-		btnMapZoom.setBackgroundColor(Color.RED);
-
-		tv_apno = (TextView) findViewById(R.id.tv_apno);
-		tv_apno_value = (TextView) findViewById(R.id.tv_apno_value);
-		new_et_apno_value = (EditText) findViewById(R.id.new_et_apno_value);
-		tv_apname = (TextView) findViewById(R.id.tv_apname);
-		tv_apname_value = (TextView) findViewById(R.id.tv_apname_value);
-		new_et_apname_value = (EditText) findViewById(R.id.new_et_apname_value);
-		tv_address = (TextView) findViewById(R.id.tv_address);
-		tv_address_value = (TextView) findViewById(R.id.tv_address_value);
-		tv_StreetOrBuildingType = (TextView) findViewById(R.id.tv_StreetOrBuildingType);
-		tv_mission_status_value = (TextView) findViewById(R.id.tv_mission_status_value);
-
-		et_independent_section_count = (EditText) findViewById(R.id.et_independent_section_count);
-		et_floor_count = (EditText) findViewById(R.id.et_floor_count);
-		tv_independent_section_count = (TextView) findViewById(R.id.tv_independent_section_count);
-		tv_floor_count = (TextView) findViewById(R.id.tv_floor_count);
 		ll_user_feedback = (LinearLayout) findViewById(R.id.ll_user_feedback);
 		ll_mission_type_info = (LinearLayout) findViewById(R.id.ll_mission_type_info);
 		ll_apno = (LinearLayout) findViewById(R.id.ll_apno);
 
+		new_et_apno_value = (EditText) findViewById(R.id.new_et_apno_value);
+		new_et_apname_value = (EditText) findViewById(R.id.new_et_apname_value);
+		et_floor_count = (EditText) findViewById(R.id.et_floor_count);
+		et_independent_section_count = (EditText) findViewById(R.id.et_independent_section_count);
+
+		tv_street_name = (TextView) findViewById(R.id.tv_street_name1);
+		tv_apno = (TextView) findViewById(R.id.tv_apno);
+		tv_apno_value = (TextView) findViewById(R.id.tv_apno_value);
+		tv_apname = (TextView) findViewById(R.id.tv_apname);
+		tv_apname_value = (TextView) findViewById(R.id.tv_apname_value);
+		tv_address = (TextView) findViewById(R.id.tv_address);
+		tv_address_value = (TextView) findViewById(R.id.tv_address_value);
+		tv_StreetOrBuildingType = (TextView) findViewById(R.id.tv_StreetOrBuildingType);
+		tv_mission_status_value = (TextView) findViewById(R.id.tv_mission_status_value);
+		tv_independent_section_count = (TextView) findViewById(R.id.tv_independent_section_count);
+		tv_floor_count = (TextView) findViewById(R.id.tv_floor_count);
 		tv_persons = (TextView) findViewById(R.id.tv_persons);
 		tv_persons_values = (TextView) findViewById(R.id.tv_persons_values);
-
 		tv_info_welcome = (TextView) findViewById(R.id.tv_info_name_surname);
 		tv_info_time = (TextView) findViewById(R.id.tv_info_time);
 		tv_info_battery = (TextView) findViewById(R.id.tv_info_battery);
@@ -361,12 +248,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		tv_info_version = (TextView) findViewById(R.id.tv_info_version);
 		tv_Score = (TextView) findViewById(R.id.tv_info_score);
 		tv_earnings = (TextView) findViewById(R.id.tv_info_earnings);
-		tvNetworkStatus = (TextView) findViewById(R.id.tv_info_internet);
+		tv_networkStatus = (TextView) findViewById(R.id.tv_info_internet);
 		tv_last_sync_date = (TextView) findViewById(R.id.tv_info_last_sync_date);
-
 		tv_building_type_info = (TextView) findViewById(R.id.tv_building_type_info);
 		tv_building_type_info_value = (TextView) findViewById(R.id.tv_building_type_info_value);
-
 		cbOnKapi = (CheckBox) findViewById(R.id.cbOnKapi);
 		cbSolKapi = (CheckBox) findViewById(R.id.cbSolKapi);
 		cbSagKapi = (CheckBox) findViewById(R.id.cbSagKapi);
@@ -374,20 +259,24 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		cbOnKapi.setOnClickListener(this);
 		cbSolKapi.setOnClickListener(this);
 		cbSagKapi.setOnClickListener(this);
+		btnMapZoom.setOnClickListener(this);
+		btnCapturePicture.setOnClickListener(this);
+		btnSaveFeedback.setOnClickListener(this);
+		btnStreetOrBuildingType.setOnClickListener(this);
 
-		// name = new Person().GetAllData().get(0).getName();
-		// surname = new Person().GetAllData().get(0).getSurname();
-		// username = new Person().GetAllData().get(0).getUserName();
+		// ********* GET DATAS ********
+		if (getIntent().getExtras() != null) {
+			grupid = getIntent().getExtras().getInt("grupid");
+			childid = getIntent().getExtras().getInt("childid");
+			streettype = getIntent().getExtras().getInt("streettype");
+		}
 
+		photoInfo = new ArrayList<PhotoInfo>();
 		Person person = new Person();
+		finishedShapes = new FinishedShapeHistory();
+		MissionsStreets data = new MissionsStreets();
 
-		name = person.GetById(Info.UserId).getName();
-		surname = person.GetById(Info.UserId).getSurname();
-		username = person.GetById(Info.UserId).getUserName();
-
-		photoUrlList = new ArrayList<String>();
-
-		String namesurname = name + " " + surname;
+		String namesurname = person.GetById(Info.UserId).getName() + " " + person.GetById(Info.UserId).getSurname();
 
 		if (namesurname.length() < 30) {
 			tv_info_welcome.setTextSize(18f);
@@ -397,16 +286,12 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		}
 
 		tv_info_welcome.setText(namesurname);
-
 		tv_info_version.setText("Versiyon : " + Info.CURRENT_VERSION);
-
+		llImages.setWeightSum(Info.PHOTO_COUNT);
+		btnMapZoom.setBackgroundColor(Color.RED);
 		tv_info_accuracy.setBackgroundColor(Color.RED);
 		tv_info_accuracy.setText("Gps Yok  ");
 		tv_earnings.setText("Bilgi Yok");
-
-		tv_street_name = (TextView) findViewById(R.id.tv_street_name1);
-
-		photoInfo = new ArrayList<PhotoInfo>();
 
 		Boolean hasMapCreated = showMapOnActivity();
 
@@ -415,40 +300,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			return;
 		}
 
-		// ********* GET DATAS ********
-		if (getIntent().getExtras() != null) {
-			grupid = getIntent().getExtras().getInt("grupid");
-			childid = getIntent().getExtras().getInt("childid");
-			streettype = getIntent().getExtras().getInt("streettype");
-		}
-
 		// *****************************
 
-		// +++++ kullanýcýnýn týkladýðý sokak belirlendi +++++
-
-		// List<MissionsStreets> msTemp1 = LiveData.misStreets; // çiftler
-		// halinde tüm sokak listesi
-		MissionsStreets data = new MissionsStreets();
-
-		// List<MissionsStreets> msTemp1 = data.GetAllData();
-		// List<MissionsStreets> msTemp2 = new ArrayList<MissionsStreets>(); //
-		// çiftler halinde olmayan sokak listesi
-
-		// for (int i = 0; i < msTemp1.size(); i++) { // çiftler sokaklar teke
-		// düþürülüyor
-		// if (msTemp1.get(i).getBuildingNumber_IsOdd()) {
-		// msTemp2.add(msTemp1.get(i));
-		// }
-		// }
-
-		// ms = msTemp2.get(grupid);
-		// mAllStreets = LiveData.misStreets;
-		/*
-		 * mAllStreets = data.GetAllData(); mThisMissionStreets = new ArrayList<MissionsStreets>();
-		 * 
-		 * // ++++++++++ seçilen sokaðýn tek ve çift sýrasý alýndý for (int i = 0; i < mAllStreets.size(); i++) { if (mAllStreets.get(i).getStreetId() == ms.getStreetId()) {
-		 * mThisMissionStreets.add(mAllStreets.get(i)); } }
-		 */
 		mThisMissionStreets = data.GetStreetsByStreetId(grupid);
 
 		// TODO: Sefa neden ms null geliyor olabilir ona bakacak.
@@ -463,29 +316,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			finish();
 		}
 
-		// +++++ seçilen sokaða ait binalar tek ve çift listelere ayrýldý +++++
-		// List<MissionsBuildings> mBuilds = LiveData.misBuildings;
 		MissionsBuildings bData = new MissionsBuildings();
 		mBuilds = bData.GetBuildingsByStreetId(ms.getStreetId());
 		mBuildingsOddNo = new ArrayList<MissionsBuildings>();
 		mBuildingsEvenNo = new ArrayList<MissionsBuildings>();
-
-		// try {
-		// for (int j = 0; j < mBuilds.size(); j++) {
-		//
-		// if ((ms.getStreetId() == mBuilds.get(j).getStreetId()) &&
-		// (mBuilds.get(j).getBuildingNumber_IsOdd())) {
-		// mBuildingsOddNo.add(mBuilds.get(j));
-		//
-		// } else if ((ms.getStreetId() == mBuilds.get(j).getStreetId()) &&
-		// !(mBuilds.get(j).getBuildingNumber_IsOdd())) {
-		// mBuildingsEvenNo.add(mBuilds.get(j));
-		// }
-		//
-		// }
-		// } catch (Exception e) {
-		// Tools.customSendError(e);new sendErrors(e);
-		// }
 
 		try {
 			for (int j = 0; j < mBuilds.size(); j++) {
@@ -501,59 +335,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			Tools.saveErrors(e);
 		}
 
-		// switch (childid) {
-		// case 0:
-		// Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); //
-		// küçükten büyüðe sýrala
-		// // mBuilds = mBuildingsEvenNo;
-		// Collections.sort(mBuildingsOddNo, new MissionsBuildings()); //
-		// büyükten küçüðe sýrala
-		// Collections.reverse(mBuildingsOddNo);
-		// break;
-		// case 1:
-		// Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); //
-		// büyükten küçüðe sýrala
-		// Collections.reverse(mBuildingsEvenNo);
-		// // mBuilds = mBuildingsEvenNo;
-		// Collections.sort(mBuildingsOddNo, new MissionsBuildings()); //
-		// küçükten büyüðe sýrala
-		// break;
-		// case 2:
-		// Collections.sort(mBuildingsOddNo, new MissionsBuildings()); //
-		// küçükten büyüðe sýrala
-		// // mBuilds = mBuildingsOddNo;
-		// Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); //
-		// büyükten küçüðe sýrala
-		// Collections.reverse(mBuildingsEvenNo);
-		// break;
-		// case 3:
-		// Collections.sort(mBuildingsOddNo, new MissionsBuildings()); //
-		// büyükten küçüðe sýrala
-		// Collections.reverse(mBuildingsOddNo);
-		// // mBuilds = mBuildingsOddNo;
-		// Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); //
-		// küçükten büyüðe sýrala
-		// break;
-		// default:
-		// break;
-		// }
-
-		// Collections.sort(mBuildingsOddNo, new MissionsBuildings()); //
-		// küçükten büyüðe sýrala
-
-		// Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); //
-		// küçükten büyüðe sýrala
-
-		// for (int i = 0; i < mBuildingsOddNo.size(); i++) {
-		// System.out.println(mBuildingsOddNo.get(i).getBuildingNumber() + " - "
-		// + mBuildingsOddNo.get(i).getOrderIndex());
-		// }
-		// System.out.println("*********");
-		// for (int i = 0; i < mBuildingsEvenNo.size(); i++) {
-		// System.out.println(mBuildingsEvenNo.get(i).getBuildingNumber() +
-		// " - " + mBuildingsEvenNo.get(i).getOrderIndex());
-		// }
-
 		if (streettype == 0 || streettype == 1 || streettype == 5) { // küme ev mi normal mi kontrolü
 			mMissionForFeedback = MissionListCreator2(childid);
 		}
@@ -561,52 +342,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			mMissionForFeedback = MissionListCreator(childid);
 		}
 
-		// for (int i = 0; i < mMissionForFeedback.size(); i++) {
-		// System.out.println(mMissionForFeedback.get(i).getBuildingNumber() +
-		// " - " + mMissionForFeedback.get(i).getOrderIndex());
-		// }
-
-		//
-		//
-		// mThisMissionStreets
-		//
-		// for (int i = 0; i < array.length; i++) {
-		//
-		// }
-
-		// for (int i = 0; i < mBuildingsOddNo.size(); i++) {
-		// Log.i("tekler " + i, "" + mBuildingsOddNo.get(i).getOrderIndex() +
-		// " - " + mBuildingsOddNo.get(i).getBuildingNumber());
-		// }
-		//
-		// for (int i = 0; i < mBuildingsEvenNo.size(); i++) {
-		// Log.i("çiftler " + i, "" + mBuildingsEvenNo.get(i).getOrderIndex() +
-		// " - " + mBuildingsEvenNo.get(i).getBuildingNumber());
-		// }
-
-		// *****************************
-
-		// mbTypesName = new ArrayList<String>();
-		// mbTypesId = new ArrayList<Integer>();
-		// msTypesName = new ArrayList<String>();
-		// msTypesId = new ArrayList<Integer>();
-		//
-		// List<BuildingTypes> mBuildTypes = new BuildingTypes().GetAllData();
-		// // bina tipleri ekleniyor
-		// for (int i = 0; i < mBuildTypes.size(); i++) {
-		// mbTypesName.add(mBuildTypes.get(i).getName());
-		// mbTypesId.add(mBuildTypes.get(i).getId());
-		// }
-		//
-		// List<StreetTypes> mStreetTypes = new StreetTypes().GetAllData(); //
-		// sokak tipleri ekleniyor
-		// for (int i = 0; i < mStreetTypes.size(); i++) {
-		// msTypesName.add(mStreetTypes.get(i).getName());
-		// msTypesId.add(mStreetTypes.get(i).getId());
-		// }
-
-		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); // pusula
-																			// kodlarý
+		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
 
 		uiSettings = myMap.getUiSettings();
@@ -638,7 +374,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		// LatLng(41.0756, 28.9744), Info.MAP_ZOOM_LEVEL));// *-*
 
 		tv_street_name.setText("<-- " + mMissionForFeedback.get(MissionCounter).getName() + " SOKAK -->");
-		// Info.ImageCount = 0;
 
 		ShapeIdList = new ArrayList<Integer>();
 		ShapeIdList = FillShapeIds();
@@ -925,9 +660,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	private void fillComponent() {
 
-		selectedBuildingType = 0;
-		selectedFloorCount = 0;
-
 		btnStreetOrBuildingType.setEnabled(true);
 		et_independent_section_count.setEnabled(true);
 		et_independent_section_count.setText("");
@@ -1137,7 +869,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			LiveData.userDailyMissionId = mMissionForFeedback.get(MissionCounter).getUserDailyMissionId();
 
 			ShowSelectedMarkers();
-			isThereAMarker = true;
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);
@@ -1667,9 +1398,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			// markerLastPoint.setPosition(point);
 			SignedLat = point.latitude;
 			SignedLng = point.longitude;
-
-			markerClicked = false;
-			isThereAMarker = false;
 
 			isMarkerSet = true;
 		}
@@ -2661,15 +2389,15 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		tv_info_time.setText(time);
 		tv_info_battery.setText(battery);
 
-		tvNetworkStatus.setText(Tools.getNetworkType(FeedBack.this));
+		tv_networkStatus.setText(Tools.getNetworkType(FeedBack.this));
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		if (info == null || !info.isConnected()) {
-			tvNetworkStatus.setBackgroundColor(Color.RED);
+			tv_networkStatus.setBackgroundColor(Color.RED);
 		}
 		else {
-			tvNetworkStatus.setBackgroundColor(Color.GREEN);
+			tv_networkStatus.setBackgroundColor(Color.GREEN);
 		}
 
 		if (LiveData.Earnings != null) {

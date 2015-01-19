@@ -95,7 +95,6 @@ public class Tools {
 		else {
 			wifiManager.setWifiEnabled(bool);
 		}
-
 	}
 
 	public static String getSimCardNumber(Context c) {
