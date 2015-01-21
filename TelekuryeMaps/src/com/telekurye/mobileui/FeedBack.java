@@ -70,6 +70,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.telekurye.data.BasarShapeId;
 import com.telekurye.data.FinishedShapeHistory;
 import com.telekurye.data.IMission;
 import com.telekurye.data.MissionsBuildings;
@@ -119,6 +120,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private int								basarShapeId			= 0;
 
 	// ------- KML & SHAPE --------
+	private List<BasarShapeId>				shapeListFromHost;
 	private List<Long>						shapeIdHistory;
 	private FinishedShapeHistory			finishedShapes;
 	private ShapeControl					shapeControl;
@@ -1378,8 +1380,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	// }
 
 	private void pressShape(LatLng point) {
-		
-		
+
 		if (currentPolygon != null) {
 			currentPolygon.remove();
 		}
@@ -1833,6 +1834,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		progressDialog.show();
 
 		shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
+		shapeListFromHost = new BasarShapeId().GetAllData();
 
 		final ArrayList<PolygonOptions> polygonOptionsList = new ArrayList<PolygonOptions>();
 		final ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<PolylineOptions>();
@@ -1913,12 +1915,17 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 						polygonOptions.fillColor(Color.TRANSPARENT);
 
+						for (BasarShapeId basarShapeId : shapeListFromHost) {
+							if (basarShapeId.getBasarShapeId().equals(polygon.polygonid)) {
+								polygonOptions.fillColor(0x802EFE64);
+							}
+						}
+
 						for (Long shapeId : shapeIdHistory) {
 							if (shapeId.equals(polygon.polygonid)) {
 								polygonOptions.fillColor(0x802EFE64);
 							}
 						}
-
 						polygonOptions.strokeWidth(3);
 						polygonOptionsList.add(polygonOptions);
 					}

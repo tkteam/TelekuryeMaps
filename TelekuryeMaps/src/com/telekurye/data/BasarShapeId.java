@@ -17,12 +17,12 @@ import com.telekurye.tools.Tools;
 @DatabaseTable(tableName = "basarshapeid")
 public class BasarShapeId {
 
-	@DatabaseField(id = true) private int	BasarShapeId;
+	@DatabaseField(id = true) private Long	BasarShapeId;
 	@DatabaseField private int				DistrictId;
 
 	public void Insert() {
 		try {
-			Dao<BasarShapeId, Integer> insert = (DatabaseHelper.getDbHelper()).getBasarShapeIdDataHelper();
+			Dao<BasarShapeId, Long> insert = (DatabaseHelper.getDbHelper()).getBasarShapeIdDataHelper();
 			BasarShapeId existenceCheck = insert.queryForId(this.BasarShapeId);
 
 			if (existenceCheck != null) {
@@ -41,7 +41,7 @@ public class BasarShapeId {
 
 	public void Update() {
 		try {
-			Dao<BasarShapeId, Integer> insert = (DatabaseHelper.getDbHelper()).getBasarShapeIdDataHelper();
+			Dao<BasarShapeId, Long> insert = (DatabaseHelper.getDbHelper()).getBasarShapeIdDataHelper();
 			insert.update(this);
 		}
 		catch (SQLException e) {
@@ -55,7 +55,7 @@ public class BasarShapeId {
 		List<BasarShapeId> data = new ArrayList<BasarShapeId>();
 
 		try {
-			Dao<BasarShapeId, Integer> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
+			Dao<BasarShapeId, Long> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
 			data = dao.queryForAll();
 		}
 		catch (SQLException e) {
@@ -76,7 +76,7 @@ public class BasarShapeId {
 			sr.setLastSyncDate(startDateString); // bi önceki senkroniazyon saati
 			sr.setEndSyncDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); // þuanki saat
 
-			Dao<BasarShapeId, Integer> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
+			Dao<BasarShapeId, Long> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
 
 			List<BasarShapeId> data = dao.queryForAll();
 
@@ -85,7 +85,6 @@ public class BasarShapeId {
 		}
 		catch (SQLException e) {
 			Tools.saveErrors(e);
-
 		}
 
 		return sr;
@@ -95,7 +94,7 @@ public class BasarShapeId {
 		int count = 0;
 
 		try {
-			Dao<BasarShapeId, Integer> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
+			Dao<BasarShapeId, Long> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
 			count = (int) dao.countOf();
 		}
 		catch (Exception e) {
@@ -108,8 +107,8 @@ public class BasarShapeId {
 	public void DeleteRow(int deleteId) {
 		try {
 
-			Dao<BasarShapeId, Integer> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
-			DeleteBuilder<BasarShapeId, Integer> deleteBuilder = dao.deleteBuilder();
+			Dao<BasarShapeId, Long> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
+			DeleteBuilder<BasarShapeId, Long> deleteBuilder = dao.deleteBuilder();
 			deleteBuilder.where().eq("Id", deleteId);
 			deleteBuilder.delete();
 		}
@@ -120,7 +119,7 @@ public class BasarShapeId {
 	}
 
 	public List<BasarShapeId> getColumn(String ColumnName) throws SQLException {
-		Dao<BasarShapeId, Integer> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
+		Dao<BasarShapeId, Long> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
 		List<BasarShapeId> results = dao.queryBuilder().distinct().selectColumns(ColumnName).query();
 		return results;
 	}
@@ -130,7 +129,7 @@ public class BasarShapeId {
 		BasarShapeId dmfb = null;
 
 		try {
-			Dao<BasarShapeId, Integer> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
+			Dao<BasarShapeId, Long> dao = DatabaseHelper.getDbHelper().getBasarShapeIdDataHelper();
 			dmfb = dao.queryForAll().get(id);
 		}
 		catch (Exception e) {
@@ -149,11 +148,11 @@ public class BasarShapeId {
 		DistrictId = districtId;
 	}
 
-	public int getBasarShapeId() {
+	public Long getBasarShapeId() {
 		return BasarShapeId;
 	}
 
-	public void setBasarShapeId(int basarShapeId) {
+	public void setBasarShapeId(Long basarShapeId) {
 		BasarShapeId = basarShapeId;
 	}
 }

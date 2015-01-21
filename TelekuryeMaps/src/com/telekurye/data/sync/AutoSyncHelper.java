@@ -181,6 +181,7 @@ public class AutoSyncHelper {
 							Boolean hasSent = SendDatabaseRecords.SendRecords(act, false);
 
 							Boolean hasUpdated = jto.saveMissions(params[0]);
+							jto.saveBasarShapeId(act);
 							jto.versionControl();
 							jto.saveEarnings(act);
 

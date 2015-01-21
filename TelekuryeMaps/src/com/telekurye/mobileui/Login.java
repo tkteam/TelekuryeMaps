@@ -53,6 +53,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.telekurye.data.MissionsStreets;
 import com.telekurye.data.Person;
 import com.telekurye.data.VersionUpdate;
 import com.telekurye.data.typetoken.SyncResult;
@@ -421,9 +422,15 @@ public class Login extends Activity implements OnClickListener {
 				// DatabaseHelper dbh = new DatabaseHelper(Login.this);
 				// dbh.clearMissions();
 
+				publishProgress("Veritabaný Yükleniyor...", "70");
+				DatabaseHelper dbHelper = new DatabaseHelper(Login.this);
+				dbHelper.CreateDatabase(Login.this);
+
 				publishProgress("Görevler Yükleniyor...", "80");
 				jto.saveMissions(Login.this);
-				publishProgress("Görevler Yükleniyor...", "100");
+				publishProgress("Þekil Listesi Yükleniyor...", "90");
+				jto.saveBasarShapeId(Login.this);
+				publishProgress("Tamamlandý!", "100");
 
 			}
 

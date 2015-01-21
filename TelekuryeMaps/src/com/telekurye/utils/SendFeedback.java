@@ -25,7 +25,7 @@ import com.telekurye.mobileui.Login;
 import com.telekurye.tools.Info;
 import com.telekurye.tools.Tools;
 
-public class SendFeedback <T> {
+public class SendFeedback<T> {
 
 	public SendFeedback() {
 	}
@@ -95,6 +95,48 @@ public class SendFeedback <T> {
 		}
 
 		return retVal;
+	}
+
+	public String SendDistricts(String tag, String JsonString) {
+
+		String json = "";
+
+		try {
+
+			HttpClient client = new DefaultHttpClient();
+			String postURL = Info.LOGIN_SERVICE_URL;
+			HttpPost post = new HttpPost(postURL);
+
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+			params.add(new BasicNameValuePair("f", tag));
+			params.add(new BasicNameValuePair("u", Info.USERNAME));
+			params.add(new BasicNameValuePair("p", Info.PASSWORD));
+			params.add(new BasicNameValuePair("i", Info.IMEI));
+			params.add(new BasicNameValuePair("syncJ", JsonString));
+
+			UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+			post.setEntity(ent);
+			HttpResponse responsePOST = client.execute(post);
+
+			// String line = EntityUtils.toString(responsePOST.getEntity());
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(responsePOST.getEntity().getContent()));
+
+			StringBuffer result = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			json = result.toString();
+			// System.out.println(result.toString());
+		}
+		catch (Exception e) {
+			Tools.saveErrors(e);
+
+		}
+
+		return json;
 	}
 
 }

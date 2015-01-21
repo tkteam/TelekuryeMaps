@@ -71,7 +71,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<Locations, Integer>				locationsDataHelper				= null;
 	private Dao<SyncTime, Integer>				SyncTimeDataHelper				= null;
 	private Dao<FinishedShapeHistory, Integer>	FinishedShapeHistoryDataHelper	= null;
-	private Dao<BasarShapeId, Integer>			BasarShapeIdDataHelper			= null;
+	private Dao<BasarShapeId, Long>			BasarShapeIdDataHelper			= null;
 
 	private Dao<MissionFeedBack, Integer>		MissionFeedBackDataHelper		= null;
 	private Dao<MissionFeedBackPhoto, Integer>	MissionFeedBackPhotoDataHelper	= null;
@@ -449,7 +449,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return FinishedShapeHistoryDataHelper;
 	}
 
-	public Dao<BasarShapeId, Integer> getBasarShapeIdDataHelper() throws SQLException {
+	public Dao<BasarShapeId, Long> getBasarShapeIdDataHelper() throws SQLException {
 		if (BasarShapeIdDataHelper == null) {
 			BasarShapeIdDataHelper = getDao(BasarShapeId.class);
 		}

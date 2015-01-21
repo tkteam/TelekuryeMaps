@@ -51,7 +51,6 @@ public class JsonToDatabase {
 				// DatabaseHelper.getDbHelper().clearDatabase();
 				data.setNeedDatabaseReset(false);
 				data.Update();
-
 			}
 
 			Info.UserId = data.getId();
@@ -300,17 +299,18 @@ public class JsonToDatabase {
 
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-			String json = new HttpRequestForJson(Info.tagBasarShapeId, act).getJson();
+			String json = new MissionsStreets().GetDistrictIdListJsonForSync();
 			Type listType = new TypeToken<SyncResult<ArrayList<BasarShapeId>>>() {
 			}.getType();
 			SyncResult<ArrayList<BasarShapeId>> basarShapeId = gson.fromJson(json, listType);
+
 			for (int i = 0; i < basarShapeId.getTargetObject().size(); i++) {
 				BasarShapeId data = basarShapeId.getTargetObject().get(i);
 				data.Insert();
 			}
 			ProcessStatuses ps = new ProcessStatuses();
 			ps.setId(5);
-			ps.setStatusName(Info.tagBuildingTypes);
+			ps.setStatusName(Info.tagBasarShapeId);
 			ps.setStatusCode(basarShapeId.getProcessStatus());
 			ps.Insert();
 		}

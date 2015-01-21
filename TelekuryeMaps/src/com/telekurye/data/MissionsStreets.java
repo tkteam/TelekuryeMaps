@@ -1,5 +1,6 @@
 package com.telekurye.data;
 
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -18,8 +21,13 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
 import com.telekurye.data.typetoken.SyncRequest;
+import com.telekurye.data_send.DistrictIdFeedBack;
+import com.telekurye.data_send.VehicleFeedBack;
 import com.telekurye.database.DatabaseHelper;
+import com.telekurye.tools.Info;
 import com.telekurye.tools.Tools;
+import com.telekurye.utils.JSONHelper;
+import com.telekurye.utils.SendFeedback;
 
 @DatabaseTable(tableName = "missionsstreets")
 public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>, IMission {
@@ -41,7 +49,7 @@ public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>,
 	@DatabaseField private String								PersonNameSurname;
 	@DatabaseField(format = "yyyy-MM-dd HH:mm:ss") private Date	LastOperationDate;
 	@DatabaseField private String								IndependentSectionType;
-	@DatabaseField private int									DistrictId; 
+	@DatabaseField private int									DistrictId;
 
 	@Override
 	public void setMissionsList(IMission m) {
@@ -144,20 +152,16 @@ public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>,
 
 		return data;
 	}
-	
-	public static List<MissionsStreets> GetAllDataForShape()
-	{
+
+	public static List<MissionsStreets> GetAllDataForShape() {
 		List<MissionsStreets> data = new ArrayList<MissionsStreets>();
 
 		try {
 
 			Dao<MissionsStreets, Integer> dao = DatabaseHelper.getDbHelper().getMissionsStreetsDataHelper();
 			QueryBuilder<MissionsStreets, Integer> qBuilder = dao.queryBuilder();
-			Where<MissionsStreets, Integer> w = qBuilder.where();//.eq("IsDeleted", false);
-			w.and(
-					w.eq("IsDeleted", false),
-					w.eq("BuildingNumber_IsOdd", true)
-				);
+			Where<MissionsStreets, Integer> w = qBuilder.where();// .eq("IsDeleted", false);
+			w.and(w.eq("IsDeleted", false), w.eq("BuildingNumber_IsOdd", true));
 
 			PreparedQuery<MissionsStreets> pQuery = qBuilder.prepare();
 			data = dao.query(pQuery);
@@ -190,8 +194,9 @@ public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>,
 		return data;
 	}
 
-	public List<Integer> GetDistrictIdList() {
-		List<Integer> data = new ArrayList<Integer>();
+	public String GetDistrictIdListJsonForSync() {
+
+		List<DistrictIdFeedBack> data = new ArrayList<DistrictIdFeedBack>();
 
 		List<MissionsStreets> results = null;
 		try {
@@ -204,10 +209,27 @@ public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>,
 		}
 
 		for (MissionsStreets missionsStreets : results) {
-			data.add(missionsStreets.getDistrictId());
+			DistrictIdFeedBack difb = new DistrictIdFeedBack();
+			difb.setDistrictId(missionsStreets.getDistrictId());
+			data.add(difb);
 		}
 
-		return data;
+		SyncRequest<List<DistrictIdFeedBack>> sr = new SyncRequest<List<DistrictIdFeedBack>>();
+
+		String startDateString = "1989-10-03 11:26:36";
+		sr.setLastSyncDate(startDateString); // bi önceki senkroniazyon saati
+		sr.setEndSyncDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); // þuanki saat
+
+		sr.setTypedObjects(data);
+
+		Type listType = new TypeToken<SyncRequest<List<DistrictIdFeedBack>>>() {
+		}.getType();
+
+		String json = JSONHelper.ToJson(sr, listType);
+
+		String str = new SendFeedback<DistrictIdFeedBack>().SendDistricts(Info.tagBasarShapeId, json);
+
+		return str;
 	}
 
 	public int GetRowCount() {
@@ -457,5 +479,5 @@ public class MissionsStreets implements Parcelable, Comparator<MissionsStreets>,
 	public void setDistrictId(int districtId) {
 		DistrictId = districtId;
 	}
- 
+
 }

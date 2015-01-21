@@ -29,9 +29,6 @@ public class CourierType extends Activity implements OnClickListener {
 
 		AutoSyncHelper.GetInstance().startbackgroundUpdateAutomagically(CourierType.this);
 
-		// *-*
-		DatabaseHelper dbHelper = new DatabaseHelper(this);
-		dbHelper.CreateDatabase(this);
 	}
 
 	@Override
