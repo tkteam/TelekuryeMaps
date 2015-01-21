@@ -121,11 +121,9 @@ public class HttpRequestForJson {
 		}
 		catch (ClientProtocolException e) {
 			Tools.saveErrors(e);
-
 		}
 		catch (IOException e) {
 			Tools.saveErrors(e);
-
 		}
 
 	}

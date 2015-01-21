@@ -17,6 +17,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
+import com.telekurye.data.BasarShapeId;
 import com.telekurye.data.BuildingTypes;
 import com.telekurye.data.Earnings;
 import com.telekurye.data.IMission;
@@ -294,4 +295,30 @@ public class JsonToDatabase {
 		}
 
 	}
+
+	public void saveBasarShapeId(Activity act) {
+
+		try {
+			Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+			String json = new HttpRequestForJson(Info.tagBasarShapeId, act).getJson();
+			Type listType = new TypeToken<SyncResult<ArrayList<BasarShapeId>>>() {
+			}.getType();
+			SyncResult<ArrayList<BasarShapeId>> basarShapeId = gson.fromJson(json, listType);
+			for (int i = 0; i < basarShapeId.getTargetObject().size(); i++) {
+				BasarShapeId data = basarShapeId.getTargetObject().get(i);
+				data.Insert();
+			}
+			ProcessStatuses ps = new ProcessStatuses();
+			ps.setId(5);
+			ps.setStatusName(Info.tagBuildingTypes);
+			ps.setStatusCode(basarShapeId.getProcessStatus());
+			ps.Insert();
+		}
+		catch (Exception e) {
+			Tools.saveErrors(e);
+
+		}
+
+	}
+
 }

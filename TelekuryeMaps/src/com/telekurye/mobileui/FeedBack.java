@@ -121,6 +121,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	// ------- KML & SHAPE --------
 	private List<Long>						shapeIdHistory;
 	private FinishedShapeHistory			finishedShapes;
+	private ShapeControl					shapeControl;
+	private List<Integer>					ShapeIdList				= null;
 	private Boolean							isFinishRedShapes		= true;
 	private List<com.telekurye.kml.Polygon>	polygons;
 	private String							db_path					= "/data/data/com.telekurye.mobileui/databases/";
@@ -216,6 +218,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		tv_last_sync_date = (TextView) findViewById(R.id.tv_info_last_sync_date);
 		tv_building_type_info = (TextView) findViewById(R.id.tv_building_type_info);
 		tv_building_type_info_value = (TextView) findViewById(R.id.tv_building_type_info_value);
+
 		cbOnKapi = (CheckBox) findViewById(R.id.cbOnKapi);
 		cbSolKapi = (CheckBox) findViewById(R.id.cbSolKapi);
 		cbSagKapi = (CheckBox) findViewById(R.id.cbSagKapi);
@@ -337,10 +340,121 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		tv_street_name.setText("<-- " + mMissionForFeedback.get(MissionCounter).getName() + " SOKAK -->");
 
+		ShapeIdList = new ArrayList<Integer>();
+		ShapeIdList = FillShapeIds();
+		ShapeIdList = com.telekurye.kml.Polygon.GetNonMatchedShapeIdList(ShapeIdList, this);
+
+		shapeControl = new ShapeControl(ShapeIdList);
+
 		LoadShapes();
 
 		fillComponent();
 		tabsProperties();
+	}
+
+	private List<Integer> FillShapeIds() {
+		List<Integer> ShapeIdList = new ArrayList<Integer>();
+		ShapeIdList.add(542297);
+		ShapeIdList.add(507561);
+		ShapeIdList.add(507569);
+		ShapeIdList.add(507568);
+		ShapeIdList.add(507553);
+		ShapeIdList.add(507558);
+		ShapeIdList.add(507544);
+		ShapeIdList.add(507543);
+		ShapeIdList.add(507541);
+		ShapeIdList.add(507619);
+		ShapeIdList.add(507564);
+		ShapeIdList.add(507548);
+		ShapeIdList.add(548428);
+		ShapeIdList.add(544907);
+		ShapeIdList.add(540123);
+		ShapeIdList.add(540165);
+		ShapeIdList.add(548838);
+		ShapeIdList.add(543582);
+		ShapeIdList.add(548421);
+		ShapeIdList.add(548448);
+		ShapeIdList.add(548422);
+		ShapeIdList.add(548423);
+		ShapeIdList.add(543380);
+		ShapeIdList.add(581406);
+		ShapeIdList.add(580807);
+		ShapeIdList.add(543366);
+		ShapeIdList.add(580756);
+		ShapeIdList.add(580790);
+		ShapeIdList.add(581261);
+		ShapeIdList.add(581401);
+		ShapeIdList.add(580915);
+		ShapeIdList.add(580938);
+		ShapeIdList.add(580802);
+		ShapeIdList.add(580887);
+		ShapeIdList.add(580923);
+		ShapeIdList.add(580894);
+		ShapeIdList.add(403790);
+		ShapeIdList.add(403796);
+		ShapeIdList.add(579432);
+		ShapeIdList.add(580960);
+		ShapeIdList.add(580944);
+		ShapeIdList.add(580945);
+		ShapeIdList.add(580893);
+		ShapeIdList.add(579423);
+		ShapeIdList.add(580892);
+		ShapeIdList.add(535415);
+		ShapeIdList.add(580880);
+		ShapeIdList.add(580751);
+		ShapeIdList.add(580911);
+		ShapeIdList.add(581239);
+		ShapeIdList.add(580872);
+		ShapeIdList.add(535100);
+		ShapeIdList.add(581246);
+		ShapeIdList.add(581245);
+		ShapeIdList.add(581426);
+		ShapeIdList.add(543602);
+		ShapeIdList.add(581398);
+		ShapeIdList.add(535145);
+		ShapeIdList.add(580876);
+		ShapeIdList.add(580783);
+		ShapeIdList.add(410296);
+		ShapeIdList.add(581577);
+		ShapeIdList.add(580741);
+		ShapeIdList.add(410041);
+		ShapeIdList.add(580819);
+		ShapeIdList.add(580875);
+		ShapeIdList.add(581165);
+		ShapeIdList.add(581241);
+		ShapeIdList.add(581240);
+		ShapeIdList.add(580769);
+		ShapeIdList.add(580781);
+		ShapeIdList.add(543596);
+		ShapeIdList.add(540268);
+		ShapeIdList.add(548707);
+		ShapeIdList.add(542068);
+		ShapeIdList.add(540266);
+		ShapeIdList.add(540267);
+		ShapeIdList.add(540242);
+		ShapeIdList.add(543189);
+		ShapeIdList.add(540145);
+		ShapeIdList.add(540097);
+		ShapeIdList.add(540238);
+		ShapeIdList.add(541947);
+		ShapeIdList.add(540240);
+		ShapeIdList.add(540114);
+		ShapeIdList.add(543232);
+		ShapeIdList.add(543734);
+		ShapeIdList.add(542207);
+		ShapeIdList.add(543489);
+		ShapeIdList.add(542074);
+		ShapeIdList.add(401816);
+		ShapeIdList.add(542108);
+		ShapeIdList.add(548444);
+		ShapeIdList.add(542292);
+		ShapeIdList.add(542204);
+		ShapeIdList.add(535143);
+		ShapeIdList.add(580940);
+		ShapeIdList.add(543578);
+		ShapeIdList.add(543190);
+		ShapeIdList.add(580942);
+		return ShapeIdList;
 	}
 
 	private ArrayList<IMission> MissionListCreator(int chId) {
@@ -1264,6 +1378,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	// }
 
 	private void pressShape(LatLng point) {
+		
+		
 		if (currentPolygon != null) {
 			currentPolygon.remove();
 		}
@@ -1271,7 +1387,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		Boolean isPolygonSelected = false;
 
 		for (com.telekurye.kml.Polygon pol : polygons) {
-			if (PolyUtil.containsLocation(point, pol.coors, true)) {
+			if (PolyUtil.containsLocation(point, pol.coors, true) && pol.type == 2) {
 				isPolygonSelected = true;
 				basarShapeId = pol.polygonid.intValue();
 				final PolygonOptions polygonOptions = new PolygonOptions();
@@ -1282,6 +1398,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					final LatLng p = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
 					polygonOptions.add(p);
 				}
+
+				shapeControl.CompareShapes(pol);
 
 				finishedShapes.setShapeId(pol.polygonid);
 				finishedShapes.setUserId(Info.UserId);

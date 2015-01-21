@@ -4,12 +4,12 @@ public class Info {
 
 	// ######################### KONTROL EDÝLECEKLER #############################
 
-	public final static Boolean	ISTEST					= true;
+	public final static Boolean	ISTEST					= false;
 
-	public final static int		CURRENT_VERSION			= 59;
-	public static final int		DATABASE_VERSION		= 59;
+	public final static int		CURRENT_VERSION			= 61;
+	public static final int		DATABASE_VERSION		= 61;
 	public static final String	DATABASE_NAME			= "telekuryemaps795.db";
-	public static final String	MAP_DBNAME				= "geolocation5_db";
+	public static final String	MAP_DBNAME				= "geolocation6_db";
 
 	public static String		LOGIN_SERVICE_URL		= "http://maksandroid.terralabs.com.tr/Default.aspx";
 	public static String		PHOTO_SYNC_URL			= "http://maksandroid.terralabs.com.tr/PhotoSync.aspx";
@@ -51,6 +51,7 @@ public class Info {
 	public static String		tagVersionControl		= "checkforupdate";
 	public static String		tagGetPassword			= "getpassword";
 	public static String		tagEarnings				= "syncgetincome";
+	public static String		tagBasarShapeId			= "getBasarShapeId";
 	// ** Feedback
 	public static String		tagMissionFeedBack		= "syncmissionfeedbacks";
 	public static String		tagVehicleFeedBack		= "syncvehiclefeedback";

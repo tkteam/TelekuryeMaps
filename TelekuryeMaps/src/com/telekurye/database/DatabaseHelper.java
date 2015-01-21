@@ -16,6 +16,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.telekurye.data.BasarShapeId;
 import com.telekurye.data.BuildingTypes;
 import com.telekurye.data.FinishedShapeHistory;
 import com.telekurye.data.Locations;
@@ -70,6 +71,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<Locations, Integer>				locationsDataHelper				= null;
 	private Dao<SyncTime, Integer>				SyncTimeDataHelper				= null;
 	private Dao<FinishedShapeHistory, Integer>	FinishedShapeHistoryDataHelper	= null;
+	private Dao<BasarShapeId, Integer>			BasarShapeIdDataHelper			= null;
 
 	private Dao<MissionFeedBack, Integer>		MissionFeedBackDataHelper		= null;
 	private Dao<MissionFeedBackPhoto, Integer>	MissionFeedBackPhotoDataHelper	= null;
@@ -95,6 +97,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, ExceptionFeedBack.class);
 			TableUtils.createTable(connectionSource, SyncTime.class);
 			TableUtils.createTable(connectionSource, FinishedShapeHistory.class);
+			TableUtils.createTable(connectionSource, BasarShapeId.class);
 		}
 		catch (java.sql.SQLException e) {
 			Tools.saveErrors(e);
@@ -118,6 +121,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.clearTable(connectionSource, ExceptionFeedBack.class);
 			TableUtils.clearTable(connectionSource, SyncTime.class);
 			TableUtils.clearTable(connectionSource, FinishedShapeHistory.class);
+			TableUtils.clearTable(connectionSource, BasarShapeId.class);
 		}
 		catch (SQLException e) {
 			Tools.saveErrors(e);
@@ -141,6 +145,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, ExceptionFeedBack.class, true);
 			TableUtils.dropTable(connectionSource, SyncTime.class, true);
 			TableUtils.dropTable(connectionSource, FinishedShapeHistory.class, true);
+			TableUtils.dropTable(connectionSource, BasarShapeId.class, true);
 		}
 		catch (SQLException e) {
 			Tools.saveErrors(e);
@@ -166,6 +171,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, ExceptionFeedBack.class, true);
 			TableUtils.dropTable(connectionSource, SyncTime.class, true);
 			TableUtils.dropTable(connectionSource, FinishedShapeHistory.class, true);
+			TableUtils.dropTable(connectionSource, BasarShapeId.class, true);
 
 			onCreate(db, connectionSource);
 		}
@@ -441,6 +447,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			FinishedShapeHistoryDataHelper = getDao(FinishedShapeHistory.class);
 		}
 		return FinishedShapeHistoryDataHelper;
+	}
+
+	public Dao<BasarShapeId, Integer> getBasarShapeIdDataHelper() throws SQLException {
+		if (BasarShapeIdDataHelper == null) {
+			BasarShapeIdDataHelper = getDao(BasarShapeId.class);
+		}
+		return BasarShapeIdDataHelper;
 	}
 
 }

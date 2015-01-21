@@ -4,11 +4,11 @@ import java.util.Date;
 
 public class VersionUpdate {
 
-	private int					Id;									//
-	private int					CurrentVersion;						//
+	private int					Id;		
+	private int					CurrentVersion;	
 	private String				ApkFile;
 	private Date				ReleaseDate;
-	private Boolean				NeedsUrgentUpdate;						//
+	private Boolean				NeedsUrgentUpdate;
 	private Boolean				IsBeforeSync;
 	private Boolean				NeedsDatabaseReset;
 
