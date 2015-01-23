@@ -828,15 +828,17 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		if (LiveData.streetMarkers.size() > 0) {
 			for (int i = 0; i < LiveData.streetMarkers.size(); i++) {
 				try {
-					MarkerOptions mo = new MarkerOptions();
+					if (LiveData.streetMarkers.get(i).getSnippet() != null && LiveData.streetMarkers.get(i).getTitle() != null && LiveData.streetMarkers.get(i).getPosition() != null) {
+						MarkerOptions mo = new MarkerOptions();
+						mo.snippet(LiveData.streetMarkers.get(i).getSnippet().trim());
+						mo.title(LiveData.streetMarkers.get(i).getTitle().trim());
+						mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+						mo.draggable(false);
+						mo.position(LiveData.streetMarkers.get(i).getPosition());
 
-					mo.snippet(LiveData.streetMarkers.get(i).getSnippet().trim());
-					mo.title(LiveData.streetMarkers.get(i).getTitle().trim());
-					mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-					mo.draggable(false);
-					mo.position(LiveData.streetMarkers.get(i).getPosition());
+						myMap.addMarker(mo);
+					}
 
-					myMap.addMarker(mo);
 				}
 				catch (Exception e) {
 					Tools.saveErrors(e);
