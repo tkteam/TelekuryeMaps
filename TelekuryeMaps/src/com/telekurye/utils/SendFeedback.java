@@ -31,8 +31,7 @@ public class SendFeedback<T> {
 	}
 
 	public Boolean Send(String tag, String JsonString) {
-		Boolean retVal = false;
-
+		Boolean retVal = false; 
 		try {
 
 			HttpClient client = new DefaultHttpClient();

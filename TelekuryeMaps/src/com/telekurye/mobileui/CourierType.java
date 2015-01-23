@@ -2,13 +2,14 @@ package com.telekurye.mobileui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.telekurye.data.sync.AutoSyncHelper;
-import com.telekurye.database.DatabaseHelper;
 import com.telekurye.tools.Tools;
 
 public class CourierType extends Activity implements OnClickListener {
@@ -59,4 +60,9 @@ public class CourierType extends Activity implements OnClickListener {
 
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
 }

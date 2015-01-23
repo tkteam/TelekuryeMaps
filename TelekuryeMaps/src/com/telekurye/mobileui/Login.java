@@ -35,6 +35,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -53,7 +55,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.telekurye.data.MissionsStreets;
 import com.telekurye.data.Person;
 import com.telekurye.data.VersionUpdate;
 import com.telekurye.data.typetoken.SyncResult;
@@ -136,6 +137,10 @@ public class Login extends Activity implements OnClickListener {
 			user_password.setText("2");
 			Info.SYNCPERIOD = 1000 * 30;
 		}
+
+		user_name.setText("5556666666");
+
+		user_password.setText("6");
 
 	}
 
@@ -377,15 +382,14 @@ public class Login extends Activity implements OnClickListener {
 					SendDatabaseRecords.SendRecords(Login.this, true);
 
 					Boolean needDbReset = jto.saveLogin(gson, json);
-					publishProgress("Versiyon bilgileri kontrol ediliyor...", "60");
-					jto.versionControl();
-
-					synUptodateData();
 
 					if (needDbReset) {
 						DatabaseHelper.getDbHelper().clearDatabase();
 					}
+					publishProgress("Versiyon bilgileri kontrol ediliyor...", "60");
+					jto.versionControl();
 
+					synUptodateData();
 					checkVersionUpdate();
 
 					saveLastSyncDate(Login.this);
@@ -613,4 +617,11 @@ public class Login extends Activity implements OnClickListener {
 	public void onBackPressed() {
 
 	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
+
 }

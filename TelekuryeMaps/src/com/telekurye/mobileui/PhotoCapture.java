@@ -7,6 +7,8 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -20,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.telekurye.tools.Tools;
-import com.telekurye.utils.SendErrors;
 
 public class PhotoCapture extends Activity {
 
@@ -128,5 +129,11 @@ public class PhotoCapture extends Activity {
 		}
 
 		return mediaFile;
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 }

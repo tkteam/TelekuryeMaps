@@ -16,6 +16,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -1597,7 +1599,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (LiveData.photoinfo.size() < Info.PHOTO_COUNT && tp != null) {
+		if (LiveData.photoinfo.size() < Info.PHOTO_COUNT && tp != null && resultCode == Activity.RESULT_OK) {
 			ImageView iv = new ImageView(this);
 			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f);
 			iv.setLayoutParams(layoutParams);
@@ -1613,9 +1615,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				}
 			});
 
-			if (resultCode == Activity.RESULT_OK) {
-				LiveData.photoinfo.add(info);
-			}
+			LiveData.photoinfo.add(info);
 
 		}
 
@@ -1825,6 +1825,11 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	public void LoadShapes() {
 
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
+
 		progressDialog = new ProgressDialog(FeedBack.this);
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		progressDialog.setTitle("Lütfen Bekleyiniz...");
@@ -1833,8 +1838,13 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		progressDialog.setIndeterminate(false);
 		progressDialog.show();
 
-		shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
-		shapeListFromHost = new BasarShapeId().GetAllData();
+		try {
+			shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
+			shapeListFromHost = new BasarShapeId().GetAllData();
+		}
+		catch (Exception e) {
+			Tools.saveErrors(e);
+		}
 
 		final ArrayList<PolygonOptions> polygonOptionsList = new ArrayList<PolygonOptions>();
 		final ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<PolylineOptions>();
@@ -1857,9 +1867,14 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					missionStreetIdList.add(new Integer(str.getStreetId()));
 				}
 
-				polygons = new ArrayList<com.telekurye.kml.Polygon>();
-				polygons.addAll(com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name));
-				polygons.addAll(com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long) ms.getDistrictId(), db_path, db_name));
+				try {
+					polygons = new ArrayList<com.telekurye.kml.Polygon>();
+					polygons.addAll(com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name));
+					polygons.addAll(com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long) ms.getDistrictId(), db_path, db_name));
+				}
+				catch (Exception e) {
+					Tools.saveErrors(e);
+				}
 
 				for (Polygon poly : SelectedPolygonList) {
 					poly.setVisible(true);
@@ -1915,15 +1930,15 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 						polygonOptions.fillColor(Color.TRANSPARENT);
 
-						for (BasarShapeId basarShapeId : shapeListFromHost) {
-							if (basarShapeId.getBasarShapeId().equals(polygon.polygonid)) {
+						for (Long shapeId : shapeIdHistory) {
+							if (shapeId.equals(polygon.polygonid)) {
 								polygonOptions.fillColor(0x802EFE64);
 							}
 						}
 
-						for (Long shapeId : shapeIdHistory) {
-							if (shapeId.equals(polygon.polygonid)) {
-								polygonOptions.fillColor(0x802EFE64);
+						for (BasarShapeId basarShapeId : shapeListFromHost) {
+							if (basarShapeId.getBasarShapeId().equals(polygon.polygonid)) {
+								polygonOptions.strokeColor(Color.GREEN);
 							}
 						}
 						polygonOptions.strokeWidth(3);
@@ -1942,8 +1957,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 							for (int i = 0; i < polylineOptionsList.size(); i++) {
 								polylineList.add(map.addPolyline(polylineOptionsList.get(i)));
 							}
-							progressDialog.dismiss();
-							// progress.dismiss();
+							if (progressDialog != null) {
+								progressDialog.dismiss();
+								progressDialog = null;
+							}
 						}
 					});
 				}
@@ -2292,8 +2309,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				lastSyncDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(lastSync);
 			}
 			catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Tools.saveErrors(e);
 			}
 
 			Calendar calendar2 = Calendar.getInstance();
@@ -2422,4 +2438,9 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		return markerOptions;
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
 }

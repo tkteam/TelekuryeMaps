@@ -76,7 +76,6 @@ public class HttpRequestForJson {
 			}
 
 			Json = result.toString();
-			System.out.println(Json);
 		}
 		catch (ClientProtocolException e) {
 			Tools.saveErrors(e);
@@ -90,6 +89,8 @@ public class HttpRequestForJson {
 	}
 
 	public HttpRequestForJson(String tag, String DateRange) {
+
+		System.out.println("Date Range : " + DateRange);
 
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Info.LOGIN_SERVICE_URL);
