@@ -8,7 +8,7 @@ public class Info {
 
 	public final static int		CURRENT_VERSION			= 61;
 	public static final int		DATABASE_VERSION		= 61;
-	public static final String	DATABASE_NAME			= "telekuryemaps793.db";
+	public static final String	DATABASE_NAME			= "telekuryemaps792.db";
 	public static final String	MAP_DBNAME				= "geolocation6_db";
 
 	public static String		LOGIN_SERVICE_URL		= "http://maksandroid.terralabs.com.tr/Default.aspx";
@@ -24,7 +24,7 @@ public class Info {
 	// public static String ERROR_LOG_URL = "http://192.168.11.10/MAKS.Android.Web/ExceptionLog.aspx";
 	// public static String VEHICLE_PHOTO_SYNC_URL = "http://192.168.11.10/MAKS.Android.Web/PhotoSyncVehicle.aspx";
 
-	public static float			MAP_ZOOM_LEVEL			= 19.0f;
+	public static float			MAP_ZOOM_LEVEL			= 20.0f;
 	public static int			PHOTO_COUNT				= 3;
 	public static int			SYNCPERIOD				= 1000 * 60 * 2;
 	public final static int		SCALED_PHOTO_PERCENT	= 70;
@@ -48,7 +48,7 @@ public class Info {
 	public static String		tagStreetTypes			= "syncstreettypes";
 	public static String		tagSyncMissions			= "syncmissions";
 	public static String		tagServerTime			= "gsdt";
-	public static String		tagVersionControl		= "checkforupdate"; 
+	public static String		tagVersionControl		= "checkforupdate";
 	public static String		tagGetPassword			= "getpassword";
 	public static String		tagEarnings				= "syncgetincome";
 	public static String		tagBasarShapeId			= "getBasarShapeId";

@@ -900,6 +900,11 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f070020;
+        public static final int crash_dialog_comment_prompt=0x7f07002a;
+        public static final int crash_dialog_ok_toast=0x7f07002b;
+        public static final int crash_dialog_text=0x7f070029;
+        public static final int crash_dialog_title=0x7f070028;
+        public static final int crash_toast_text=0x7f070027;
         public static final int create_calendar_message=0x7f070005;
         public static final int create_calendar_title=0x7f070004;
         public static final int decline=0x7f070003;
@@ -941,6 +946,7 @@ containing a value of this type.
         public static final int AppTheme=0x7f060006;
         public static final int SettingCodeFont=0x7f060008;
         public static final int SettingCodeFontBold=0x7f060007;
+        public static final int Theme_Dialog=0x7f060009;
         public static final int Theme_IAPTheme=0x7f060000;
         public static final int WalletFragmentDefaultButtonTextAppearance=0x7f060003;
         public static final int WalletFragmentDefaultDetailsHeaderTextAppearance=0x7f060002;

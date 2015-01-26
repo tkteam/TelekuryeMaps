@@ -87,7 +87,6 @@ public class Login extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-
 		// if (Info.ISTEST) {
 		// Mint.initAndStartSession(Login.this, "0491bf0a");
 		// }

@@ -88,6 +88,7 @@ import com.telekurye.tools.Info;
 import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 import com.telekurye.utils.CameraHelper;
+import com.telekurye.utils.MissionListCreator;
 import com.telekurye.utils.PhotoInfo;
 import com.telekurye.utils.ShapeControl;
 
@@ -164,15 +165,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private SensorManager					mSensorManager;
 	private CameraHelper					tp;
 	private int								MissionCounter			= 0;
-	private int								grupid, childid;
+	private int								grupid, childid, streettype;
 	private ArrayList<IMission>				mMissionForFeedback;
-	private List<MissionsStreets>			mThisMissionStreets;																	// bu göreve ait iki sokak
-	private List<MissionsBuildings>			mBuildingsOddNo;																		// seçilen sokaða ait tek sayýlý binalar
-	private List<MissionsBuildings>			mBuildingsEvenNo;																		// seçilen sokaða ait çift sayýlý binalar
 	private List<MissionsStreets>			completedMissionStreets	= new ArrayList<MissionsStreets>();
-	private List<MissionsBuildings>			mBuilds;
-	private MissionsStreets					ms;																					// kiþinin seçtiði sokak
-	private int								streettype;
+	private MissionsStreets					ms;
 	private UiSettings						uiSettings;
 	private Thread							uiUpdateThread;
 
@@ -243,9 +239,11 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			streettype = getIntent().getExtras().getInt("streettype");
 		}
 
-		Person person = new Person();
-		MissionsStreets data = new MissionsStreets();
+		MissionListCreator mlc = new MissionListCreator(this, grupid, childid, streettype);
+		mMissionForFeedback = mlc.getMissionList();
+		ms = mlc.getThisStreet();
 
+		Person person = new Person();
 		String namesurname = person.GetById(Info.UserId).getName() + " " + person.GetById(Info.UserId).getSurname();
 
 		if (namesurname.length() < 30) {
@@ -268,48 +266,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		if (!hasMapCreated) {
 			Toast.makeText(this, "Lütfen Google Play Hizmetlerini güncellemek üzere Ali Bahadýr Kuþ ile iletiþime geçiniz.", Toast.LENGTH_LONG).show();
 			return;
-		}
-
-		// *****************************
-
-		mThisMissionStreets = data.GetStreetsByStreetId(grupid);
-
-		// TODO: Sefa neden ms null geliyor olabilir ona bakacak.
-		for (MissionsStreets street : mThisMissionStreets) {
-			if (street.getBuildingNumber_IsOdd()) {
-				ms = street;
-			}
-		}
-
-		if (ms == null) {
-			// TODO: log gönder.
-			finish();
-		}
-
-		MissionsBuildings bData = new MissionsBuildings();
-		mBuilds = bData.GetBuildingsByStreetId(ms.getStreetId());
-		mBuildingsOddNo = new ArrayList<MissionsBuildings>();
-		mBuildingsEvenNo = new ArrayList<MissionsBuildings>();
-
-		try {
-			for (int j = 0; j < mBuilds.size(); j++) {
-				if (mBuilds.get(j).getBuildingNumber_IsOdd()) {
-					mBuildingsOddNo.add(mBuilds.get(j));
-				}
-				else {
-					mBuildingsEvenNo.add(mBuilds.get(j));
-				}
-			}
-		}
-		catch (Exception e) {
-			Tools.saveErrors(e);
-		}
-
-		if (streettype == 0 || streettype == 1 || streettype == 5) { // küme ev mi normal mi kontrolü
-			mMissionForFeedback = MissionListCreator2(childid);
-		}
-		else {
-			mMissionForFeedback = MissionListCreator(childid);
 		}
 
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -341,6 +297,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		// uiSettings.setAllGesturesEnabled(true); // *-*
 		// uiSettings.setZoomControlsEnabled(true);// *-*
 		// myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.0756, 28.9744), Info.MAP_ZOOM_LEVEL));// *-*
+
+		myMap.animateCamera(CameraUpdateFactory.zoomTo(Info.MAP_ZOOM_LEVEL));
 
 		tv_street_name.setText("<-- " + mMissionForFeedback.get(MissionCounter).getName() + " SOKAK -->");
 
@@ -459,151 +417,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		ShapeIdList.add(543190);
 		ShapeIdList.add(580942);
 		return ShapeIdList;
-	}
-
-	private ArrayList<IMission> MissionListCreator(int chId) {
-
-		ArrayList<IMission> temp = new ArrayList<IMission>();
-		// bu kýsýmda kullanýcýnýn seçiþine göre liste
-		if (chId == 0) { // artan çift -> azalan tek
-
-			try {
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsOddNo);
-
-				temp.add(mThisMissionStreets.get(0));
-				temp.addAll(mBuildingsEvenNo);
-
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
-				}
-
-				temp.addAll(mBuildingsOddNo);
-			}
-			catch (Exception e) {
-				Tools.saveErrors(e);
-			}
-
-		}
-		else if (chId == 1) { // azalan çift -> artan tek
-
-			try {
-
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsEvenNo);
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-
-				temp.add(mThisMissionStreets.get(0));
-				temp.addAll(mBuildingsEvenNo);
-
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
-				}
-				temp.addAll(mBuildingsOddNo);
-			}
-			catch (Exception e) {
-				Tools.saveErrors(e);
-			}
-
-		}
-		else if (chId == 2) { // artan tek -> azalan çift
-
-			try {
-
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsEvenNo);
-
-				temp.add(mThisMissionStreets.get(0));
-				temp.addAll(mBuildingsOddNo);
-
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
-				}
-
-				temp.addAll(mBuildingsEvenNo);
-			}
-			catch (Exception e) {
-				Tools.saveErrors(e);
-
-			}
-
-		}
-		else if (chId == 3) { // azalan tek -> artan çift
-
-			try {
-
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsOddNo);
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-
-				if (mThisMissionStreets.get(0) != null) {
-					temp.add(mThisMissionStreets.get(0));
-				}
-
-				temp.addAll(mBuildingsOddNo);
-
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
-				}
-				temp.addAll(mBuildingsEvenNo);
-			}
-			catch (Exception e) {
-				Tools.saveErrors(e);
-
-			}
-
-		}
-		return temp;
-	}
-
-	private ArrayList<IMission> MissionListCreator2(int chId) { // küme evler için sýralama
-
-		ArrayList<IMission> temp = new ArrayList<IMission>();
-		// bu kýsýmda kullanýcýnýn seçiþine göre liste
-		if (chId == 0) { // artan çift -> azalan tek
-
-			try {
-				Collections.sort(mBuilds, new MissionsBuildings()); // küçükten büyüðe sýrala
-
-				temp.add(mThisMissionStreets.get(0));
-
-				temp.addAll(mBuilds);
-
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
-				}
-
-			}
-			catch (Exception e) {
-				Tools.saveErrors(e);
-
-			}
-
-		}
-		else if (chId == 1) { // azalan çift -> artan tek
-
-			try {
-				Collections.sort(mBuilds, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuilds);
-
-				temp.add(mThisMissionStreets.get(0));
-
-				temp.addAll(mBuilds);
-
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
-				}
-			}
-			catch (Exception e) {
-				Tools.saveErrors(e);
-
-			}
-
-		}
-
-		return temp;
 	}
 
 	private void fillComponent() {
@@ -838,7 +651,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 						myMap.addMarker(mo);
 					}
-
 				}
 				catch (Exception e) {
 					Tools.saveErrors(e);
@@ -1429,7 +1241,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		if (isZoomOpen) {
 			return;
 		}
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -2373,6 +2184,18 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	}
 
 	private void newBuildingMission() {
+
+		if (currentMarker != null) {
+			currentMarker.remove();
+			currentMarker = null;
+		}
+
+		if (currentPolygon != null) {
+			currentPolygon.remove();
+			currentPolygon = null;
+		}
+
+		isMarkerSet = false;
 
 		Info.PHOTO_COUNT = 3;
 		llImages.setWeightSum(Info.PHOTO_COUNT);

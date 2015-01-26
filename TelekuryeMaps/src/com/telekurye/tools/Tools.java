@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -52,6 +54,7 @@ public class Tools {
 
 	public static void saveErrors(Exception e) {
 
+		ACRA.getErrorReporter().handleSilentException(e);
 		e.printStackTrace();
 
 		// Mint.logException(e);

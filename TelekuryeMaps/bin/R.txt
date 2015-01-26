@@ -442,6 +442,11 @@ int string common_google_play_services_update_title 0x7f070013
 int string common_open_on_phone 0x7f070021
 int string common_signin_button_text 0x7f07001f
 int string common_signin_button_text_long 0x7f070020
+int string crash_dialog_comment_prompt 0x7f07002a
+int string crash_dialog_ok_toast 0x7f07002b
+int string crash_dialog_text 0x7f070029
+int string crash_dialog_title 0x7f070028
+int string crash_toast_text 0x7f070027
 int string create_calendar_message 0x7f070005
 int string create_calendar_title 0x7f070004
 int string decline 0x7f070003
@@ -454,6 +459,7 @@ int style AppBaseTheme 0x7f060005
 int style AppTheme 0x7f060006
 int style SettingCodeFont 0x7f060008
 int style SettingCodeFontBold 0x7f060007
+int style Theme_Dialog 0x7f060009
 int style Theme_IAPTheme 0x7f060000
 int style WalletFragmentDefaultButtonTextAppearance 0x7f060003
 int style WalletFragmentDefaultDetailsHeaderTextAppearance 0x7f060002
