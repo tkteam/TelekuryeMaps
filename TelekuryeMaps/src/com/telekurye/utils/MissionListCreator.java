@@ -2,6 +2,7 @@ package com.telekurye.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -72,8 +73,8 @@ public class MissionListCreator {
 
 			try {
 				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsOddNo);
+				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
+				//Collections.reverse(mBuildingsOddNo);
 
 				temp.add(mThisMissionStreets.get(0));
 				temp.addAll(mBuildingsEvenNo);
@@ -93,8 +94,8 @@ public class MissionListCreator {
 
 			try {
 
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsEvenNo);
+				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
+				//Collections.reverse(mBuildingsEvenNo);
 				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
 
 				temp.add(mThisMissionStreets.get(0));
@@ -115,8 +116,8 @@ public class MissionListCreator {
 			try {
 
 				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsEvenNo);
+				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
+				//Collections.reverse(mBuildingsEvenNo);
 
 				temp.add(mThisMissionStreets.get(0));
 				temp.addAll(mBuildingsOddNo);
@@ -136,8 +137,8 @@ public class MissionListCreator {
 
 			try {
 
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuildingsOddNo);
+				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
+				//Collections.reverse(mBuildingsOddNo);
 				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
 
 				if (mThisMissionStreets.get(0) != null) {
@@ -160,6 +161,19 @@ public class MissionListCreator {
 		return temp;
 	}
 
+	
+	public class ReverseSorter implements Comparator<IMission> {
+		@Override
+		public int compare(IMission lhs, IMission rhs) {
+			if (rhs.getOrderIndex() - lhs.getOrderIndex() != 0) {
+				return rhs.getOrderIndex() - lhs.getOrderIndex();
+			}
+			else {
+				return lhs.getBuildingNumber().compareTo(rhs.getBuildingNumber());
+			}
+		}
+	}
+	
 	private ArrayList<IMission> MissionListCreator2(int chId) { // küme evler için sýralama
 
 		ArrayList<IMission> temp = new ArrayList<IMission>();
