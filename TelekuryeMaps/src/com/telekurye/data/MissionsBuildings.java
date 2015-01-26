@@ -224,8 +224,12 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 
 	@Override
 	public int compare(MissionsBuildings lhs, MissionsBuildings rhs) {
-		return lhs.getOrderIndex() - rhs.getOrderIndex();
-
+		if (lhs.getOrderIndex() - rhs.getOrderIndex() != 0) {
+			return lhs.getOrderIndex() - rhs.getOrderIndex();
+		}
+		else {
+			return lhs.getBuildingNumber().compareTo(rhs.getBuildingNumber());
+		}
 	}
 
 	@Override

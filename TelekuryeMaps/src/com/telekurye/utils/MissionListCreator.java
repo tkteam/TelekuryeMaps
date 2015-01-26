@@ -64,7 +64,7 @@ public class MissionListCreator {
 
 	}
 
-	private ArrayList<IMission> MissionListCreator(int chId) {
+	private ArrayList<IMission> MissionListCreator1(int chId) {
 
 		ArrayList<IMission> temp = new ArrayList<IMission>();
 		// bu kýsýmda kullanýcýnýn seçiþine göre liste
@@ -215,7 +215,7 @@ public class MissionListCreator {
 			mList = MissionListCreator2(childid);
 		}
 		else {
-			mList = MissionListCreator(childid);
+			mList = MissionListCreator1(childid);
 		}
 
 		return mList;
@@ -223,20 +223,6 @@ public class MissionListCreator {
 
 	public MissionsStreets getThisStreet() {
 		return ms;
-	}
-
-	public ArrayList<IMission> getSortedList() {
-		
-		ArrayList<IMission> sortedList = new ArrayList<IMission>();
-		sortedList = getMissionList();
-		
-		for (IMission iMission : sortedList) {
-			
-		}
-		
-		
-
-		return sortedList;
 	}
 
 	public String getMainNumber(String str) {
