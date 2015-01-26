@@ -240,7 +240,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		}
 
 		MissionListCreator mlc = new MissionListCreator(this, grupid, childid, streettype);
-		mMissionForFeedback = mlc.getMissionList();
+		mMissionForFeedback = mlc.getMissionList(true);
 		ms = mlc.getThisStreet();
 
 		Person person = new Person();
@@ -1179,53 +1179,58 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		Boolean isPolygonSelected = false;
 
-		for (com.telekurye.kml.Polygon pol : polygons) {
-			if (PolyUtil.containsLocation(point, pol.coors, true) && pol.type == 2) {
+		try {
+			for (com.telekurye.kml.Polygon pol : polygons) {
+				if (PolyUtil.containsLocation(point, pol.coors, true) && pol.type == 2) {
 
-				for (Long greenshapes : greenShapes) {
-					if (pol.polygonid.equals(greenshapes)) {
+					for (Long greenshapes : greenShapes) {
+						if (pol.polygonid.equals(greenshapes)) {
 
-						return false;
+							return false;
+						}
 					}
+
+					isPolygonSelected = true;
+					basarShapeId = pol.polygonid.intValue();
+					final PolygonOptions polygonOptions = new PolygonOptions();
+					String[] coors = SplitUsingTokenizer(pol.coordinates, "||");
+
+					for (String string : coors) {
+						String[] coor = string.split(",");
+						final LatLng p = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
+						polygonOptions.add(p);
+					}
+
+					// shapeControl.CompareShapes(pol);
+
+					finishedShapes = new FinishedShapeHistory();
+					finishedShapes.setShapeId(pol.polygonid);
+					finishedShapes.setUserId(Info.UserId);
+					finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
+
+					polygonOptions.strokeColor(Color.GREEN);
+					polygonOptions.fillColor(0x802EFE64);
+
+					// if (shapeControl.CompareShapes(pol)) {
+					// polygonOptions.strokeColor(Color.RED);
+					// polygonOptions.fillColor(0x802EFE64);
+					// // polygonOptions.fillColor(0x80FF0000);
+					// }
+					// else {
+					// polygonOptions.strokeColor(Color.GREEN);
+					// polygonOptions.fillColor(0x802EFE64);
+					// }
+
+					polygonOptions.strokeWidth(3);
+
+					// polyOptions = polygonOptions;
+					currentPolygon = myMap.addPolygon(polygonOptions);
+
 				}
-
-				isPolygonSelected = true;
-				basarShapeId = pol.polygonid.intValue();
-				final PolygonOptions polygonOptions = new PolygonOptions();
-				String[] coors = SplitUsingTokenizer(pol.coordinates, "||");
-
-				for (String string : coors) {
-					String[] coor = string.split(",");
-					final LatLng p = new LatLng(Float.valueOf(coor[0]), Float.valueOf(coor[1]));
-					polygonOptions.add(p);
-				}
-
-				// shapeControl.CompareShapes(pol);
-
-				finishedShapes = new FinishedShapeHistory();
-				finishedShapes.setShapeId(pol.polygonid);
-				finishedShapes.setUserId(Info.UserId);
-				finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
-
-				polygonOptions.strokeColor(Color.GREEN);
-				polygonOptions.fillColor(0x802EFE64);
-
-				// if (shapeControl.CompareShapes(pol)) {
-				// polygonOptions.strokeColor(Color.RED);
-				// polygonOptions.fillColor(0x802EFE64);
-				// // polygonOptions.fillColor(0x80FF0000);
-				// }
-				// else {
-				// polygonOptions.strokeColor(Color.GREEN);
-				// polygonOptions.fillColor(0x802EFE64);
-				// }
-
-				polygonOptions.strokeWidth(3);
-
-				// polyOptions = polygonOptions;
-				currentPolygon = myMap.addPolygon(polygonOptions);
-
 			}
+		}
+		catch (Exception e) {
+			Tools.saveErrors(e);
 		}
 
 		// if (!isPolygonSelected) {
@@ -1351,13 +1356,19 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	private void takePhoto() {
 
-		if (LiveData.photoinfo.size() < Info.PHOTO_COUNT) {
-			tp = new CameraHelper(FeedBack.this);
-			startActivityForResult(tp.startCamera(), tp.getRequestCode());
+		try {
+			if (LiveData.photoinfo.size() < Info.PHOTO_COUNT) {
+				tp = new CameraHelper(FeedBack.this);
+				startActivityForResult(tp.startCamera(), tp.getRequestCode());
+			}
+			else {
+				Tools.showShortCustomToast(FeedBack.this, "Fotoðraf ekleme limiti doldu!");
+			}
 		}
-		else {
-			Tools.showShortCustomToast(FeedBack.this, "Fotoðraf ekleme limiti doldu!");
+		catch (Exception e) {
+			Tools.saveErrors(e);
 		}
+
 	}
 
 	// salihy: TODO: burayý düzenle
@@ -1398,24 +1409,29 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (LiveData.photoinfo.size() < Info.PHOTO_COUNT && tp != null && resultCode == Activity.RESULT_OK) {
-			ImageView iv = new ImageView(this);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f);
-			iv.setLayoutParams(layoutParams);
-			// tp = new CameraHelper(FeedBack.this);
-			final PhotoInfo info = tp.showImage(iv, 1, requestCode, resultCode);
-			llImages.addView(iv);
+		try {
+			if (LiveData.photoinfo.size() < Info.PHOTO_COUNT && tp != null && resultCode == Activity.RESULT_OK) {
+				ImageView iv = new ImageView(this);
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f);
+				iv.setLayoutParams(layoutParams);
+				// tp = new CameraHelper(FeedBack.this);
+				final PhotoInfo info = tp.showImage(iv, 1, requestCode, resultCode);
+				llImages.addView(iv);
 
-			iv.setOnClickListener(new OnClickListener() {
+				iv.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					selectImage(info);
-				}
-			});
+					@Override
+					public void onClick(View v) {
+						selectImage(info);
+					}
+				});
 
-			LiveData.photoinfo.add(info);
+				LiveData.photoinfo.add(info);
 
+			}
+		}
+		catch (Exception e) {
+			Tools.saveErrors(e);
 		}
 
 	}

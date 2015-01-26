@@ -65,7 +65,7 @@ public class MissionListCreator {
 
 	}
 
-	private ArrayList<IMission> MissionListCreator1(int chId) {
+	private ArrayList<IMission> MissionListCreator1(int chId, Boolean showStreets) {
 
 		ArrayList<IMission> temp = new ArrayList<IMission>();
 		// bu kýsýmda kullanýcýnýn seçiþine göre liste
@@ -74,13 +74,20 @@ public class MissionListCreator {
 			try {
 				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
 				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				//Collections.reverse(mBuildingsOddNo);
+				// Collections.reverse(mBuildingsOddNo);
 
-				temp.add(mThisMissionStreets.get(0));
+				if (showStreets) {
+					if (mThisMissionStreets.get(0) != null) {
+						temp.add(mThisMissionStreets.get(0));
+					}
+				}
+
 				temp.addAll(mBuildingsEvenNo);
 
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
+				if (showStreets) {
+					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+						temp.add(mThisMissionStreets.get(1));
+					}
 				}
 
 				temp.addAll(mBuildingsOddNo);
@@ -95,14 +102,20 @@ public class MissionListCreator {
 			try {
 
 				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				//Collections.reverse(mBuildingsEvenNo);
+				// Collections.reverse(mBuildingsEvenNo);
 				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
 
-				temp.add(mThisMissionStreets.get(0));
+				if (showStreets) {
+					if (mThisMissionStreets.get(0) != null) {
+						temp.add(mThisMissionStreets.get(0));
+					}
+				}
 				temp.addAll(mBuildingsEvenNo);
 
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
+				if (showStreets) {
+					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+						temp.add(mThisMissionStreets.get(1));
+					}
 				}
 				temp.addAll(mBuildingsOddNo);
 			}
@@ -117,13 +130,18 @@ public class MissionListCreator {
 
 				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
 				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				//Collections.reverse(mBuildingsEvenNo);
-
-				temp.add(mThisMissionStreets.get(0));
+				// Collections.reverse(mBuildingsEvenNo);
+				if (showStreets) {
+					if (mThisMissionStreets.get(0) != null) {
+						temp.add(mThisMissionStreets.get(0));
+					}
+				}
 				temp.addAll(mBuildingsOddNo);
 
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
+				if (showStreets) {
+					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+						temp.add(mThisMissionStreets.get(1));
+					}
 				}
 
 				temp.addAll(mBuildingsEvenNo);
@@ -138,17 +156,21 @@ public class MissionListCreator {
 			try {
 
 				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				//Collections.reverse(mBuildingsOddNo);
+				// Collections.reverse(mBuildingsOddNo);
 				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
 
-				if (mThisMissionStreets.get(0) != null) {
-					temp.add(mThisMissionStreets.get(0));
+				if (showStreets) {
+					if (mThisMissionStreets.get(0) != null) {
+						temp.add(mThisMissionStreets.get(0));
+					}
 				}
 
 				temp.addAll(mBuildingsOddNo);
 
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
+				if (showStreets) {
+					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+						temp.add(mThisMissionStreets.get(1));
+					}
 				}
 				temp.addAll(mBuildingsEvenNo);
 			}
@@ -161,7 +183,6 @@ public class MissionListCreator {
 		return temp;
 	}
 
-	
 	public class ReverseSorter implements Comparator<IMission> {
 		@Override
 		public int compare(IMission lhs, IMission rhs) {
@@ -173,8 +194,8 @@ public class MissionListCreator {
 			}
 		}
 	}
-	
-	private ArrayList<IMission> MissionListCreator2(int chId) { // küme evler için sýralama
+
+	private ArrayList<IMission> MissionListCreator2(int chId, Boolean showStreets) { // küme evler için sýralama
 
 		ArrayList<IMission> temp = new ArrayList<IMission>();
 		// bu kýsýmda kullanýcýnýn seçiþine göre liste
@@ -183,12 +204,18 @@ public class MissionListCreator {
 			try {
 				Collections.sort(mBuilds, new MissionsBuildings()); // küçükten büyüðe sýrala
 
-				temp.add(mThisMissionStreets.get(0));
+				if (showStreets) {
+					if (mThisMissionStreets.get(0) != null) {
+						temp.add(mThisMissionStreets.get(0));
+					}
+				}
 
 				temp.addAll(mBuilds);
 
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
+				if (showStreets) {
+					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+						temp.add(mThisMissionStreets.get(1));
+					}
 				}
 
 			}
@@ -204,12 +231,18 @@ public class MissionListCreator {
 				Collections.sort(mBuilds, new MissionsBuildings()); // büyükten küçüðe sýrala
 				Collections.reverse(mBuilds);
 
-				temp.add(mThisMissionStreets.get(0));
+				if (showStreets) {
+					if (mThisMissionStreets.get(0) != null) {
+						temp.add(mThisMissionStreets.get(0));
+					}
+				}
 
 				temp.addAll(mBuilds);
 
-				if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
-					temp.add(mThisMissionStreets.get(1));
+				if (showStreets) {
+					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+						temp.add(mThisMissionStreets.get(1));
+					}
 				}
 			}
 			catch (Exception e) {
@@ -222,14 +255,14 @@ public class MissionListCreator {
 		return temp;
 	}
 
-	public ArrayList<IMission> getMissionList() {
+	public ArrayList<IMission> getMissionList(Boolean showStreets) {
 		ArrayList<IMission> mList = new ArrayList<IMission>();
 
 		if (streettype == 0 || streettype == 1 || streettype == 5) { // küme ev mi normal mi kontrolü
-			mList = MissionListCreator2(childid);
+			mList = MissionListCreator2(childid, showStreets);
 		}
 		else {
-			mList = MissionListCreator1(childid);
+			mList = MissionListCreator1(childid, showStreets);
 		}
 
 		return mList;

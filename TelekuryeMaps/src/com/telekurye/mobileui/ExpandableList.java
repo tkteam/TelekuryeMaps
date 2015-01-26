@@ -563,32 +563,32 @@ public class ExpandableList extends Activity {
 				@Override
 				public void onClick(View view) {
 
-//					if (!Info.ISTEST) {
-//						Calendar cal = Calendar.getInstance();
-//						cal.setTime(parent.getLastOperationDate());
-//
-//						int h = cal.get(Calendar.HOUR_OF_DAY);
-//						int m = cal.get(Calendar.MINUTE);
-//						int t = h * 60 + m;
-//
-//						Calendar cal2 = Calendar.getInstance();
-//						cal2.setTime(new Date());
-//						int h2 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-//						int m2 = Calendar.getInstance().get(Calendar.MINUTE);
-//						int t2 = h2 * 60 + m2;
-//
-//						double diff = t - t2;
-//						double selectedStreetBuildingsCount = parent.getBuildingCount();
-//
-//						double d = diff / selectedStreetBuildingsCount;
-//
-//						if (diff <= 0) {
-//							Tools.showLongCustomToast(ExpandableList.this, "Çalýþma süresi sona ermiþtir.");
-//							finish();
-//							return;
-//						}
-//
-//					}
+					if (!Info.ISTEST) {
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(parent.getLastOperationDate());
+
+						int h = cal.get(Calendar.HOUR_OF_DAY);
+						int m = cal.get(Calendar.MINUTE);
+						int t = h * 60 + m;
+
+						Calendar cal2 = Calendar.getInstance();
+						cal2.setTime(new Date());
+						int h2 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+						int m2 = Calendar.getInstance().get(Calendar.MINUTE);
+						int t2 = h2 * 60 + m2;
+
+						double diff = t - t2;
+						double selectedStreetBuildingsCount = parent.getBuildingCount();
+
+						double d = diff / selectedStreetBuildingsCount;
+
+						if (diff <= 0) {
+							Tools.showLongCustomToast(ExpandableList.this, "Çalýþma süresi sona ermiþtir.");
+							finish();
+							return;
+						}
+
+					}
 
 					Intent i = new Intent(ExpandableList.this, StreetInfo.class);
 					i.putExtra("streettype", parent.getTypeId());

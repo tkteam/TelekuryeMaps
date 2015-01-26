@@ -233,7 +233,7 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 	}
 
 	@Override
-	public int getUserDailyMissionId() {
+	public int getUserDailyMissionId() { 
 		return UserDailyMissionId;
 	}
 

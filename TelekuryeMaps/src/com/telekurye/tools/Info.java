@@ -4,11 +4,11 @@ public class Info {
 
 	// ######################### KONTROL EDÝLECEKLER #############################
 
-	public final static Boolean	ISTEST					= false;
+	public final static Boolean	ISTEST					= true;
 
-	public final static int		CURRENT_VERSION			= 61;
-	public static final int		DATABASE_VERSION		= 61;
-	public static final String	DATABASE_NAME			= "telekuryemaps792.db";
+	public final static int		CURRENT_VERSION			= 62;
+	public static final int		DATABASE_VERSION		= 62;
+	public static final String	DATABASE_NAME			= "telekuryemaps788.db";
 	public static final String	MAP_DBNAME				= "geolocation6_db";
 
 	public static String		LOGIN_SERVICE_URL		= "http://maksandroid.terralabs.com.tr/Default.aspx";

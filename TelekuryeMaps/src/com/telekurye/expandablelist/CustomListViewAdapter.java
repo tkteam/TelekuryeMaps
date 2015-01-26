@@ -55,35 +55,35 @@ public class CustomListViewAdapter extends ArrayAdapter<IMission> {
 		else
 			holder = (ViewHolder) convertView.getTag();
 
-		if (items.getName().trim().equalsIgnoreCase("") || items.getName() == null || items == null) {
+		if (items == null || items.getName() == null || items.getName().trim().equalsIgnoreCase("")) {
 			holder.tv_building_name.setText("Bilgi Yok");
 		}
 		else {
 			holder.tv_building_name.setText(items.getName().trim());
 		}
 
-		if (items.getBuildingNumber().trim().equalsIgnoreCase("") || items.getBuildingNumber() == null || items == null) {
+		if (items == null || items.getBuildingNumber() == null || items.getBuildingNumber().trim().equalsIgnoreCase("")) {
 			holder.tv_building_number.setText("Bilgi Yok");
 		}
 		else {
 			holder.tv_building_number.setText(items.getBuildingNumber().trim());
 		}
 
-		if (items.getPersonNameSurname().trim().equalsIgnoreCase("") || items.getPersonNameSurname() == null || items == null) {
+		if (items == null || items.getPersonNameSurname() == null || items.getPersonNameSurname().trim().equalsIgnoreCase("")) {
 			holder.tv_person_name_value.setText("Bilgi Yok");
 		}
 		else {
 			holder.tv_person_name_value.setText(items.getPersonNameSurname().trim());
 		}
 
-		if (items.getIndependentSectionType().trim().equalsIgnoreCase("") || items == null) {
+		if (items == null || items.getIndependentSectionType().trim().equalsIgnoreCase("")) {
 			holder.tv_building_type_value.setText("Bilgi Yok");
 		}
 		else {
 			holder.tv_building_type_value.setText(items.getIndependentSectionType());
 		}
 
-		if (items.getIndependentSectionCount() < 0 || items == null) {
+		if (items == null || items.getIndependentSectionCount() < 0) {
 			holder.tv_independent_section_value.setText("Bilgi Yok");
 		}
 		else {
