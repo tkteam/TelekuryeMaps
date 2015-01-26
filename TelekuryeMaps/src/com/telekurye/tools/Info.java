@@ -4,7 +4,7 @@ public class Info {
 
 	// ######################### KONTROL EDÝLECEKLER #############################
 
-	public final static Boolean	ISTEST					= true;
+	public final static Boolean	ISTEST					= false;
 
 	public final static int		CURRENT_VERSION			= 61;
 	public static final int		DATABASE_VERSION		= 61;

@@ -138,10 +138,6 @@ public class Login extends Activity implements OnClickListener {
 			Info.SYNCPERIOD = 1000 * 30;
 		}
 
-		user_name.setText("5556666666");
-
-		user_password.setText("6");
-
 	}
 
 	@Override

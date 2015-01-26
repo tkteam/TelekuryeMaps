@@ -135,6 +135,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private List<Polyline>					polylineList			= new ArrayList<Polyline>();
 	private Polygon							currentPolygon			= null;
 	private List<Polygon>					SelectedPolygonList		= new ArrayList<Polygon>();
+	private List<Long>						greenShapes;
 
 	// ------ GOOGLE MAP -------
 	private final int						RQS_GooglePlayServices	= 1;
@@ -243,7 +244,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		}
 
 		Person person = new Person();
-		finishedShapes = new FinishedShapeHistory();
 		MissionsStreets data = new MissionsStreets();
 
 		String namesurname = person.GetById(Info.UserId).getName() + " " + person.GetById(Info.UserId).getSurname();
@@ -848,8 +848,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		}
 	}
 
-	// ################################### BUTTON CLICK
-	// ########################################################
+	// ################################### BUTTON CLICK ##############################################
 
 	private void saveFeedback() {
 
@@ -884,6 +883,12 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		}
 
 		// fillPolygon.add(polygonOptions);
+
+		greenShapes.add((long) basarShapeId);
+
+		if (finishedShapes != null) {
+			finishedShapes.Insert();
+		}
 
 		if (!isNewBuilding) {
 			MissionCounter++;
@@ -1268,8 +1273,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	}
 
-	// ################################### GOOGLE MAP
-	// ########################################################
+	// ################################### GOOGLE MAP ##############################################
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
@@ -1289,110 +1293,90 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				Tools.showShortCustomToast(this, "Fotoðraf çekildikten sonra konum güncellenemez!");
 				return;
 			}
-
 		}
 		else {
 			UserAccuracy = 1;
 		}
 
-		if (isNewBuilding) {
-			pressShape(point);
+		if (UserAccuracy > Info.GPS_ACCURACY) {
+			Tools.showShortCustomToast(this, "GPS deðeri çok büyük!");
+			return;
 		}
-		else {
-			if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) {
-				pressShape(point);
-			}
-		}
-
-		if (UserAccuracy <= Info.GPS_ACCURACY) {
-			MarkerOptions mo = new MarkerOptions();
-			mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-
-			if (!isNewBuilding) {
-
-				if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1) {
-
-					if (!mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
-						mo.snippet(mMissionForFeedback.get(MissionCounter).getName() + " Sokak");
-					}
-					else {
-						mo.snippet("");
-					}
-
-				}
-				else if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) {
-					if (!mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
-						mo.snippet(mMissionForFeedback.get(MissionCounter).getName() + " Apartmaný");
-					}
-					else {
-						mo.snippet("");
-					}
-				}
-
-				mo.title(mMissionForFeedback.get(MissionCounter).getAddressText());
-
-			}
-
-			// mo.draggable(true);
-			mo.position(point);
-
-			// myMap.clear();
-			if (currentMarker != null) {
-				currentMarker.remove();
-			}
-
-			currentMarker = myMap.addMarker(mo);
-
-			// refreshMap();
-			// markerLastPoint.setPosition(point);
-			SignedLat = point.latitude;
-			SignedLng = point.longitude;
-
-			isMarkerSet = true;
-		}
-
-	}
-
-	// private void refreshMap() {
-	// myMap.clear();
-	// ShowSelectedMarkers();
-	//
-	// showPolygonOnMap();
-	//
-	// if (currentMarker != null) {
-	//
-	// MarkerOptions mo = new MarkerOptions();
-	//
-	// mo.snippet(currentMarker.getSnippet());
-	// mo.title(currentMarker.getTitle());
-	// mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-	// mo.draggable(false);
-	// mo.position(currentMarker.getPosition());
-	//
-	// myMap.addMarker(mo);
-	// }
-	//
-	// if (mPositionMarker != null) {
-	// mPositionMarker =
-	// myMap.addMarker(getMarkerOptions(mPositionMarker.getPosition()));
-	// }
-	//
-	// for (PolygonOptions polygonOptions : fillPolygon) {
-	// myMap.addPolygon(polygonOptions);
-	// }
-	//
-	// }
-
-	private void pressShape(LatLng point) {
 
 		if (currentPolygon != null) {
 			currentPolygon.remove();
+			currentPolygon = null;
 		}
+
+		if (currentMarker != null) {
+			currentMarker.remove();
+			currentMarker = null;
+		}
+
+		MarkerOptions mo = new MarkerOptions();
+		mo.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+		if (isNewBuilding) {
+
+			if (!isPressShape(point)) {
+				Tools.showShortCustomToast(this, "Lütfen kýrmýzý þekillere týklayýnýz!");
+				return;
+			}
+
+		}
+		else {
+
+			if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1) {
+
+				if (!mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
+					mo.snippet(mMissionForFeedback.get(MissionCounter).getName() + " Sokak");
+				}
+				else {
+					mo.snippet("");
+				}
+
+			}
+
+			else if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) {
+
+				isPressShape(point);
+
+				if (!mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
+					mo.snippet(mMissionForFeedback.get(MissionCounter).getName() + " Apartmaný");
+				}
+				else {
+					mo.snippet("");
+				}
+			}
+
+			mo.title(mMissionForFeedback.get(MissionCounter).getAddressText());
+
+		}
+
+		mo.position(point);
+		currentMarker = myMap.addMarker(mo);
+
+		SignedLat = point.latitude;
+		SignedLng = point.longitude;
+
+		isMarkerSet = true;
+
+	}
+
+	private Boolean isPressShape(LatLng point) {
 
 		Boolean isPolygonSelected = false;
 
 		for (com.telekurye.kml.Polygon pol : polygons) {
 			if (PolyUtil.containsLocation(point, pol.coors, true) && pol.type == 2) {
+
+				for (Long greenshapes : greenShapes) {
+					if (pol.polygonid.equals(greenshapes)) {
+
+						return false;
+					}
+				}
+
 				isPolygonSelected = true;
 				basarShapeId = pol.polygonid.intValue();
 				final PolygonOptions polygonOptions = new PolygonOptions();
@@ -1404,12 +1388,12 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					polygonOptions.add(p);
 				}
 
-				shapeControl.CompareShapes(pol);
+				// shapeControl.CompareShapes(pol);
 
+				finishedShapes = new FinishedShapeHistory();
 				finishedShapes.setShapeId(pol.polygonid);
 				finishedShapes.setUserId(Info.UserId);
 				finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
-				finishedShapes.Insert();
 
 				polygonOptions.strokeColor(Color.GREEN);
 				polygonOptions.fillColor(0x802EFE64);
@@ -1428,13 +1412,15 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				// polyOptions = polygonOptions;
 				currentPolygon = myMap.addPolygon(polygonOptions);
+
 			}
 		}
 
 		// if (!isPolygonSelected) {
 		// Tools.showShortCustomToast(this, "Lütfen yapý üzerine týklayýnýz!");
-		// return;
 		// }
+
+		return isPolygonSelected;
 	}
 
 	@Override
@@ -1843,6 +1829,14 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		try {
 			shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
 			shapeListFromHost = new BasarShapeId().GetAllData();
+
+			greenShapes = new ArrayList<Long>();
+
+			greenShapes.addAll(shapeIdHistory);
+
+			for (BasarShapeId basarShapeId : shapeListFromHost) {
+				greenShapes.add(basarShapeId.getBasarShapeId());
+			}
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);
