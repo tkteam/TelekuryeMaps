@@ -245,34 +245,24 @@ public class JsonToDatabase {
 		Type listType = new TypeToken<SyncRequest<VersionUpdate>>() {
 		}.getType();
 
-		try {
+		sr.setLastSyncDate("1987-03-03T00:30:00");
+		sr.setEndSyncDate("2087-03-03T00:30:00");
 
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			Date startDate = df.parse("1986-08-22T00:30:00");
-			sr.setLastSyncDate(startDate.toGMTString());
-			sr.setEndSyncDate(new Date().toGMTString());
+		VersionUpdate vu = new VersionUpdate();
+		vu.setNeedsUrgentUpdate(false);
+		vu.setId(1);
+		vu.setCurrentVersion(Info.CURRENT_VERSION);
 
-			VersionUpdate vu = new VersionUpdate();
-			vu.setNeedsUrgentUpdate(false);
-			vu.setId(1);
-			vu.setCurrentVersion(Info.CURRENT_VERSION);
+		sr.setTypedObjects(vu);
 
-			sr.setTypedObjects(vu);
+		String jsn = JSONHelper.ToJson(sr, listType);
+		HttpRequestForJson httpreq = new HttpRequestForJson(Info.tagVersionControl, jsn);
 
-			String jsn = JSONHelper.ToJson(sr, listType);
-			HttpRequestForJson httpreq = new HttpRequestForJson(Info.tagVersionControl, jsn);
+		String json = httpreq.getJson();
 
-			String json = httpreq.getJson();
-
-			Type listType2 = new TypeToken<SyncResult<VersionUpdate>>() {
-			}.getType();
-			LiveData.versionControl = gson.fromJson(json, listType2);
-
-		}
-		catch (ParseException e) {
-			Tools.saveErrors(e);
-
-		}
+		Type listType2 = new TypeToken<SyncResult<VersionUpdate>>() {
+		}.getType();
+		LiveData.versionControl = gson.fromJson(json, listType2);
 
 	}
 

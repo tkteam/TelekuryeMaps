@@ -41,6 +41,7 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 	@DatabaseField private int									UserId;
 	@DatabaseField private String								IndependentSectionType;
 	@DatabaseField private int									DistrictId;
+	@DatabaseField private Boolean								IsForcedUrbanStreet;
 
 	@Override
 	public void setMissionsList(IMission m) {
@@ -62,6 +63,7 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 		this.UserId = m.getUserId();
 		this.IndependentSectionType = m.getIndependentSectionType();
 		this.DistrictId = m.getDistrictId();
+		this.IsForcedUrbanStreet = m.getIsForcedUrbanStreet();
 	}
 
 	public void Insert() {
@@ -115,7 +117,6 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 		}
 		catch (SQLException e) {
 			Tools.saveErrors(e);
-
 		}
 
 		return sr;
@@ -233,7 +234,7 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 	}
 
 	@Override
-	public int getUserDailyMissionId() { 
+	public int getUserDailyMissionId() {
 		return UserDailyMissionId;
 	}
 
@@ -410,6 +411,16 @@ public class MissionsBuildings implements Parcelable, Comparator<MissionsBuildin
 	@Override
 	public void setDistrictId(int districtId) {
 		DistrictId = districtId;
+	}
+
+	@Override
+	public Boolean getIsForcedUrbanStreet() {
+		return IsForcedUrbanStreet;
+	}
+
+	@Override
+	public void setIsForcedUrbanStreet(Boolean IsForcedUrbanStreet) {
+		this.IsForcedUrbanStreet = IsForcedUrbanStreet;
 	}
 
 }

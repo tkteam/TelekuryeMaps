@@ -41,6 +41,8 @@ public interface IMission {
 	String getIndependentSectionType();
 
 	int getDistrictId();
+	
+	Boolean getIsForcedUrbanStreet();
 
 	// setters
 
@@ -82,4 +84,5 @@ public interface IMission {
 
 	void setDistrictId(int districtId);
 
+	void setIsForcedUrbanStreet(Boolean IsForcedUrbanStreet);
 }

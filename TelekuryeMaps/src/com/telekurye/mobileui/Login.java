@@ -132,8 +132,8 @@ public class Login extends Activity implements OnClickListener {
 		}
 
 		if (Info.ISTEST) {
-			user_name.setText("5552222222");
-			user_password.setText("2");
+			user_name.setText("5551111111");
+			user_password.setText("1");
 			Info.SYNCPERIOD = 1000 * 30;
 		}
 

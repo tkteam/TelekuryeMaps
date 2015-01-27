@@ -14,6 +14,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
+import com.telekurye.data.MissionsBuildings;
 import com.telekurye.database.DatabaseHelper;
 import com.telekurye.database.MapDatabaseHelper;
 import com.telekurye.tools.Info;
@@ -216,12 +217,12 @@ public class Polygon {
 		return guideDatabases;
 	}
 
-	public static List<Integer> GetNonMatchedShapeIdList(List<Integer> excludeShapeIdList, Context context) {
+	public static List<Long> GetNonMatchedShapeIdList(List<Long> excludeShapeIdList,Long districtId, Context context) {
 
-		List<Polygon> guideDatabases = new ArrayList<Polygon>();// null;
-		List<Integer> streetNonMatchedShapeIdList = new ArrayList<Integer>();
+		List<Long> streetNonMatchedShapeIdList = new ArrayList<Long>();
 
 		try {
+
 			MapDatabaseHelper.SetPath(db_path);
 			MapDatabaseHelper.SetName(db_name);
 
@@ -230,24 +231,20 @@ public class Polygon {
 			boolean ishave = dbh.checkDataBase();
 
 			Dao<Polygon, Integer> db = MapDatabaseHelper.GetInstance(context).GetDBHelper(Polygon.class);
-
 			QueryBuilder<Polygon, Integer> qBuilder = db.queryBuilder();
-
-			Where<Polygon, Integer> where = qBuilder.where();
-
-			where.and(where.eq("type", 2), where.in("polygonid", excludeShapeIdList));
-
+			
+			qBuilder.where().eq("type", 2).eq("districtid", districtId).not().in("polygonid", excludeShapeIdList);
+			
 			PreparedQuery<Polygon> pQuery = qBuilder.prepare();
+			
+			List<Polygon> guideDatabases = db.query(pQuery);
 
-			List<Polygon> _guideDatabases = db.query(pQuery);
-
-			if (_guideDatabases != null && _guideDatabases.size() > 0) {
-				guideDatabases = _guideDatabases;
+			if (guideDatabases != null && guideDatabases.size() > 0) {
+				for (Polygon polygon : guideDatabases) {
+					streetNonMatchedShapeIdList.add(polygon.polygonid);
+				}
 			}
 
-			for (Polygon polygon : _guideDatabases) {
-				streetNonMatchedShapeIdList.add(polygon.polygonid.intValue());
-			}
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);

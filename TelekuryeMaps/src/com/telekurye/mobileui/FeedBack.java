@@ -137,6 +137,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private Polygon							currentPolygon			= null;
 	private List<Polygon>					SelectedPolygonList		= new ArrayList<Polygon>();
 	private List<Long>						greenShapes;
+	private List<Long>						NonMatchedShapeIdList	= new ArrayList<Long>();										;
+	// private int NonMatchedShapeIdCount;
 
 	// ------ GOOGLE MAP -------
 	private final int						RQS_GooglePlayServices	= 1;
@@ -302,121 +304,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		tv_street_name.setText("<-- " + mMissionForFeedback.get(MissionCounter).getName() + " SOKAK -->");
 
-		ShapeIdList = new ArrayList<Integer>();
-		ShapeIdList = FillShapeIds();
-		ShapeIdList = com.telekurye.kml.Polygon.GetNonMatchedShapeIdList(ShapeIdList, this);
-
-		shapeControl = new ShapeControl(ShapeIdList);
-
 		LoadShapes();
 
 		fillComponent();
 		tabsProperties();
-	}
-
-	private List<Integer> FillShapeIds() {
-		List<Integer> ShapeIdList = new ArrayList<Integer>();
-		ShapeIdList.add(542297);
-		ShapeIdList.add(507561);
-		ShapeIdList.add(507569);
-		ShapeIdList.add(507568);
-		ShapeIdList.add(507553);
-		ShapeIdList.add(507558);
-		ShapeIdList.add(507544);
-		ShapeIdList.add(507543);
-		ShapeIdList.add(507541);
-		ShapeIdList.add(507619);
-		ShapeIdList.add(507564);
-		ShapeIdList.add(507548);
-		ShapeIdList.add(548428);
-		ShapeIdList.add(544907);
-		ShapeIdList.add(540123);
-		ShapeIdList.add(540165);
-		ShapeIdList.add(548838);
-		ShapeIdList.add(543582);
-		ShapeIdList.add(548421);
-		ShapeIdList.add(548448);
-		ShapeIdList.add(548422);
-		ShapeIdList.add(548423);
-		ShapeIdList.add(543380);
-		ShapeIdList.add(581406);
-		ShapeIdList.add(580807);
-		ShapeIdList.add(543366);
-		ShapeIdList.add(580756);
-		ShapeIdList.add(580790);
-		ShapeIdList.add(581261);
-		ShapeIdList.add(581401);
-		ShapeIdList.add(580915);
-		ShapeIdList.add(580938);
-		ShapeIdList.add(580802);
-		ShapeIdList.add(580887);
-		ShapeIdList.add(580923);
-		ShapeIdList.add(580894);
-		ShapeIdList.add(403790);
-		ShapeIdList.add(403796);
-		ShapeIdList.add(579432);
-		ShapeIdList.add(580960);
-		ShapeIdList.add(580944);
-		ShapeIdList.add(580945);
-		ShapeIdList.add(580893);
-		ShapeIdList.add(579423);
-		ShapeIdList.add(580892);
-		ShapeIdList.add(535415);
-		ShapeIdList.add(580880);
-		ShapeIdList.add(580751);
-		ShapeIdList.add(580911);
-		ShapeIdList.add(581239);
-		ShapeIdList.add(580872);
-		ShapeIdList.add(535100);
-		ShapeIdList.add(581246);
-		ShapeIdList.add(581245);
-		ShapeIdList.add(581426);
-		ShapeIdList.add(543602);
-		ShapeIdList.add(581398);
-		ShapeIdList.add(535145);
-		ShapeIdList.add(580876);
-		ShapeIdList.add(580783);
-		ShapeIdList.add(410296);
-		ShapeIdList.add(581577);
-		ShapeIdList.add(580741);
-		ShapeIdList.add(410041);
-		ShapeIdList.add(580819);
-		ShapeIdList.add(580875);
-		ShapeIdList.add(581165);
-		ShapeIdList.add(581241);
-		ShapeIdList.add(581240);
-		ShapeIdList.add(580769);
-		ShapeIdList.add(580781);
-		ShapeIdList.add(543596);
-		ShapeIdList.add(540268);
-		ShapeIdList.add(548707);
-		ShapeIdList.add(542068);
-		ShapeIdList.add(540266);
-		ShapeIdList.add(540267);
-		ShapeIdList.add(540242);
-		ShapeIdList.add(543189);
-		ShapeIdList.add(540145);
-		ShapeIdList.add(540097);
-		ShapeIdList.add(540238);
-		ShapeIdList.add(541947);
-		ShapeIdList.add(540240);
-		ShapeIdList.add(540114);
-		ShapeIdList.add(543232);
-		ShapeIdList.add(543734);
-		ShapeIdList.add(542207);
-		ShapeIdList.add(543489);
-		ShapeIdList.add(542074);
-		ShapeIdList.add(401816);
-		ShapeIdList.add(542108);
-		ShapeIdList.add(548444);
-		ShapeIdList.add(542292);
-		ShapeIdList.add(542204);
-		ShapeIdList.add(535143);
-		ShapeIdList.add(580940);
-		ShapeIdList.add(543578);
-		ShapeIdList.add(543190);
-		ShapeIdList.add(580942);
-		return ShapeIdList;
 	}
 
 	private void fillComponent() {
@@ -880,6 +771,15 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		mFeedBack.setOperationDate(new Date());
 
 		mFeedBack.setBasarShapeId(basarShapeId);
+
+		if (NonMatchedShapeIdList != null && NonMatchedShapeIdList.size() > 0) {
+			for (int i = 0; i < NonMatchedShapeIdList.size(); i++) {
+				if (NonMatchedShapeIdList.get(i).intValue() == basarShapeId) {
+					NonMatchedShapeIdList.remove(i);
+				}
+			}
+		}
+
 		basarShapeId = 0;
 
 		mFeedBack.Insert();
@@ -908,15 +808,13 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		if (MissionCounter >= (mMissionForFeedback.size())) {
 
-			// if (!shapeControl.isListEmpty()) {
-			// Tools.showLongCustomToast(this,
-			// "Tamamlanmamýþ Yeni Bina Görevleri Bulunmaktadýr.");
-			// tabHost.setCurrentTab(0);
-			// newBuildingMission();
-			// isNewBuilding = true;
-			// isFinishRedShapes = false;
-			// return;
-			// }
+			if (ms.getIsForcedUrbanStreet() && NonMatchedShapeIdList != null && NonMatchedShapeIdList.size() > 0) {
+				
+				Tools.showShortCustomToast(this, "Lütfen tüm binalarý tamamlayýnýz!");
+				isNewBuilding = true;
+				newBuildingMission();
+				return;
+			}
 
 			Tools.showShortCustomToast(this, "Sokak Görevi Tamamlandý");
 			LiveData.streetMarkers.clear();
@@ -1067,7 +965,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			}
 			else if (tabId.equals("Kapý")) {
 
-				if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1 && !isNewBuilding) {
+				if (!isNewBuilding && mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1) {
 					tabHost.setCurrentTab(1);
 					return;
 				}
@@ -1206,7 +1104,14 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					finishedShapes = new FinishedShapeHistory();
 					finishedShapes.setShapeId(pol.polygonid);
 					finishedShapes.setUserId(Info.UserId);
-					finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
+					if (!isNewBuilding) {
+						finishedShapes.setUserDailyMissionId(mMissionForFeedback.get(MissionCounter).getUserDailyMissionId());
+					}
+					else {
+						long lDate = new Date().getTime();
+						int lDateTime = -(int) (lDate % ((long) Integer.MAX_VALUE));
+						finishedShapes.setUserDailyMissionId(lDateTime);
+					}
 
 					polygonOptions.strokeColor(Color.GREEN);
 					polygonOptions.fillColor(0x802EFE64);
@@ -1664,6 +1569,9 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			for (BasarShapeId basarShapeId : shapeListFromHost) {
 				greenShapes.add(basarShapeId.getBasarShapeId());
 			}
+
+			// NonMatchedShapeIdList = com.telekurye.kml.Polygon.GetNonMatchedShapeIdList(greenShapes, (long) ms.getDistrictId(), this);
+
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);
@@ -1735,6 +1643,9 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						polylineOptionsList.add(polygonOptions);
 					}
 					else if (polygon.type == 2) {
+						
+						
+						
 						final PolygonOptions polygonOptions = new PolygonOptions();
 
 						String[] coors = SplitUsingTokenizer(polygon.coordinates, "||");
@@ -1766,6 +1677,16 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						}
 						polygonOptions.strokeWidth(3);
 						polygonOptionsList.add(polygonOptions);
+
+						for (Long greenshapeid : greenShapes) {
+							if (!greenshapeid.equals(polygon.polygonid)) {
+								NonMatchedShapeIdList.add(polygon.polygonid);
+							}
+						}
+
+						
+						
+						
 					}
 				}
 
