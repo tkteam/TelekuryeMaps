@@ -32,10 +32,11 @@ import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 
 public class SendImage {
-	public Boolean	hasError	= false;
 
-	public SendImage(String order, String UserDailyMissionTypeId, String UserDailyMissionId, String urlTo, String filepath) throws Exception {
+	public static Boolean Send(String order, String UserDailyMissionTypeId, String UserDailyMissionId, String urlTo, String filepath) throws Exception {
 
+		Boolean	hasSuccess	= true;
+		
 		HttpURLConnection conn = null;
 		DataOutputStream outputStream = null;
 		InputStream inputStream = null;
@@ -130,7 +131,7 @@ public class SendImage {
 			outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
 			inputStream = conn.getInputStream();
-			result = this.convertStreamToString(inputStream);
+			result = convertStreamToString(inputStream);
 
 			// if (result.compareTo("200") != 0) {
 			// hasError = true;
@@ -144,12 +145,12 @@ public class SendImage {
 				SyncResult<Person> person = gson.fromJson(result, listType);
 
 				if (person.getProcessStatus() != 200) {
-					hasError = true;
+					hasSuccess = false;
 				}
 
 			}
 			else {
-				hasError = true;
+				hasSuccess = false;
 			}
 
 			// ****************************
@@ -171,14 +172,15 @@ public class SendImage {
 		}
 		catch (Exception e) {
 
-			hasError = true;
+			hasSuccess = false;
 			Tools.saveErrors(e);
-
 		}
 
+		
+		return hasSuccess;
 	}
 
-	private String convertStreamToString(InputStream is) {
+	private static String convertStreamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 

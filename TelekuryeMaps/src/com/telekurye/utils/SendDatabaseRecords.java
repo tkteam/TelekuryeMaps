@@ -129,17 +129,23 @@ public class SendDatabaseRecords {
 
 				String FilePath = Environment.getExternalStorageDirectory() + File.separator + Info.PHOTO_STORAGE_PATH + File.separator + mfbp.getPhoto();
 
-				new SendImage(Integer.toString(sayac), TypeId, UserDailyMissionId, Info.PHOTO_SYNC_URL, FilePath); // gönder
+				Boolean success = SendImage.Send(Integer.toString(sayac), TypeId, UserDailyMissionId, Info.PHOTO_SYNC_URL, FilePath); // gönder
 
-				File file = new File(FilePath); // fotoyu sil
-				file.delete();
-				sayac++;
+				if (success) {
+					mfbp.setIsCompleted(true);
+					mfbp.Update();
+					
+					File file = new File(FilePath); // fotoyu sil
+					file.delete();
+					sayac++;
+				}
+
 			}
 
-			for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) {
+/*			for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) {
 				mfbp.setIsCompleted(true);
 				mfbp.Update();
-			}
+			}*/
 		}
 
 		if (!isLogin) { // ilk giriþte fazla bekletmemek için loginde exceptionlarý gönderme kaldýrýldý.

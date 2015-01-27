@@ -351,6 +351,21 @@ public class Tools {
 
 		return "{\"EndSyncDate\":\"2034-08-25T10:13:09\",\"LastSyncDate\":\"" + lastSyncDate + "\"}";
 	}
+	
+	public static String GetLastSyncDate() {
+		String lastSyncDate = null;
+		SyncTime syncFetcherObj = new SyncTime();
+		// List<SyncTime> fetchedObjects = syncFetcherObj.GetAllData();
+		List<SyncTime> fetchedObjects = syncFetcherObj.GetDataForUser(Info.UserId);
+		if (fetchedObjects.size() > 0) {
+			lastSyncDate = fetchedObjects.get(0).getLastSyncDate();
+		}
+		else {
+			lastSyncDate = "1987-03-03T03:00:00";
+		}
+
+		return lastSyncDate;
+	}
 
 	public static void SetLastSyncDate(Activity act, String date) {
 		// SharedPreferences sharedPref = act.getPreferences(Context.MODE_PRIVATE);

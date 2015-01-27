@@ -67,7 +67,7 @@ public class MissionFeedBackPhoto {
 
 		try {
 
-			String startDateString = "1989-10-03 11:26:36";
+			String startDateString = "1987-03-03 11:26:36";
 			sr.setLastSyncDate(startDateString); // bi önceki senkroniazyon saati
 			sr.setEndSyncDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); // þuanki saat
 
