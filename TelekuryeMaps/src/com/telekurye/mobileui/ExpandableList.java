@@ -40,7 +40,7 @@ import com.telekurye.tools.Tools;
 import com.telekurye.utils.OnMissionUpdated;
 
 public class ExpandableList extends Activity {
-	// Initialize variables
+
 	private static final String			STR_CHECKED			= " has Checked!";
 	private static final String			STR_UNCHECKED		= " has unChecked!";
 	private int							ParentClickStatus	= -1;
@@ -61,11 +61,6 @@ public class ExpandableList extends Activity {
 
 		tvShowEmpty = (TextView) findViewById(R.id.tvEmpty);
 
-		// Creating static data in arraylist
-		// final ArrayList<Parent> dummyList = buildDummyData();
-
-		// Adding ArrayList data to ExpandableListView values
-
 		LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
 
 		FillData();
@@ -74,14 +69,9 @@ public class ExpandableList extends Activity {
 
 			@Override
 			public void Update() {
-				// TODO Auto-generated method stub
-				// FillData();
-
 				asyncTaskExpandableList();
 			}
 		});
-
-		// loadHosts(dummyList);
 	}
 
 	@Override
@@ -105,52 +95,42 @@ public class ExpandableList extends Activity {
 	}
 
 	private void FillData() {
-		ArrayList<Parent> list = new ArrayList<Parent>();
+		try {
+			ArrayList<Parent> list = new ArrayList<Parent>();
 
-		MissionsStreets data = new MissionsStreets();
-		List<MissionsStreets> mStreetsAll = new ArrayList<MissionsStreets>();
-		List<MissionsStreets> mStreetsAllUser = data.GetAllData();
+			MissionsStreets data = new MissionsStreets();
+			List<MissionsStreets> mStreetsAll = new ArrayList<MissionsStreets>();
+			List<MissionsStreets> mStreetsAllUser = data.GetAllData();
 
-		for (int i = 0; i < mStreetsAllUser.size(); i++) {
-			// if (mStreetsAllUser.get(i).getUserId() == new Person().GetAllData().get(0).getId()) {
-			if (mStreetsAllUser.get(i).getUserId() == Info.UserId) {
-				mStreetsAll.add(mStreetsAllUser.get(i));
+			for (int i = 0; i < mStreetsAllUser.size(); i++) {
+				if (mStreetsAllUser.get(i).getUserId() == Info.UserId) {
+					mStreetsAll.add(mStreetsAllUser.get(i));
+				}
 			}
-		}
 
-		List<MissionsStreets> mStreetsRemove = new ArrayList<MissionsStreets>();
+			List<MissionsStreets> mStreetsRemove = new ArrayList<MissionsStreets>();
 
-		// if(Info.mStreetsAll == null)
-		{
 			LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
 			LiveData.mStreetsAll.addAll(mStreetsAll);
-		}
-		/*
-		 * else{ for(MissionsStreets mStreet : mStreetsAll){ for(MissionsStreets mStreet2 : Info.mStreetsAll) { if(mStreet.getUserDailyMissionId() == mStreet2.getUserDailyMissionId() &&
-		 * mStreet.getModifiedDate().compareTo(mStreet2.getModifiedDate()) == 0) { mStreetsRemove.add(mStreet); } } } mStreetsAll.removeAll(mStreetsRemove); Info.mStreetsAll.addAll(mStreetsAll); }
-		 */
 
-		List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
+			List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
 
-		for (int j = 0; j < mStreetsAll.size(); j++) {
-			if (mStreetsAll.get(j).getBuildingNumber_IsOdd() && !mStreetsAll.get(j).getIsDeleted()) {
-				mStreets.add(mStreetsAll.get(j));
+			for (int j = 0; j < mStreetsAll.size(); j++) {
+				if (mStreetsAll.get(j).getBuildingNumber_IsOdd() && !mStreetsAll.get(j).getIsDeleted()) {
+					mStreets.add(mStreetsAll.get(j));
+				}
 			}
+
+			Collections.sort(mStreets, new MissionsStreets());
+
+			FillList(list, mStreets);
+
+			loadHosts(list);
 		}
-
-		Collections.sort(mStreets, new MissionsStreets());
-
-		FillList(list, mStreets);
-
-		loadHosts(list);
-
-		try {
-			Thread.sleep(1000);
-		}
-		catch (InterruptedException e) {
+		catch (Exception e) {
 			Tools.saveErrors(e);
-
 		}
+
 	}
 
 	@Override
@@ -163,7 +143,6 @@ public class ExpandableList extends Activity {
 		for (int i = 0; i < mStreets.size(); i++) {
 			Parent parent = new Parent();
 
-			// List<MissionsBuildings> mBuilds = LiveData.misBuildings;
 			MissionsBuildings mb = new MissionsBuildings();
 
 			List<MissionsBuildings> mBuilds = new ArrayList<MissionsBuildings>();
@@ -171,13 +150,13 @@ public class ExpandableList extends Activity {
 			List<MissionsBuildings> mBuildssAllUser = mb.GetAllData();
 
 			for (int m = 0; m < mBuildssAllUser.size(); m++) {
-				// if (mBuildssAllUser.get(m).getUserId() == new Person().GetAllData().get(0).getId()) {
+
 				if (mBuildssAllUser.get(m).getUserId() == Info.UserId) {
 					mBuilds.add(mBuildssAllUser.get(m));
 				}
 			}
 
-			int sayac = 0; // toplam görev sayısına 2 adet sokak görevi de ekleneceği için 2'den başlattım
+			int sayac = 0;
 
 			for (int j = 0; j < mBuilds.size(); j++) {
 				if (mStreets.get(i).getStreetId() == mBuilds.get(j).getStreetId() && !mBuilds.get(j).getIsDeleted()) {
@@ -231,10 +210,6 @@ public class ExpandableList extends Activity {
 
 	public void asyncTaskExpandableList() {
 
-		// if (Info.syncBack2 != null) {
-		// boolean b = Info.syncBack2.cancel(true);
-		// }
-
 		AsyncTask<Void, ArrayList<Parent>, ArrayList<Parent>> syncBack2 = new AsyncTask<Void, ArrayList<Parent>, ArrayList<Parent>>() {
 
 			@Override
@@ -259,16 +234,8 @@ public class ExpandableList extends Activity {
 
 				List<MissionsStreets> mStreetsRemove = new ArrayList<MissionsStreets>();
 
-				// if(Info.mStreetsAll == null)
-				{
-					LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
-					LiveData.mStreetsAll.addAll(mStreetsAll);
-				}
-				/*
-				 * else{ for(MissionsStreets mStreet : mStreetsAll){ for(MissionsStreets mStreet2 : Info.mStreetsAll) { if(mStreet.getUserDailyMissionId() == mStreet2.getUserDailyMissionId() &&
-				 * mStreet.getModifiedDate().compareTo(mStreet2.getModifiedDate()) == 0) { mStreetsRemove.add(mStreet); } } } mStreetsAll.removeAll(mStreetsRemove);
-				 * Info.mStreetsAll.addAll(mStreetsAll); }
-				 */
+				LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
+				LiveData.mStreetsAll.addAll(mStreetsAll);
 
 				List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
 
@@ -283,15 +250,6 @@ public class ExpandableList extends Activity {
 				FillList(list, mStreets);
 
 				publishProgress(list);
-
-				try {
-					Thread.sleep(1000);
-				}
-				catch (InterruptedException e) {
-					Tools.saveErrors(e);
-
-				}
-				// }
 
 				return list;
 			}
@@ -387,60 +345,6 @@ public class ExpandableList extends Activity {
 
 	}
 
-	// private ArrayList<Parent> buildDummyData() {
-	// ArrayList<Parent> list = new ArrayList<Parent>();
-	//
-	// List<MissionsStreets> mStreetsAll = new MissionsStreets().GetAllData();
-	// List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
-	//
-	// for (int j = 0; j < mStreetsAll.size(); j++) {
-	// if (mStreetsAll.get(j).getBuildingNumber_IsOdd()) {
-	// mStreets.add(mStreetsAll.get(j));
-	// }
-	// }
-	//
-	// Collections.sort(mStreets, new MissionsStreets());
-	//
-	// for (int i = 0; i < mStreets.size(); i++) {
-	// Parent parent = new Parent();
-	//
-	// List<MissionsBuildings> mBuilds = new MissionsBuildings().GetAllData();
-	// int sayac = 0; // toplam görev sayısına 2 adet sokak görevi de ekleneceği için 2'den başlattım
-	//
-	// for (int j = 0; j < mBuilds.size(); j++) {
-	// if (mStreets.get(i).getStreetId() == mBuilds.get(j).getStreetId()) {
-	// sayac++;
-	// }
-	// }
-	//
-	// int sayac2 = sayac + 2;
-	//
-	// parent.setText1("" + mStreets.get(i).getName() + " Sokak");
-	// parent.setText2("" + mStreets.get(i).getAddressText());
-	// parent.setCounter("[" + Integer.toString(sayac2) + "]");
-	// parent.setChildren(new ArrayList<Child>());
-	//
-	// Child child = new Child();
-	// child.setText1("Artan Çift Sayılar       - Örnek: 2, 4, 6");
-	// parent.getChildren().add(child);
-	//
-	// Child child1 = new Child();
-	// child1.setText1("Azalan Çift Sayılar     - Örnek: 6, 4, 2");
-	// parent.getChildren().add(child1);
-	//
-	// Child child2 = new Child();
-	// child2.setText1("Artan Tek Sayılar       - Örnek: 1, 3, 5");
-	// parent.getChildren().add(child2);
-	//
-	// Child child3 = new Child();
-	// child3.setText1("Azalan Tek Sayılar     - Örnek: 5, 3, 1");
-	// parent.getChildren().add(child3);
-	//
-	// list.add(parent);
-	// }
-	//
-	// return list;
-	// }
 	private void loadHosts(final ArrayList<Parent> newParents) {
 		if (newParents == null)
 			return;
@@ -475,9 +379,7 @@ public class ExpandableList extends Activity {
 
 				@Override
 				public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-					// We call collapseGroupWithAnimation(int) and
-					// expandGroupWithAnimation(int) to animate group
-					// expansion/collapse.
+
 					if (listView.isGroupExpanded(groupPosition)) {
 						listView.collapseGroupWithAnimation(groupPosition);
 					}
@@ -498,9 +400,6 @@ public class ExpandableList extends Activity {
 		showEmpty();
 	}
 
-	/**
-	 * A Custom adapter to create Parent view (Used grouprow.xml) and Child View((Used childrow.xml).
-	 */
 	private class MyExpandableListAdapter extends AnimatedExpandableListAdapter {
 
 		private LayoutInflater	inflater;
@@ -515,36 +414,15 @@ public class ExpandableList extends Activity {
 		public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parentView) {
 			final Parent parent = parents.get(groupPosition);
 
-			// Inflate grouprow.xml file for parent rows
 			convertView = inflater.inflate(R.layout.grouprow, parentView, false);
 
-			// Get grouprow.xml file elements and set values
 			((TextView) convertView.findViewById(R.id.tvGroup1)).setText(parent.getText1().trim());
 			((TextView) convertView.findViewById(R.id.tvGroup2)).setText(parent.getText2().trim());
 			((TextView) convertView.findViewById(R.id.tvChildCounter)).setText(parent.getCounter().trim());
 
-			// ImageView rightcheck = (ImageView) convertView.findViewById(R.id.rightcheck);
-
-			// Log.i("onCheckedChanged", "isChecked: "+parent.isChecked());
-
-			// Change right check image on parent at runtime
-			// if (parent.isChecked() == true) {
-			// rightcheck.setImageResource(getResources().getIdentifier("com.androidexample.customexpandablelist:drawable/rightcheck", null, null));
-			// } else {
-			// rightcheck.setImageResource(getResources().getIdentifier("com.androidexample.customexpandablelist:drawable/button_check", null, null));
-			// }
-
-			// Get grouprow.xml file checkbox elements
-			// CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
-			// checkbox.setChecked(parent.isChecked());
-
-			// Set CheckUpdateListener for CheckBox (see below CheckUpdateListener class)
-			// checkbox.setOnCheckedChangeListener(new CheckUpdateListener(parent));
-
 			return convertView;
 		}
 
-		// This Function used to inflate child rows view
 		@Override
 		public View getRealChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parentView) {
 			final Parent parent = parents.get(groupPosition);
@@ -555,40 +433,38 @@ public class ExpandableList extends Activity {
 			}
 
 			((TextView) convertView.findViewById(R.id.tvChild1)).setText(child.getText1());
-			// ImageView image = (ImageView) convertView.findViewById(R.id.image);
-			// image.setImageResource(getResources().getIdentifier("com.androidexample.customexpandablelist:drawable/setting" + parent.getName(), null, null));
 
 			convertView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View view) {
 
-//					if (!Info.ISTEST) {
-//						Calendar cal = Calendar.getInstance();
-//						cal.setTime(parent.getLastOperationDate());
-//
-//						int h = cal.get(Calendar.HOUR_OF_DAY);
-//						int m = cal.get(Calendar.MINUTE);
-//						int t = h * 60 + m;
-//
-//						Calendar cal2 = Calendar.getInstance();
-//						cal2.setTime(new Date());
-//						int h2 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-//						int m2 = Calendar.getInstance().get(Calendar.MINUTE);
-//						int t2 = h2 * 60 + m2;
-//
-//						double diff = t - t2;
-//						double selectedStreetBuildingsCount = parent.getBuildingCount();
-//
-//						double d = diff / selectedStreetBuildingsCount;
-//
-//						if (diff <= 0) {
-//							Tools.showLongCustomToast(ExpandableList.this, "�al��ma s�resi sona ermi�tir.");
-//							finish();
-//							return;
-//						}
-//
-//					}
+					if (!Info.ISTEST && Info.ISSENDFEEDBACK) {
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(parent.getLastOperationDate());
+
+						int h = cal.get(Calendar.HOUR_OF_DAY);
+						int m = cal.get(Calendar.MINUTE);
+						int t = h * 60 + m;
+
+						Calendar cal2 = Calendar.getInstance();
+						cal2.setTime(new Date());
+						int h2 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+						int m2 = Calendar.getInstance().get(Calendar.MINUTE);
+						int t2 = h2 * 60 + m2;
+
+						double diff = t - t2;
+						double selectedStreetBuildingsCount = parent.getBuildingCount();
+
+						double d = diff / selectedStreetBuildingsCount;
+
+						if (diff <= 0) {
+							Tools.showLongCustomToast(ExpandableList.this, "�al��ma s�resi sona ermi�tir.");
+							finish();
+							return;
+						}
+
+					}
 
 					Intent i = new Intent(ExpandableList.this, StreetInfo.class);
 					i.putExtra("streettype", parent.getTypeId());
@@ -608,12 +484,9 @@ public class ExpandableList extends Activity {
 			return parents.get(groupPosition).getChildren().get(childPosition);
 		}
 
-		// Call when child row clicked
 		@Override
 		public long getChildId(int groupPosition, int childPosition) {
-			/****** When Child row clicked then this function call *******/
 
-			// Log.i("Noise", "parent == "+groupPosition+"=  child : =="+childPosition);
 			if (ChildClickStatus != childPosition) {
 				ChildClickStatus = childPosition;
 

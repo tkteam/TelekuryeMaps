@@ -374,7 +374,9 @@ public class Login extends Activity implements OnClickListener {
 
 					publishProgress("Tamamlanan eski görevler gönderiliyor...", "40");
 
-					SendDatabaseRecords.SendRecords(Login.this, true);
+					if (Info.ISSENDFEEDBACK) {
+						SendDatabaseRecords.SendRecords(Login.this, true);
+					}
 
 					Boolean needDbReset = jto.saveLogin(gson, json);
 

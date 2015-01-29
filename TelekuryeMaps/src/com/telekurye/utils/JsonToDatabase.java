@@ -294,10 +294,13 @@ public class JsonToDatabase {
 			}.getType();
 			SyncResult<ArrayList<BasarShapeId>> basarShapeId = gson.fromJson(json, listType);
 
-			for (int i = 0; i < basarShapeId.getTargetObject().size(); i++) {
-				BasarShapeId data = basarShapeId.getTargetObject().get(i);
-				data.Insert();
+			if (basarShapeId != null && basarShapeId.getTargetObject() != null && basarShapeId.getTargetObject().size() > 0) {
+				for (int i = 0; i < basarShapeId.getTargetObject().size(); i++) {
+					BasarShapeId data = basarShapeId.getTargetObject().get(i);
+					data.Insert();
+				}
 			}
+
 			ProcessStatuses ps = new ProcessStatuses();
 			ps.setId(5);
 			ps.setStatusName(Info.tagBasarShapeId);

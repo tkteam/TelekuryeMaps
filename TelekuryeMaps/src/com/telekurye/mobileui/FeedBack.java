@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -119,60 +120,65 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private double							SignedLat;
 	private double							SignedLng;
 	private int								TypeId;
-	private int								checkboxStatus			= 0;
-	private int								basarShapeId			= 0;
+	private int								checkboxStatus					= 0;
+	private int								basarShapeId					= 0;
 
 	// ------- KML & SHAPE --------
 	private List<BasarShapeId>				shapeListFromHost;
 	private List<Long>						shapeIdHistory;
 	private FinishedShapeHistory			finishedShapes;
 	private ShapeControl					shapeControl;
-	private List<Integer>					ShapeIdList				= null;
-	private Boolean							isFinishRedShapes		= true;
+	private List<Integer>					ShapeIdList						= null;
+	private Boolean							isFinishRedShapes				= true;
 	private List<com.telekurye.kml.Polygon>	polygons;
-	private String							db_path					= "/data/data/com.telekurye.mobileui/databases/";
-	private String							db_name					= Info.MAP_DBNAME;
-	private List<Polygon>					polList					= new ArrayList<Polygon>();
-	private List<Polyline>					polylineList			= new ArrayList<Polyline>();
-	private Polygon							currentPolygon			= null;
-	private List<Polygon>					SelectedPolygonList		= new ArrayList<Polygon>();
-	private List<Long>						greenShapes;
-	private List<Long>						NonMatchedShapeIdList	= new ArrayList<Long>();										;
+	private String							db_path							= "/data/data/com.telekurye.mobileui/databases/";
+	private String							db_name							= Info.MAP_DBNAME;
+	private List<Polygon>					polList							= new ArrayList<Polygon>();
+	private List<Polyline>					polylineList					= new ArrayList<Polyline>();
+	private Polygon							currentPolygon					= null;
+	private List<Polygon>					SelectedPolygonList				= new ArrayList<Polygon>();
+	// private HashSet<Long> NonMatchedShapeIdList = new HashSet<Long>();
+	private HashSet<Long>					greenShapes						= new HashSet<Long>();
+	private HashSet<Long>					redShapes						= new HashSet<Long>();
+	private List<com.telekurye.kml.Polygon>	BuildingShapeByDistrictIdList	= new ArrayList<com.telekurye.kml.Polygon>();
+
 	// private int NonMatchedShapeIdCount;
 
 	// ------ GOOGLE MAP -------
-	private final int						RQS_GooglePlayServices	= 1;
+	private final int						RQS_GooglePlayServices			= 1;
 	private GoogleMap						myMap;
 	private LatLng							currentLocation;
 	private Marker							mPositionMarker;
 	private Marker							currentMarker;
-	private Boolean							isMarkerSet				= false;
+	private Boolean							isMarkerSet						= false;
 	private MapFragment						map;
 
 	// ----- GPS -----
 	protected LocationManager				locationManager;
 	private long							mLastLocationMillis;
 	private Location						mLastLocation;
-	private Location						tempLocation			= null;
-	private boolean							isGPSFix				= false;
-	private float							UserAccuracy			= 5000;
+	private Location						tempLocation					= null;
+	private boolean							isGPSFix						= false;
+	private float							UserAccuracy					= 5000;
 
 	// ----------------------------------
 	private int								valueTab;
 	private int								selectType;
-	private Boolean							btnTypeStatus			= false;
-	private Boolean							isZoomOpen				= false;
-	private Boolean							isNewBuilding			= false;
-	private Integer							firstStreetTypeId		= null;
+	private Boolean							btnTypeStatus					= false;
+	private Boolean							isZoomOpen						= false;
+	private Boolean							isNewBuilding					= false;
+	private Integer							firstStreetTypeId				= null;
 	private SensorManager					mSensorManager;
 	private CameraHelper					tp;
-	private int								MissionCounter			= 0;
+	private int								MissionCounter					= 0;
 	private int								grupid, childid, streettype;
 	private ArrayList<IMission>				mMissionForFeedback;
-	private List<MissionsStreets>			completedMissionStreets	= new ArrayList<MissionsStreets>();
+	private List<MissionsStreets>			completedMissionStreets			= new ArrayList<MissionsStreets>();
 	private MissionsStreets					ms;
 	private UiSettings						uiSettings;
 	private Thread							uiUpdateThread;
+	private boolean							IsForcedUrbanStreet				= false;
+	private boolean							IsFirstForcedUrbanStreet		= true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -415,7 +421,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				tv_mission_status_value.setText("Dýþ Kapý No Görevi");
 
-				// ----
 				tv_apname_value.setVisibility(View.VISIBLE);
 				new_et_apname_value.setVisibility(View.GONE);
 				if (mMissionForFeedback.get(MissionCounter).getName() != null && !mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
@@ -425,7 +430,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					tv_apname_value.setText("");
 				}
 				tv_apname.setText("Bina Adý : ");
-				// ------
+
 				ll_mission_type_info.setVisibility(View.VISIBLE);
 
 				tv_building_type_info.setText("Bina Tipi Bilgisi : ");
@@ -436,25 +441,18 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				et_independent_section_count.setText("" + mMissionForFeedback.get(MissionCounter).getIndependentSectionCount());
 				et_floor_count.setText("");
 
-				// ---
 				ll_user_feedback.setVisibility(View.VISIBLE);
 
-				// ---
 				tv_apno.setVisibility(View.VISIBLE);
 				ll_apno.setVisibility(View.VISIBLE);
 				tv_apno_value.setVisibility(View.VISIBLE);
 				new_et_apno_value.setVisibility(View.GONE);
 				tv_apno.setText("Dýþ Kapý No : ");
 				tv_apno_value.setText(mMissionForFeedback.get(MissionCounter).getBuildingNumber());
-				// tv_apno_value.setText(mMissionForFeedback.get(MissionCounter).getBuildingNumber()
-				// + " / " +
-				// mMissionForFeedback.get(MissionCounter).getIndependentSectionType());
 
 				tv_address.setVisibility(View.VISIBLE);
 				tv_address_value.setVisibility(View.VISIBLE);
 				tv_address_value.setText(mMissionForFeedback.get(MissionCounter).getAddressText().trim());
-
-				// ---
 
 				String nameSurname = mMissionForFeedback.get(MissionCounter).getPersonNameSurname();
 				if (nameSurname == null) {
@@ -467,49 +465,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" + mMissionForFeedback.size());
 
-				// if (shapeControl != null || shapeControl.getListSize() > 0) {
-				// tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" +
-				// mMissionForFeedback.size() + "  [+" +
-				// shapeControl.getListSize() + "]");
-				// }
-				// else {
-				// tv_Score.setText("Durum : " + (MissionCounter + 1) + "/" +
-				// mMissionForFeedback.size() + "  [0]");
-				// }
-
 				tv_building_type_info_value.setText(mMissionForFeedback.get(MissionCounter).getIndependentSectionType());
 
-				// for (int i = 0; i < Constant.BuildingTypes.Id().size(); i++)
-				// {
-				//
-				// if
-				// (mMissionForFeedback.get(MissionCounter).getIndependentSectionTypeId()
-				// == Constant.BuildingTypes.Id().get(i)) {
-				//
-				// TypeId =
-				// mMissionForFeedback.get(MissionCounter).getStreetTypeId();
-				//
-				// int BuildingType = Constant.BuildingTypes.Id().get(i);
-				//
-				// if (BuildingType == 16) { // tahsis
-				// btnStreetOrBuildingType.setEnabled(false);
-				// btnStreetOrBuildingType.setText("Seçim Yapýlamaz");
-				// }
-				// else if (BuildingType == 1 || BuildingType == 2 ||
-				// BuildingType == 15) { // arsa,inþaat,bina dýþý yapý
-				//
-				// et_independent_section_count.setEnabled(false);
-				// et_independent_section_count.setText("");
-				// et_independent_section_count.setHint("Seçilemez");
-				//
-				// et_floor_count.setEnabled(false);
-				// et_floor_count.setText("");
-				// et_floor_count.setHint("Seçilemez");
-				// }
-				//
-				// }
-				//
-				// }
 			}
 
 			// ###################################
@@ -519,13 +476,12 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			cbSagKapi.setChecked(false);
 
 			LiveData.userDailyMissionId = mMissionForFeedback.get(MissionCounter).getUserDailyMissionId();
-
-			ShowSelectedMarkers();
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);
 		}
 
+		ShowSelectedMarkers();
 	}
 
 	private void ShowSelectedMarkers() {
@@ -578,7 +534,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				Tools.showShortCustomToast(this, Info.PHOTO_COUNT + " adet fotoðraf çekilmelidir.");
 				return;
 			}
-
 			if (!cbOnKapi.isChecked() && !cbSolKapi.isChecked() && !cbSagKapi.isChecked() && (isNewBuilding || mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2)) {
 				Tools.showShortCustomToast(this, "Kapýnýn bulunduðu cepheyi seçiniz.");
 				return;
@@ -588,6 +543,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		// fillPolygon.add(polygonOptions);
 
 		greenShapes.add((long) basarShapeId);
+
+		if (ms.getIsForcedUrbanStreet() && redShapes != null && redShapes.size() > 0) {
+			redShapes.remove((long) basarShapeId);
+		}
 
 		if (finishedShapes != null) {
 			finishedShapes.Insert();
@@ -692,12 +651,14 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				btnTypeStatus = false;
 				LiveData.streetMarkers.add(currentMarker);
 				// myMap.clear();
-				currentMarker.remove();
-				currentMarker = null;
+
+				if (currentMarker != null) {
+					currentMarker.remove();
+					currentMarker = null;
+				}
 
 				isMarkerSet = false;
 
-				// ShowSelectedMarkers();
 			}
 			catch (Exception e) {
 				Tools.saveErrors(e);
@@ -705,12 +666,12 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 			currentPolygon = null;
 
-			// if (isFinishRedShapes) {
-			fillComponent();
-			// }
-			// else {
-			// AllMissionsCompleted();
-			// }
+			if (IsForcedUrbanStreet) {
+				AllMissionsCompleted();
+			}
+			else {
+				fillComponent();
+			}
 
 			return;
 		}
@@ -737,10 +698,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			mFeedBack.setTypeId(TypeId);
 		}
 		else {
-			// mFeedBack.setBuildingName(mMissionForFeedback.get(MissionCounter
-			// - 1).getName());
-			// mFeedBack.setBuildingNumber(mMissionForFeedback.get(MissionCounter
-			// - 1).getBuildingNumber());
 			mFeedBack.setIndependentSectionTypeId(TypeId);
 
 			if (!et_floor_count.getText().toString().equalsIgnoreCase("")) {
@@ -772,14 +729,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		mFeedBack.setBasarShapeId(basarShapeId);
 
-		if (NonMatchedShapeIdList != null && NonMatchedShapeIdList.size() > 0) {
-			for (int i = 0; i < NonMatchedShapeIdList.size(); i++) {
-				if (NonMatchedShapeIdList.get(i).intValue() == basarShapeId) {
-					NonMatchedShapeIdList.remove(i);
-				}
-			}
-		}
-
 		basarShapeId = 0;
 
 		mFeedBack.Insert();
@@ -790,11 +739,9 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		et_independent_section_count.setText("");
 		if (currentMarker != null) {
 			LiveData.streetMarkers.add(currentMarker);
-			// myMap.clear();
+			isMarkerSet = false;
 			currentMarker.remove();
 			currentMarker = null;
-
-			isMarkerSet = false;
 		}
 
 		currentPolygon = null;
@@ -804,14 +751,19 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	private void AllMissionsCompleted() {
 
-		ShowSelectedMarkers();
-
 		if (MissionCounter >= (mMissionForFeedback.size())) {
 
-			if (ms.getIsForcedUrbanStreet() && NonMatchedShapeIdList != null && NonMatchedShapeIdList.size() > 0) {
-				
-				Tools.showShortCustomToast(this, "Lütfen tüm binalarý tamamlayýnýz!");
-				isNewBuilding = true;
+			if (ms.getIsForcedUrbanStreet() && redShapes != null && redShapes.size() > 0) {
+				IsForcedUrbanStreet = true;
+
+				if (IsFirstForcedUrbanStreet) {
+					Tools.showLongCustomToast(this, redShapes.size() + " adet daha yeni dýþ kapý no göreviniz bulunmaktadýr.");
+					IsFirstForcedUrbanStreet = false;
+				}
+				else {
+					Toast.makeText(FeedBack.this, "Kalan Görev Sayýsý : " + redShapes.size(), Toast.LENGTH_LONG).show();
+				}
+
 				newBuildingMission();
 				return;
 			}
@@ -829,6 +781,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		else {
 			fillComponent(); // sonraki görevin bilgileri yükleniyor
 		}
+
 	}
 
 	private void selectType() { // butona sokak verileri mi bina verileri mi yükleneceði belirleniyor
@@ -1148,9 +1101,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	@Override
 	public void onMarkerDrag(Marker marker) {
 
-		if (isZoomOpen) {
-			return;
-		}
 	}
 
 	@Override
@@ -1168,17 +1118,11 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	@Override
 	public void onMarkerDragStart(Marker marker) {
-		if (isZoomOpen) {
-			return;
-		}
+
 	}
 
 	@Override
 	public void onMapClick(LatLng point) {
-
-		if (isZoomOpen) {
-			return;
-		}
 
 	}
 
@@ -1562,15 +1506,14 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			shapeIdHistory = new FinishedShapeHistory().GetShapeIdList(Info.UserId);
 			shapeListFromHost = new BasarShapeId().GetAllData();
 
-			greenShapes = new ArrayList<Long>();
-
-			greenShapes.addAll(shapeIdHistory);
-
-			for (BasarShapeId basarShapeId : shapeListFromHost) {
-				greenShapes.add(basarShapeId.getBasarShapeId());
+			if (shapeIdHistory != null && shapeIdHistory.size() > 0) {
+				greenShapes.addAll(shapeIdHistory);
 			}
-
-			// NonMatchedShapeIdList = com.telekurye.kml.Polygon.GetNonMatchedShapeIdList(greenShapes, (long) ms.getDistrictId(), this);
+			if (shapeListFromHost != null && shapeListFromHost.size() > 0) {
+				for (BasarShapeId basarShapeId : shapeListFromHost) {
+					greenShapes.add(basarShapeId.getBasarShapeId());
+				}
+			}
 
 		}
 		catch (Exception e) {
@@ -1601,7 +1544,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				try {
 					polygons = new ArrayList<com.telekurye.kml.Polygon>();
 					polygons.addAll(com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name));
-					polygons.addAll(com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long) ms.getDistrictId(), db_path, db_name));
+					BuildingShapeByDistrictIdList = com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long) ms.getDistrictId(), db_path, db_name);
+					polygons.addAll(BuildingShapeByDistrictIdList);
 				}
 				catch (Exception e) {
 					Tools.saveErrors(e);
@@ -1610,6 +1554,23 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				for (Polygon poly : SelectedPolygonList) {
 					poly.setVisible(true);
 				}
+
+				// ----------------- kýrsal ------------------
+
+				if (ms.getIsForcedUrbanStreet()) {
+
+					for (com.telekurye.kml.Polygon polygon : BuildingShapeByDistrictIdList) {
+						redShapes.add(polygon.polygonid);
+					}
+
+					if (greenShapes != null && greenShapes.size() > 0) {
+						for (Long greenshapes : greenShapes) {
+							redShapes.remove(greenshapes);
+						}
+					}
+				}
+
+				// ------------------------------------------
 
 				for (com.telekurye.kml.Polygon polygon : polygons) {
 					polygon.coors = new ArrayList<LatLng>();
@@ -1643,9 +1604,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						polylineOptionsList.add(polygonOptions);
 					}
 					else if (polygon.type == 2) {
-						
-						
-						
+
 						final PolygonOptions polygonOptions = new PolygonOptions();
 
 						String[] coors = SplitUsingTokenizer(polygon.coordinates, "||");
@@ -1678,15 +1637,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						polygonOptions.strokeWidth(3);
 						polygonOptionsList.add(polygonOptions);
 
-						for (Long greenshapeid : greenShapes) {
-							if (!greenshapeid.equals(polygon.polygonid)) {
-								NonMatchedShapeIdList.add(polygon.polygonid);
-							}
-						}
-
-						
-						
-						
 					}
 				}
 
@@ -2093,6 +2043,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
+		if (IsForcedUrbanStreet) {
+			return false;
+		}
+
 		if (mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1 && mMissionForFeedback.get(MissionCounter).getBuildingNumber_IsOdd()) {
 			Tools.showShortCustomToast(FeedBack.this, "Ýlk Sokak Görevinde Yeni Bina ekleyemezsiniz");
 			return false;
@@ -2103,7 +2057,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			if (!isNewBuilding) {
 				newBuildingMission();
 				tabHost.setCurrentTab(0);
-				isNewBuilding = true;
 			}
 		}
 		else if (item.getItemId() == R.id.new_building_menu2) {
@@ -2121,6 +2074,11 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	}
 
 	private void newBuildingMission() {
+
+		isNewBuilding = true;
+
+		LiveData.photoinfo.clear();
+		llImages.removeAllViews();
 
 		if (currentMarker != null) {
 			currentMarker.remove();
@@ -2181,6 +2139,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		et_floor_count.setEnabled(true);
 		et_floor_count.setText("");
 		et_floor_count.setHint("Giriniz");
+
+		ShowSelectedMarkers();
 
 	}
 

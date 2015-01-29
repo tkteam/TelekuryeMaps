@@ -178,7 +178,11 @@ public class AutoSyncHelper {
 
 							JsonToDatabase jto = new JsonToDatabase();
 
-							Boolean hasSent = SendDatabaseRecords.SendRecords(act, false);
+							Boolean hasSent = false;
+
+							if (Info.ISSENDFEEDBACK) {
+								hasSent = SendDatabaseRecords.SendRecords(act, false);
+							}
 
 							Boolean hasUpdated = jto.saveMissions(params[0]);
 							jto.saveBasarShapeId(act);

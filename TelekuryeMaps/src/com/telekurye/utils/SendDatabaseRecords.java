@@ -134,7 +134,7 @@ public class SendDatabaseRecords {
 				if (success) {
 					mfbp.setIsCompleted(true);
 					mfbp.Update();
-					
+
 					File file = new File(FilePath); // fotoyu sil
 					file.delete();
 					sayac++;
@@ -142,10 +142,9 @@ public class SendDatabaseRecords {
 
 			}
 
-/*			for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) {
-				mfbp.setIsCompleted(true);
-				mfbp.Update();
-			}*/
+			/*
+			 * for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) { mfbp.setIsCompleted(true); mfbp.Update(); }
+			 */
 		}
 
 		if (!isLogin) { // ilk giriþte fazla bekletmemek için loginde exceptionlarý gönderme kaldýrýldý.

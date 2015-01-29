@@ -6,6 +6,8 @@ public class Info {
 
 	public final static Boolean	ISTEST					= false;
 
+	public final static Boolean	ISSENDFEEDBACK			= false;
+
 	public final static int		CURRENT_VERSION			= 62;
 	public static final int		DATABASE_VERSION		= 62;
 	public static final String	DATABASE_NAME			= "telekuryemaps782.db";
