@@ -407,7 +407,7 @@ public class Login extends Activity implements OnClickListener {
 
 			}
 
-			private void synUptodateData() throws HttpException {
+			private void synUptodateData() throws HttpException, MalformedURLException, ClientProtocolException, FileNotFoundException, IOException {
 				JsonToDatabase jto;
 				Gson gson;
 				String json;
@@ -427,10 +427,15 @@ public class Login extends Activity implements OnClickListener {
 				DatabaseHelper dbHelper = new DatabaseHelper(Login.this);
 				dbHelper.CreateDatabase(Login.this);
 
+				if (!Info.isDBinAssets && !dbHelper.getDbStatus()) {
+					publishProgress("Veritabaný Ýndiriliyor...", "75");
+				}
+
 				publishProgress("Görevler Yükleniyor...", "80");
 				jto.saveMissions(Login.this);
 				publishProgress("Þekil Listesi Yükleniyor...", "90");
 				jto.saveBasarShapeId(Login.this);
+
 				publishProgress("Tamamlandý!", "100");
 
 			}
@@ -493,6 +498,19 @@ public class Login extends Activity implements OnClickListener {
 			@Override
 			protected void onProgressUpdate(String... values) {
 				super.onProgressUpdate(values);
+
+				if (Integer.parseInt(values[1]) == 75) {
+					this.cancel(true);
+					AppConfig appConfig = new AppConfig();
+					try {
+						appConfig.downloadAppWithDB(progressDialog);
+					}
+					catch (Exception e) {
+						Tools.saveErrors(e);
+					}
+
+				}
+
 				progressDialog.setTitle(values[0]);
 				progressDialog.setProgress(Integer.parseInt(values[1]));
 			}

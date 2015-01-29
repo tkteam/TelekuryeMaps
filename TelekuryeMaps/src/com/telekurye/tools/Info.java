@@ -6,7 +6,9 @@ public class Info {
 
 	public final static Boolean	ISTEST					= false;
 
-	public final static Boolean	ISSENDFEEDBACK			= false;
+	public final static Boolean	ISSENDFEEDBACK			= true;
+
+	public static Boolean		isDBinAssets			= false;
 
 	public final static int		CURRENT_VERSION			= 63;
 	public static final int		DATABASE_VERSION		= 63;

@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.acra.ACRA;
-import org.acra.ErrorReporter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -351,7 +350,7 @@ public class Tools {
 
 		return "{\"EndSyncDate\":\"2034-08-25T10:13:09\",\"LastSyncDate\":\"" + lastSyncDate + "\"}";
 	}
-	
+
 	public static String GetLastSyncDate() {
 		String lastSyncDate = null;
 		SyncTime syncFetcherObj = new SyncTime();

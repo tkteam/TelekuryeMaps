@@ -16,14 +16,18 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.widget.Toast;
 
 import com.telekurye.database.DatabaseHelper;
 import com.telekurye.mobileui.Login;
+import com.telekurye.mobileui.R;
 import com.telekurye.tools.Info;
 import com.telekurye.tools.Tools;
 
@@ -150,7 +154,9 @@ public class AppConfig {
 			@Override
 			public void run() {
 				try {
-					String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps42.apk";
+					// String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps" + Info.CURRENT_VERSION + ".apk";
+
+					String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps62.apk";
 
 					HttpClient client = new DefaultHttpClient();
 
@@ -173,7 +179,6 @@ public class AppConfig {
 						fos.write(buffer, 0, len1);
 						downloadedSize += len1;
 						int percent = (int) (((float) downloadedSize / (float) TotalFileSize) * 100);
-						System.out.println(percent);
 					}
 
 					fos.flush();
@@ -193,9 +198,95 @@ public class AppConfig {
 				catch (Exception e) {
 					Tools.saveErrors(e);
 				}
-
 			}
 		}).start();
+
+	}
+
+	public void downloadAppWithDB(final ProgressDialog progressDialog) {
+
+		AsyncTask<Void, String, Boolean> downloadAndInstall = new AsyncTask<Void, String, Boolean>() {
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+
+				progressDialog.setProgress(0);
+				progressDialog.setTitle("Veritabanı Eklenmiş Versiyon İndiriliyor Lütfen Bekleyiniz...");
+
+			}
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				try {
+					String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMapsDB" + Info.CURRENT_VERSION + ".apk";
+
+					// String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps62.apk";
+
+					HttpClient client = new DefaultHttpClient();
+
+					HttpGet get = new HttpGet(DownloadUrl);
+					int TotalFileSize = Integer.parseInt(new URL(DownloadUrl).openConnection().getHeaderField("Content-Length"));
+					HttpResponse response = client.execute(get);
+
+					HttpEntity entity = response.getEntity();
+					InputStream in = entity.getContent();
+
+					File path = new File(Environment.getExternalStorageDirectory() + File.separator + Info.UPDATE_DOWNLOAD_PATH);
+					path.mkdirs();
+					File file = new File(path, "telekuryeConfig.apk");
+					FileOutputStream fos = new FileOutputStream(file);
+
+					int downloadedSize = 0;
+					byte[] buffer = new byte[1024];
+					int len1 = 0;
+					while ((len1 = in.read(buffer)) > 0) {
+						fos.write(buffer, 0, len1);
+						downloadedSize += len1;
+						int percent = (int) (((float) downloadedSize / (float) TotalFileSize) * 100);
+						publishProgress("Veritabanı Eklenmiş Versiyon İndiriliyor Lütfen Bekleyiniz...", Integer.toString(percent));
+					}
+
+					fos.flush();
+					fos.close();
+					in.close();
+
+					while (true) {
+						String fileName = Environment.getExternalStorageDirectory() + File.separator + Info.UPDATE_DOWNLOAD_PATH + File.separator + "telekuryeConfig.apk";
+						Intent i = new Intent(Intent.ACTION_VIEW);
+						i.setDataAndType(Uri.fromFile(new File(fileName)), "application/vnd.android.package-archive");
+						i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						Login.AppContext.startActivity(i);
+
+					}
+
+				}
+				catch (Exception e) {
+					Tools.saveErrors(e);
+				}
+				return null;
+			}
+
+			@Override
+			protected void onProgressUpdate(String... values) {
+				super.onProgressUpdate(values);
+
+				progressDialog.setTitle(values[0]);
+				progressDialog.setProgress(Integer.parseInt(values[1]));
+
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				super.onPostExecute(result);
+
+				if (progressDialog != null && progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+
+			}
+		};
+		downloadAndInstall.execute();
 
 	}
 
