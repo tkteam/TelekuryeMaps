@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -127,8 +126,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private List<BasarShapeId>				shapeListFromHost;
 	private List<Long>						shapeIdHistory;
 	private FinishedShapeHistory			finishedShapes;
-	private ShapeControl					shapeControl;
-	private List<Integer>					ShapeIdList						= null;
 	private Boolean							isFinishRedShapes				= true;
 	private List<com.telekurye.kml.Polygon>	polygons;
 	private String							db_path							= "/data/data/com.telekurye.mobileui/databases/";
@@ -137,12 +134,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private List<Polyline>					polylineList					= new ArrayList<Polyline>();
 	private Polygon							currentPolygon					= null;
 	private List<Polygon>					SelectedPolygonList				= new ArrayList<Polygon>();
-	// private HashSet<Long> NonMatchedShapeIdList = new HashSet<Long>();
 	private HashSet<Long>					greenShapes						= new HashSet<Long>();
 	private HashSet<Long>					redShapes						= new HashSet<Long>();
 	private List<com.telekurye.kml.Polygon>	BuildingShapeByDistrictIdList	= new ArrayList<com.telekurye.kml.Polygon>();
-
-	// private int NonMatchedShapeIdCount;
+	private List<com.telekurye.kml.Polygon>	StreetShapeByStreetIdList		= new ArrayList<com.telekurye.kml.Polygon>();
 
 	// ------ GOOGLE MAP -------
 	private final int						RQS_GooglePlayServices			= 1;
@@ -813,6 +808,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 					// TypeId = msTypesId.get(item);
 					// btnStreetOrBuildingType.setText(msTypesName.get(item));
+
 				}
 			});
 
@@ -841,12 +837,18 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					}
 					else {
 						et_independent_section_count.setEnabled(true);
-						et_independent_section_count.setText("" + mMissionForFeedback.get(MissionCounter).getIndependentSectionCount());
-						et_independent_section_count.setHint("");
+
+						if (isNewBuilding) {
+							et_independent_section_count.setText("");
+						}
+						else {
+							et_independent_section_count.setText("" + mMissionForFeedback.get(MissionCounter).getIndependentSectionCount());
+						}
 
 						et_floor_count.setEnabled(true);
 						et_floor_count.setText("");
-						et_floor_count.setHint("");
+						et_floor_count.setHint("Giriniz");
+						et_independent_section_count.setHint("Giriniz");
 					}
 
 					// TypeId = mbTypesId.get(item);
@@ -1543,9 +1545,16 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				try {
 					polygons = new ArrayList<com.telekurye.kml.Polygon>();
-					polygons.addAll(com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name));
+					StreetShapeByStreetIdList = com.telekurye.kml.Polygon.GetStreetShapeByStreetIdList(ctx, missionStreetIdList, db_path, db_name);
 					BuildingShapeByDistrictIdList = com.telekurye.kml.Polygon.GetBuildingShapeByDistrictId(ctx, (long) ms.getDistrictId(), db_path, db_name);
-					polygons.addAll(BuildingShapeByDistrictIdList);
+
+					if (StreetShapeByStreetIdList != null && StreetShapeByStreetIdList.size() > 0) {
+						polygons.addAll(StreetShapeByStreetIdList);
+					}
+					if (BuildingShapeByDistrictIdList != null && BuildingShapeByDistrictIdList.size() > 0) {
+						polygons.addAll(BuildingShapeByDistrictIdList);
+					}
+
 				}
 				catch (Exception e) {
 					Tools.saveErrors(e);

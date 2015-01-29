@@ -8,8 +8,8 @@ public class Info {
 
 	public final static Boolean	ISSENDFEEDBACK			= false;
 
-	public final static int		CURRENT_VERSION			= 62;
-	public static final int		DATABASE_VERSION		= 62;
+	public final static int		CURRENT_VERSION			= 63;
+	public static final int		DATABASE_VERSION		= 63;
 	public static final String	DATABASE_NAME			= "telekuryemaps782.db";
 	public static final String	MAP_DBNAME				= "geolocation6_db";
 
