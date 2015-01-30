@@ -59,6 +59,7 @@ import com.telekurye.data.Person;
 import com.telekurye.data.VersionUpdate;
 import com.telekurye.data.typetoken.SyncResult;
 import com.telekurye.database.DatabaseHelper;
+import com.telekurye.database.MapDatabaseHelper;
 import com.telekurye.tools.Info;
 import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
@@ -68,7 +69,7 @@ import com.telekurye.utils.JsonToDatabase;
 import com.telekurye.utils.SendDatabaseRecords;
 import com.telekurye.utils.ShellHelper;
 
-public class Login extends Activity implements OnClickListener {
+public class Login extends Activity implements OnClickListener { //***
 
 	public static Context		AppContext			= null;
 	public static int			errorStatus			= 0;
@@ -427,6 +428,7 @@ public class Login extends Activity implements OnClickListener {
 				DatabaseHelper dbHelper = new DatabaseHelper(Login.this);
 				dbHelper.CreateDatabase(Login.this);
 
+
 				if (!Info.isDBinAssets && !dbHelper.getDbStatus()) {
 					publishProgress("Veritabaný Ýndiriliyor...", "75");
 				}
@@ -510,7 +512,6 @@ public class Login extends Activity implements OnClickListener {
 					}
 
 				}
-
 				progressDialog.setTitle(values[0]);
 				progressDialog.setProgress(Integer.parseInt(values[1]));
 			}

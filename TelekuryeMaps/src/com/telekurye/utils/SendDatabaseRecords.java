@@ -16,6 +16,7 @@ import com.telekurye.data_send.MissionFeedBackPhoto;
 import com.telekurye.data_send.VehicleFeedBack;
 import com.telekurye.data_send.VisitFeedBack;
 import com.telekurye.tools.Info;
+import com.telekurye.tools.Tools;
 
 public class SendDatabaseRecords {
 
@@ -118,33 +119,38 @@ public class SendDatabaseRecords {
 
 		SyncRequest<List<MissionFeedBackPhoto>> missionFBackPhoto = new MissionFeedBackPhoto().GetAllDataForSync();
 
-		if (missionFBackPhoto.getTypedObjects().size() > 0) {
+		try {
+			if (missionFBackPhoto.getTypedObjects().size() > 0) {
 
-			int sayac = 0;
+				int sayac = 0;
 
-			for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) {
+				for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) {
 
-				String TypeId = Integer.toString(mfbp.getId());
-				String UserDailyMissionId = Integer.toString(mfbp.getUserDailyMissionId());
+					String TypeId = Integer.toString(mfbp.getId());
+					String UserDailyMissionId = Integer.toString(mfbp.getUserDailyMissionId());
 
-				String FilePath = Environment.getExternalStorageDirectory() + File.separator + Info.PHOTO_STORAGE_PATH + File.separator + mfbp.getPhoto();
+					String FilePath = Environment.getExternalStorageDirectory() + File.separator + Info.PHOTO_STORAGE_PATH + File.separator + mfbp.getPhoto();
 
-				Boolean success = SendImage.Send(Integer.toString(sayac), TypeId, UserDailyMissionId, Info.PHOTO_SYNC_URL, FilePath); // gönder
+					Boolean success = SendImage.Send(Integer.toString(sayac), TypeId, UserDailyMissionId, Info.PHOTO_SYNC_URL, FilePath); // gönder
 
-				if (success) {
-					mfbp.setIsCompleted(true);
-					mfbp.Update();
+					if (success) {
+						mfbp.setIsCompleted(true);
+						mfbp.Update();
 
-					File file = new File(FilePath); // fotoyu sil
-					file.delete();
-					sayac++;
+						File file = new File(FilePath); // fotoyu sil
+						file.delete();
+						sayac++;
+					}
+
 				}
 
+				/*
+				 * for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) { mfbp.setIsCompleted(true); mfbp.Update(); }
+				 */
 			}
-
-			/*
-			 * for (MissionFeedBackPhoto mfbp : missionFBackPhoto.getTypedObjects()) { mfbp.setIsCompleted(true); mfbp.Update(); }
-			 */
+		}
+		catch (Exception e) {
+			Tools.saveErrors(e);
 		}
 
 		if (!isLogin) { // ilk giriþte fazla bekletmemek için loginde exceptionlarý gönderme kaldýrýldý.

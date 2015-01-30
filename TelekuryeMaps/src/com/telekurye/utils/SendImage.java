@@ -35,8 +35,8 @@ public class SendImage {
 
 	public static Boolean Send(String order, String UserDailyMissionTypeId, String UserDailyMissionId, String urlTo, String filepath) throws Exception {
 
-		Boolean	hasSuccess	= true;
-		
+		Boolean hasSuccess = true;
+
 		HttpURLConnection conn = null;
 		DataOutputStream outputStream = null;
 		InputStream inputStream = null;
@@ -46,12 +46,6 @@ public class SendImage {
 		String lineEnd = "\r\n";
 
 		String result = "";
-
-		// CookieStore cookies = Login();
-		//
-		// List<Cookie> asc = cookies.getCookies();
-		//
-		// String cookie = asc.get(0).getValue();
 
 		int bytesRead, bytesAvailable, bufferSize;
 		byte[] buffer;
@@ -73,7 +67,7 @@ public class SendImage {
 			}
 
 			File file = new File(filepath);
-			FileInputStream fileInputStream = new FileInputStream(file);
+			FileInputStream fileInputStream = new FileInputStream(file); // fotoyu bulamazsa burada exception veriyor.
 
 			URL url = new URL(urlTo);
 			conn = (HttpURLConnection) url.openConnection();
@@ -176,7 +170,6 @@ public class SendImage {
 			Tools.saveErrors(e);
 		}
 
-		
 		return hasSuccess;
 	}
 
@@ -192,8 +185,6 @@ public class SendImage {
 		}
 		catch (IOException e) {
 			Tools.saveErrors(e);
-
-			//
 		}
 		finally {
 			try {
@@ -207,35 +198,4 @@ public class SendImage {
 		return sb.toString();
 	}
 
-	public CookieStore Login() {
-
-		DefaultHttpClient httpclient = new DefaultHttpClient();
-
-		HttpGet httpget = new HttpGet(Info.LOGIN_SERVICE_URL + "?f=login&u=" + Info.USERNAME + "&p=" + Info.PASSWORD + "&i=" + Info.IMEI);
-
-		HttpResponse response = null;
-		try {
-			response = httpclient.execute(httpget);
-		}
-		catch (ClientProtocolException e1) {
-			Tools.saveErrors(e1);
-		}
-		catch (IOException e1) {
-			Tools.saveErrors(e1);
-		}
-
-		HttpEntity entity = response.getEntity();
-
-		if (entity != null) {
-			try {
-				entity.consumeContent();
-			}
-			catch (IOException e) {
-				Tools.saveErrors(e);
-
-			}
-		}
-
-		return httpclient.getCookieStore();
-	}
 }

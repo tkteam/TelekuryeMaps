@@ -206,13 +206,14 @@ public class AutoSyncHelper {
 
 					}
 					catch (Exception e) {
+						Tools.saveErrors(e);
 					}
 
 					try {
 						Thread.sleep(Info.SYNCPERIOD);
 					}
 					catch (InterruptedException e) {
-						e.printStackTrace();
+						Tools.saveErrors(e);
 					}
 
 				}

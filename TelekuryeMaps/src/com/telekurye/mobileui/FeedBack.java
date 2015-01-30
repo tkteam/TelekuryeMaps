@@ -90,7 +90,6 @@ import com.telekurye.tools.Tools;
 import com.telekurye.utils.CameraHelper;
 import com.telekurye.utils.MissionListCreator;
 import com.telekurye.utils.PhotoInfo;
-import com.telekurye.utils.ShapeControl;
 
 public class FeedBack extends Activity implements OnTabChangeListener, android.location.GpsStatus.Listener, OnCameraChangeListener, OnMarkerDragListener, LocationListener, OnMapClickListener,
 		OnMapLongClickListener, OnMarkerClickListener, OnClickListener, SensorEventListener {
@@ -1793,11 +1792,11 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			llMapFragment.setLayoutParams(layoutParams);
 
-			// uiSettings.setAllGesturesEnabled(true);
-			uiSettings.setRotateGesturesEnabled(true);
-			uiSettings.setScrollGesturesEnabled(true);
-			uiSettings.setTiltGesturesEnabled(false);
-			uiSettings.setZoomGesturesEnabled(false);
+			 uiSettings.setAllGesturesEnabled(true);
+//			uiSettings.setRotateGesturesEnabled(true);
+//			uiSettings.setScrollGesturesEnabled(true);
+//			uiSettings.setTiltGesturesEnabled(false);
+//			uiSettings.setZoomGesturesEnabled(false);
 
 			uiSettings.setZoomControlsEnabled(false);
 			uiSettings.setCompassEnabled(true);
