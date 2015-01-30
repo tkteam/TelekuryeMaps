@@ -20,8 +20,7 @@ import com.telekurye.data.BasarShapeId;
 import com.telekurye.data.BuildingTypes;
 import com.telekurye.data.FinishedShapeHistory;
 import com.telekurye.data.Locations;
-import com.telekurye.data.MissionsBuildings;
-import com.telekurye.data.MissionsStreets;
+import com.telekurye.data.Missions;
 import com.telekurye.data.Person;
 import com.telekurye.data.ProcessStatuses;
 import com.telekurye.data.StreetTypes;
@@ -64,8 +63,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	private Dao<ProcessStatuses, Integer>		ProcessStatusesDataHelper		= null;
-	private Dao<MissionsBuildings, Integer>		MissionsBuildingsDataHelper		= null;
-	private Dao<MissionsStreets, Integer>		MissionsStreetsDataHelper		= null;
+	private Dao<Missions, Integer>				MissionsDataHelper				= null;
 	private Dao<Person, Integer>				PersonDataHelper				= null;
 	private Dao<BuildingTypes, Integer>			BuildingTypesDataHelper			= null;
 	private Dao<StreetTypes, Integer>			StreetTypesDataHelper			= null;
@@ -85,8 +83,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		try {
 
 			TableUtils.createTable(connectionSource, ProcessStatuses.class);
-			TableUtils.createTable(connectionSource, MissionsBuildings.class);
-			TableUtils.createTable(connectionSource, MissionsStreets.class);
+			TableUtils.createTable(connectionSource, Missions.class);
 			TableUtils.createTable(connectionSource, Person.class);
 			TableUtils.createTable(connectionSource, BuildingTypes.class);
 			TableUtils.createTable(connectionSource, StreetTypes.class);
@@ -109,8 +106,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		ConnectionSource connectionSource = getConnectionSource();
 		try {
 			TableUtils.clearTable(connectionSource, ProcessStatuses.class);
-			TableUtils.clearTable(connectionSource, MissionsBuildings.class);
-			TableUtils.clearTable(connectionSource, MissionsStreets.class);
+			TableUtils.clearTable(connectionSource, Missions.class);
 			TableUtils.clearTable(connectionSource, Person.class);
 			TableUtils.clearTable(connectionSource, BuildingTypes.class);
 			TableUtils.clearTable(connectionSource, StreetTypes.class);
@@ -133,8 +129,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		ConnectionSource connectionSource = getConnectionSource();
 		try {
 			TableUtils.dropTable(connectionSource, ProcessStatuses.class, true);
-			TableUtils.dropTable(connectionSource, MissionsBuildings.class, true);
-			TableUtils.dropTable(connectionSource, MissionsStreets.class, true);
+			TableUtils.dropTable(connectionSource, Missions.class, true);
 			TableUtils.dropTable(connectionSource, Person.class, true);
 			TableUtils.dropTable(connectionSource, BuildingTypes.class, true);
 			TableUtils.dropTable(connectionSource, StreetTypes.class, true);
@@ -159,8 +154,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
 
 			TableUtils.dropTable(connectionSource, ProcessStatuses.class, true);
-			TableUtils.dropTable(connectionSource, MissionsBuildings.class, true);
-			TableUtils.dropTable(connectionSource, MissionsStreets.class, true);
+			TableUtils.dropTable(connectionSource, Missions.class, true);
 			TableUtils.dropTable(connectionSource, Person.class, true);
 			TableUtils.dropTable(connectionSource, BuildingTypes.class, true);
 			TableUtils.dropTable(connectionSource, StreetTypes.class, true);
@@ -364,18 +358,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return ProcessStatusesDataHelper;
 	}
 
-	public Dao<MissionsBuildings, Integer> getMissionsBuildingsDataHelper() throws SQLException {
-		if (MissionsBuildingsDataHelper == null) {
-			MissionsBuildingsDataHelper = getDao(MissionsBuildings.class);
+	public Dao<Missions, Integer> getMissionsDataHelper() throws SQLException {
+		if (MissionsDataHelper == null) {
+			MissionsDataHelper = getDao(Missions.class);
 		}
-		return MissionsBuildingsDataHelper;
-	}
-
-	public Dao<MissionsStreets, Integer> getMissionsStreetsDataHelper() throws SQLException {
-		if (MissionsStreetsDataHelper == null) {
-			MissionsStreetsDataHelper = getDao(MissionsStreets.class);
-		}
-		return MissionsStreetsDataHelper;
+		return MissionsDataHelper;
 	}
 
 	public Dao<Person, Integer> getPersonDataHelper() throws SQLException {

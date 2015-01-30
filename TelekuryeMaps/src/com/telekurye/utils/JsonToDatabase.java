@@ -20,9 +20,7 @@ import com.j256.ormlite.stmt.Where;
 import com.telekurye.data.BasarShapeId;
 import com.telekurye.data.BuildingTypes;
 import com.telekurye.data.Earnings;
-import com.telekurye.data.IMission;
-import com.telekurye.data.MissionsBuildings;
-import com.telekurye.data.MissionsStreets;
+import com.telekurye.data.Missions;
 import com.telekurye.data.Person;
 import com.telekurye.data.ProcessStatuses;
 import com.telekurye.data.StreetTypes;
@@ -73,21 +71,18 @@ public class JsonToDatabase {
 
 	public Boolean saveMissions(Activity act) {
 
-		List<MissionsStreets> ms;
-		List<MissionsBuildings> mb;
+		List<Missions> mb;
 
 		Boolean retVal = false;
 
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 			String json = new HttpRequestForJson(Info.tagSyncMissions, Tools.GetSyncDateRange(act)).getJson();
-			Type listType = new TypeToken<SyncResult<ArrayList<MissionsBuildings>>>() {
+			Type listType = new TypeToken<SyncResult<ArrayList<Missions>>>() {
 			}.getType();
-			SyncResult<ArrayList<MissionsBuildings>> missions = gson.fromJson(json, listType);
+			SyncResult<ArrayList<Missions>> missions = gson.fromJson(json, listType);
 
-			ms = new ArrayList<MissionsStreets>();
-
-			mb = new ArrayList<MissionsBuildings>();
+			mb = new ArrayList<Missions>();
 
 			if (missions == null || missions.getProcessStatus() != 200) {
 				return false;
@@ -96,63 +91,34 @@ public class JsonToDatabase {
 			if (missions.getTargetObject() != null) {
 				for (int i = 0; i < missions.getTargetObject().size(); i++) {
 
-					IMission mission = missions.getTargetObject().get(i);
-					if (mission.getUserDailyMissionTypeId() == 1) {
+					Missions mission = missions.getTargetObject().get(i);
 
-						Dao<MissionsStreets, Integer> streetDao = DatabaseHelper.getDbHelper().getMissionsStreetsDataHelper();
-						QueryBuilder<MissionsStreets, Integer> streetQuery = streetDao.queryBuilder();
-						Where<MissionsStreets, Integer> where = streetQuery.where();
-						where.eq("UserDailyMissionId", mission.getUserDailyMissionId());
-						where.and();
-						where.gt("ModifiedDate", mission.getModifiedDate());
-						where.and();
-						where.eq("IsCompleted", false);
-						where.and();
-						where.eq("IsDeleted", false);
+					Dao<Missions, Integer> buildingsDao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+					QueryBuilder<Missions, Integer> buildingQuery = buildingsDao.queryBuilder();
+					Where<Missions, Integer> where = buildingQuery.where();
+					where.eq("UserDailyMissionId", mission.getUserDailyMissionId());
+					where.and();
+					where.gt("ModifiedDate", mission.getModifiedDate());
+					where.and();
+					where.eq("IsCompleted", false);
+					where.and();
+					where.eq("IsDeleted", false);
 
-						PreparedQuery<MissionsStreets> pQuery = streetQuery.prepare();
-						List<MissionsStreets> dbStreets = streetDao.query(pQuery);
-						if (dbStreets.size() != 0) {
-							streetDao.delete(dbStreets);
-						}
-
-						IMission data = new MissionsStreets();
-						data.setMissionsList(mission);
-						// ((MissionsStreets) data).setUserId(new Person().GetAllData().get(0).getId());
-						((MissionsStreets) data).setUserId(Info.UserId);
-						((MissionsStreets) data).Insert();
+					PreparedQuery<Missions> pQuery = buildingQuery.prepare();
+					List<Missions> dbBuildings = buildingsDao.query(pQuery);
+					if (dbBuildings.size() != 0) {
+						buildingsDao.delete(dbBuildings);
 
 					}
-					else {
+					// mb.add(missions.getTargetObject().get(i));
+					Missions data1 = missions.getTargetObject().get(i);
 
-						Dao<MissionsBuildings, Integer> buildingsDao = DatabaseHelper.getDbHelper().getMissionsBuildingsDataHelper();
-						QueryBuilder<MissionsBuildings, Integer> buildingQuery = buildingsDao.queryBuilder();
-						Where<MissionsBuildings, Integer> where = buildingQuery.where();
-						where.eq("UserDailyMissionId", mission.getUserDailyMissionId());
-						where.and();
-						where.gt("ModifiedDate", mission.getModifiedDate());
-						where.and();
-						where.eq("IsCompleted", false);
-						where.and();
-						where.eq("IsDeleted", false);
-
-						PreparedQuery<MissionsBuildings> pQuery = buildingQuery.prepare();
-						List<MissionsBuildings> dbBuildings = buildingsDao.query(pQuery);
-						if (dbBuildings.size() != 0) {
-							buildingsDao.delete(dbBuildings);
-
-						}
-						// mb.add(missions.getTargetObject().get(i));
-						IMission data1 = missions.getTargetObject().get(i);
-
-						data1.setMissionsList(mission);
-						// ((MissionsBuildings) data1).setUserId(new Person().GetAllData().get(0).getId());
-						((MissionsBuildings) data1).setUserId(Info.UserId);
-						((MissionsBuildings) data1).Insert();
-					}
+					// ((Missions) data1).setUserId(new Person().GetAllData().get(0).getId());
+					((Missions) data1).setUserId(Info.UserId);
+					((Missions) data1).Insert();
 				}
-				retVal = true;
 			}
+			retVal = true;
 
 			// LiveData.misBuildings = mb;
 			// LiveData.misStreets = ms;

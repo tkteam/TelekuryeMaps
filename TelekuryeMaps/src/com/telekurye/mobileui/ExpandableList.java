@@ -27,7 +27,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
 
-import com.telekurye.data.MissionsBuildings;
+import com.telekurye.data.Missions;
 import com.telekurye.data.MissionsStreets;
 import com.telekurye.data.sync.AutoSyncHelper;
 import com.telekurye.expandablelist.AnimatedExpandableListView;
@@ -143,11 +143,11 @@ public class ExpandableList extends Activity {
 		for (int i = 0; i < mStreets.size(); i++) {
 			Parent parent = new Parent();
 
-			MissionsBuildings mb = new MissionsBuildings();
+			Missions mb = new Missions();
 
-			List<MissionsBuildings> mBuilds = new ArrayList<MissionsBuildings>();
+			List<Missions> mBuilds = new ArrayList<Missions>();
 
-			List<MissionsBuildings> mBuildssAllUser = mb.GetAllData();
+			List<Missions> mBuildssAllUser = mb.GetAllData();
 
 			for (int m = 0; m < mBuildssAllUser.size(); m++) {
 
@@ -259,11 +259,11 @@ public class ExpandableList extends Activity {
 					Parent parent = new Parent();
 
 					// List<MissionsBuildings> mBuilds = LiveData.misBuildings;
-					MissionsBuildings mb = new MissionsBuildings();
+					Missions mb = new Missions();
 
-					List<MissionsBuildings> mBuilds = new ArrayList<MissionsBuildings>();
+					List<Missions> mBuilds = new ArrayList<Missions>();
 
-					List<MissionsBuildings> mBuildssAllUser = mb.GetAllData();
+					List<Missions> mBuildssAllUser = mb.GetAllData();
 
 					for (int m = 0; m < mBuildssAllUser.size(); m++) {
 						// if (mBuildssAllUser.get(m).getUserId() == new Person().GetAllData().get(0).getId()) {

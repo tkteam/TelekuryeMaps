@@ -69,7 +69,7 @@ import com.telekurye.utils.JsonToDatabase;
 import com.telekurye.utils.SendDatabaseRecords;
 import com.telekurye.utils.ShellHelper;
 
-public class Login extends Activity implements OnClickListener { //***
+public class Login extends Activity implements OnClickListener { 
 
 	public static Context		AppContext			= null;
 	public static int			errorStatus			= 0;

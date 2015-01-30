@@ -8,7 +8,7 @@ import java.util.List;
 import android.app.Activity;
 
 import com.telekurye.data.IMission;
-import com.telekurye.data.MissionsBuildings;
+import com.telekurye.data.Missions;
 import com.telekurye.data.MissionsStreets;
 import com.telekurye.tools.Tools;
 
@@ -18,9 +18,9 @@ public class MissionListCreator {
 
 	private int						grupid, childid, streettype;
 	private List<MissionsStreets>	mThisMissionStreets;			// bu göreve ait iki sokak
-	private List<MissionsBuildings>	mBuildingsOddNo;				// seçilen sokaða ait tek sayýlý binalar
-	private List<MissionsBuildings>	mBuildingsEvenNo;				// seçilen sokaða ait çift sayýlý binalar
-	private List<MissionsBuildings>	mBuilds;
+	private List<Missions>	mBuildingsOddNo;				// seçilen sokaða ait tek sayýlý binalar
+	private List<Missions>	mBuildingsEvenNo;				// seçilen sokaða ait çift sayýlý binalar
+	private List<Missions>	mBuilds;
 	private MissionsStreets			ms;
 
 	public MissionListCreator(Activity activity, int grupId, int childId, int streetType) {
@@ -44,10 +44,10 @@ public class MissionListCreator {
 			act.finish();
 		}
 
-		MissionsBuildings bData = new MissionsBuildings();
+		Missions bData = new Missions();
 		mBuilds = bData.GetBuildingsByStreetId(ms.getStreetId());
-		mBuildingsOddNo = new ArrayList<MissionsBuildings>();
-		mBuildingsEvenNo = new ArrayList<MissionsBuildings>();
+		mBuildingsOddNo = new ArrayList<Missions>();
+		mBuildingsEvenNo = new ArrayList<Missions>();
 
 		try {
 			for (int j = 0; j < mBuilds.size(); j++) {
@@ -72,7 +72,7 @@ public class MissionListCreator {
 		if (chId == 0) { // artan çift -> azalan tek
 
 			try {
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+				Collections.sort(mBuildingsEvenNo, new Missions()); // küçükten büyüðe sýrala
 				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
 				// Collections.reverse(mBuildingsOddNo);
 
@@ -103,7 +103,7 @@ public class MissionListCreator {
 
 				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
 				// Collections.reverse(mBuildingsEvenNo);
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+				Collections.sort(mBuildingsOddNo, new Missions()); // küçükten büyüðe sýrala
 
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
@@ -128,7 +128,7 @@ public class MissionListCreator {
 
 			try {
 
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+				Collections.sort(mBuildingsOddNo, new Missions()); // küçükten büyüðe sýrala
 				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
 				// Collections.reverse(mBuildingsEvenNo);
 				if (showStreets) {
@@ -157,7 +157,7 @@ public class MissionListCreator {
 
 				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
 				// Collections.reverse(mBuildingsOddNo);
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+				Collections.sort(mBuildingsEvenNo, new Missions()); // küçükten büyüðe sýrala
 
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
@@ -202,7 +202,7 @@ public class MissionListCreator {
 		if (chId == 0) { // artan çift -> azalan tek
 
 			try {
-				Collections.sort(mBuilds, new MissionsBuildings()); // küçükten büyüðe sýrala
+				Collections.sort(mBuilds, new Missions()); // küçükten büyüðe sýrala
 
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
@@ -228,7 +228,7 @@ public class MissionListCreator {
 		else if (chId == 1) { // azalan çift -> artan tek
 
 			try {
-				Collections.sort(mBuilds, new MissionsBuildings()); // büyükten küçüðe sýrala
+				Collections.sort(mBuilds, new Missions()); // büyükten küçüðe sýrala
 				Collections.reverse(mBuilds);
 
 				if (showStreets) {

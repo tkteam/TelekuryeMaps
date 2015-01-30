@@ -14,7 +14,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
-import com.telekurye.data.MissionsBuildings;
+import com.telekurye.data.Missions;
 import com.telekurye.database.DatabaseHelper;
 import com.telekurye.database.MapDatabaseHelper;
 import com.telekurye.tools.Info;

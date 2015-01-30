@@ -75,7 +75,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.telekurye.data.BasarShapeId;
 import com.telekurye.data.FinishedShapeHistory;
 import com.telekurye.data.IMission;
-import com.telekurye.data.MissionsBuildings;
+import com.telekurye.data.Missions;
 import com.telekurye.data.MissionsStreets;
 import com.telekurye.data.Person;
 import com.telekurye.data.SyncTime;
@@ -681,7 +681,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		}
 		else {
 			mMissionForFeedback.get(MissionCounter - 1).setIsCompleted(true);
-			((MissionsBuildings) mMissionForFeedback.get(MissionCounter - 1)).Update();
+			((Missions) mMissionForFeedback.get(MissionCounter - 1)).Update();
 		}
 
 		MissionFeedBack mFeedBack = new MissionFeedBack();
