@@ -243,33 +243,33 @@ public class JsonToDatabase {
 
 	}
 
-	public void saveBasarShapeId(Activity act) {
-
-		try {
-			Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-			String json = new MissionsStreets().GetDistrictIdListJsonForSync();
-			Type listType = new TypeToken<SyncResult<ArrayList<BasarShapeId>>>() {
-			}.getType();
-			SyncResult<ArrayList<BasarShapeId>> basarShapeId = gson.fromJson(json, listType);
-
-			if (basarShapeId != null && basarShapeId.getTargetObject() != null && basarShapeId.getTargetObject().size() > 0) {
-				for (int i = 0; i < basarShapeId.getTargetObject().size(); i++) {
-					BasarShapeId data = basarShapeId.getTargetObject().get(i);
-					data.Insert();
-				}
-			}
-
-			ProcessStatuses ps = new ProcessStatuses();
-			ps.setId(5);
-			ps.setStatusName(Info.tagBasarShapeId);
-			ps.setStatusCode(basarShapeId.getProcessStatus());
-			ps.Insert();
-		}
-		catch (Exception e) {
-			Tools.saveErrors(e);
-
-		}
-
-	}
+//	public void saveBasarShapeId(Activity act) {
+//
+//		try {
+//			Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+//			String json = new MissionsStreets().GetDistrictIdListJsonForSync();
+//			Type listType = new TypeToken<SyncResult<ArrayList<BasarShapeId>>>() {
+//			}.getType();
+//			SyncResult<ArrayList<BasarShapeId>> basarShapeId = gson.fromJson(json, listType);
+//
+//			if (basarShapeId != null && basarShapeId.getTargetObject() != null && basarShapeId.getTargetObject().size() > 0) {
+//				for (int i = 0; i < basarShapeId.getTargetObject().size(); i++) {
+//					BasarShapeId data = basarShapeId.getTargetObject().get(i);
+//					data.Insert();
+//				}
+//			}
+//
+//			ProcessStatuses ps = new ProcessStatuses();
+//			ps.setId(5);
+//			ps.setStatusName(Info.tagBasarShapeId);
+//			ps.setStatusCode(basarShapeId.getProcessStatus());
+//			ps.Insert();
+//		}
+//		catch (Exception e) {
+//			Tools.saveErrors(e);
+//
+//		}
+//
+//	}
 
 }

@@ -18,6 +18,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.DatabaseTable;
 import com.telekurye.data.typetoken.SyncRequest;
 import com.telekurye.database.DatabaseHelper;
+import com.telekurye.tools.Info;
 import com.telekurye.tools.Tools;
 
 @DatabaseTable(tableName = "missions")
@@ -147,7 +148,7 @@ public class Missions implements Parcelable, Comparator<Missions> {
 
 			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
 			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
-			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("UserDailyMissionTypeId", 1);
+			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("UserDailyMissionTypeId", 1).and().eq("UserId", Info.UserId);
 			PreparedQuery<Missions> pQuery = qBuilder.prepare();
 			data = dao.query(pQuery);
 
@@ -167,7 +168,33 @@ public class Missions implements Parcelable, Comparator<Missions> {
 
 			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
 			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
-			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("UserDailyMissionTypeId", 2);
+			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("UserDailyMissionTypeId", 2).and().eq("UserId", Info.UserId);
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+		}
+
+		return data;
+	}
+
+	public List<Missions> GetOddOrNotBuildings(Boolean bool) {
+
+		List<Missions> data = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+			qBuilder.where() //
+					.eq("IsDeleted", false).and() //
+					.eq("IsCompleted", false).and() //
+					.eq("BuildingNumber_IsOdd", bool).and() //
+					.eq("UserDailyMissionTypeId", 2).and() //
+					.eq("UserId", Info.UserId); //
+
 			PreparedQuery<Missions> pQuery = qBuilder.prepare();
 			data = dao.query(pQuery);
 

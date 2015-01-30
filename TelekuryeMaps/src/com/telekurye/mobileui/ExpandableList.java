@@ -60,12 +60,11 @@ public class ExpandableList extends Activity {
 
 		tvShowEmpty = (TextView) findViewById(R.id.tvEmpty);
 
-		LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
+		LiveData.mStreetsAll = new ArrayList<Missions>();
 
 		FillData();
 
 		AutoSyncHelper.GetInstance().SetOnMissionUpdated(new OnMissionUpdated() {
-
 			@Override
 			public void Update() {
 				asyncTaskExpandableList();
@@ -73,44 +72,14 @@ public class ExpandableList extends Activity {
 		});
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		asyncTaskExpandableList();
-	}
-
-	private void showEmpty() {
-
-		if (LiveData.mStreetsAll.size() <= 0) {
-			tvShowEmpty.setVisibility(View.VISIBLE);
-			listView.setVisibility(View.GONE);
-		}
-		else {
-			tvShowEmpty.setVisibility(View.GONE);
-			listView.setVisibility(View.VISIBLE);
-
-		}
-	}
-
 	private void FillData() {
 		try {
 			ArrayList<Parent> list = new ArrayList<Parent>();
 
-			MissionsStreets data = new MissionsStreets();
-			List<MissionsStreets> mStreetsAll = new ArrayList<MissionsStreets>();
-			List<MissionsStreets> mStreetsAllUser = data.GetAllData();
-
-			for (int i = 0; i < mStreetsAllUser.size(); i++) {
-				if (mStreetsAllUser.get(i).getUserId() == Info.UserId) {
-					mStreetsAll.add(mStreetsAllUser.get(i));
-				}
-			}
+			Missions data = new Missions();
+			List<Missions> mStreets = data.GetAllStreets();
 
 			List<MissionsStreets> mStreetsRemove = new ArrayList<MissionsStreets>();
-
-			LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
-			LiveData.mStreetsAll.addAll(mStreetsAll);
 
 			List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
 
@@ -132,13 +101,7 @@ public class ExpandableList extends Activity {
 
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AutoSyncHelper.GetInstance().SetOnMissionUpdated(null);
-	}
-
-	private void FillList(ArrayList<Parent> list, List<MissionsStreets> mStreets) {
+	private void FillList(ArrayList<Parent> list, List<Missions> mStreets) {
 		for (int i = 0; i < mStreets.size(); i++) {
 			Parent parent = new Parent();
 
@@ -220,9 +183,9 @@ public class ExpandableList extends Activity {
 				// List<MissionsStreets> mStreetsAll = LiveData.misStreets;
 				list = new ArrayList<Parent>();
 
-				MissionsStreets data = new MissionsStreets();
-				List<MissionsStreets> mStreetsAll = new ArrayList<MissionsStreets>();
-				List<MissionsStreets> mStreetsAllUser = data.GetAllData();
+				Missions data = new Missions();
+				List<Missions> mStreetsAll = new ArrayList<Missions>();
+				List<Missions> mStreetsAllUser = data.GetAllStreets();
 
 				for (int i = 0; i < mStreetsAllUser.size(); i++) {
 					// if (mStreetsAllUser.get(i).getUserId() == new Person().GetAllData().get(0).getId()) {
@@ -253,76 +216,6 @@ public class ExpandableList extends Activity {
 				return list;
 			}
 
-			private void FillList(ArrayList<Parent> list, List<MissionsStreets> mStreets) {
-				for (int i = 0; i < mStreets.size(); i++) {
-					Parent parent = new Parent();
-
-					// List<MissionsBuildings> mBuilds = LiveData.misBuildings;
-					Missions mb = new Missions();
-
-					List<Missions> mBuilds = new ArrayList<Missions>();
-
-					List<Missions> mBuildssAllUser = mb.GetAllData();
-
-					for (int m = 0; m < mBuildssAllUser.size(); m++) {
-						// if (mBuildssAllUser.get(m).getUserId() == new Person().GetAllData().get(0).getId()) {
-						if (mBuildssAllUser.get(m).getUserId() == Info.UserId) {
-							mBuilds.add(mBuildssAllUser.get(m));
-						}
-					}
-
-					int sayac = 0;
-
-					for (int j = 0; j < mBuilds.size(); j++) {
-						if (mStreets.get(i).getStreetId() == mBuilds.get(j).getStreetId() && !mBuilds.get(j).getIsDeleted()) {
-							sayac++;
-						}
-					}
-
-					int sayac2 = sayac + 2;
-
-					parent.setText1("" + mStreets.get(i).getName() + " Sokak");
-					parent.setText2("" + mStreets.get(i).getAddressText());
-					parent.setCounter("[" + Integer.toString(sayac2) + "]");
-					parent.setChildren(new ArrayList<Child>());
-					parent.setStreetId(mStreets.get(i).getStreetId());
-					parent.setLastOperationDate(mStreets.get(i).getLastOperationDate());
-					parent.setTypeId(mStreets.get(i).getStreetTypeId());
-					parent.setBuildingCount(sayac);
-
-					if (mStreets.get(i).getStreetTypeId() == 0 || mStreets.get(i).getStreetTypeId() == 1 || mStreets.get(i).getStreetTypeId() == 5) {
-
-						Child child = new Child();
-						child.setText1("Küçükten Büyüðe\n\nÖrnek: 1, 2, 3, 4");
-						parent.getChildren().add(child);
-
-						Child child1 = new Child();
-						child1.setText1("Büyükten Küçüðe\n\nÖrnek: 4, 3, 2, 1");
-						parent.getChildren().add(child1);
-
-					}
-					else {
-						Child child = new Child();
-						child.setText1("Çiftler, Küçükten Büyüðe\n\nÖrnek: 2, 4, 6");
-						parent.getChildren().add(child);
-
-						Child child1 = new Child();
-						child1.setText1("Çiftler, Büyükten Küçüðe\n\nÖrnek: 6, 4, 2");
-						parent.getChildren().add(child1);
-
-						Child child2 = new Child();
-						child2.setText1("Tekler, Küçükten Büyüðe\n\nÖrnek: 1, 3, 5");
-						parent.getChildren().add(child2);
-
-						Child child3 = new Child();
-						child3.setText1("Tekler, Büyükten Küçüðe\n\nÖrnek: 5, 3, 1");
-						parent.getChildren().add(child3);
-					}
-
-					list.add(parent);
-				}
-			}
-
 			@Override
 			protected void onProgressUpdate(ArrayList<Parent>... values) {
 				super.onProgressUpdate(values);
@@ -345,26 +238,16 @@ public class ExpandableList extends Activity {
 	}
 
 	private void loadHosts(final ArrayList<Parent> newParents) {
-		if (newParents == null)
+		if (newParents == null) {
 			return;
+		}
 
 		parents = newParents;
 
-		// Check for ExpandableListAdapter object
 		if (listView == null) {
-			// Create ExpandableListAdapter Object
-
-			// Set ExpandableListView values
 			adapter = new MyExpandableListAdapter();
-
-			// adapter.setData(items);
-
 			Resources res = this.getResources();
 			Drawable devider = res.getDrawable(R.drawable.line);
-
-			// final MyExpandableListAdapter mAdapter = new MyExpandableListAdapter();
-
-			// Set Adapter to ExpandableList Adapter
 			listView = (AnimatedExpandableListView) findViewById(R.id.listView);
 			listView.setAdapter(adapter);
 
@@ -392,7 +275,6 @@ public class ExpandableList extends Activity {
 
 		}
 		else {
-			// Refresh ExpandableListView data
 			((MyExpandableListAdapter) adapter).notifyDataSetChanged();
 		}
 
@@ -438,38 +320,42 @@ public class ExpandableList extends Activity {
 				@Override
 				public void onClick(View view) {
 
-					if (!Info.ISTEST && Info.ISSENDFEEDBACK) {
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(parent.getLastOperationDate());
+					// if (!Info.ISTEST && Info.ISSENDFEEDBACK) {
+					// Calendar cal = Calendar.getInstance();
+					// cal.setTime(parent.getLastOperationDate());
+					//
+					// int h = cal.get(Calendar.HOUR_OF_DAY);
+					// int m = cal.get(Calendar.MINUTE);
+					// int t = h * 60 + m;
+					//
+					// Calendar cal2 = Calendar.getInstance();
+					// cal2.setTime(new Date());
+					// int h2 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+					// int m2 = Calendar.getInstance().get(Calendar.MINUTE);
+					// int t2 = h2 * 60 + m2;
+					//
+					// double diff = t - t2;
+					// double selectedStreetBuildingsCount = parent.getBuildingCount();
+					//
+					// double d = diff / selectedStreetBuildingsCount;
+					//
+					// if (diff <= 0) {
+					// Tools.showLongCustomToast(ExpandableList.this, "Çalýþma süresi sona ermiþtir.");
+					// finish();
+					// return;
+					// }
+					//
+					// }
 
-						int h = cal.get(Calendar.HOUR_OF_DAY);
-						int m = cal.get(Calendar.MINUTE);
-						int t = h * 60 + m;
+					System.out.println("1: " + parent.getTypeId());
+					System.out.println("2: " + parent.getStreetId());
+					System.out.println("3: " + childPosition);
 
-						Calendar cal2 = Calendar.getInstance();
-						cal2.setTime(new Date());
-						int h2 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-						int m2 = Calendar.getInstance().get(Calendar.MINUTE);
-						int t2 = h2 * 60 + m2;
-
-						double diff = t - t2;
-						double selectedStreetBuildingsCount = parent.getBuildingCount();
-
-						double d = diff / selectedStreetBuildingsCount;
-
-						if (diff <= 0) {
-							Tools.showLongCustomToast(ExpandableList.this, "Çalýþma süresi sona ermiþtir.");
-							finish();
-							return;
-						}
-
-					}
-
-					Intent i = new Intent(ExpandableList.this, StreetInfo.class);
-					i.putExtra("streettype", parent.getTypeId());
-					i.putExtra("grupid", parent.getStreetId());
-					i.putExtra("childid", childPosition);
-					startActivity(i);
+					// Intent i = new Intent(ExpandableList.this, StreetInfo.class);
+					// i.putExtra("streettype", parent.getTypeId());
+					// i.putExtra("grupid", parent.getStreetId());
+					// i.putExtra("childid", childPosition);
+					// startActivity(i);
 
 				}
 			});
@@ -567,8 +453,34 @@ public class ExpandableList extends Activity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		AutoSyncHelper.GetInstance().SetOnMissionUpdated(null);
+	}
+
+	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		asyncTaskExpandableList();
+	}
+
+	private void showEmpty() {
+
+		if (LiveData.mStreetsAll.size() <= 0) {
+			tvShowEmpty.setVisibility(View.VISIBLE);
+			listView.setVisibility(View.GONE);
+		}
+		else {
+			tvShowEmpty.setVisibility(View.GONE);
+			listView.setVisibility(View.VISIBLE);
+
+		}
 	}
 }

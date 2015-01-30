@@ -10,16 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.telekurye.data.IMission;
+import com.telekurye.data.Missions;
 import com.telekurye.mobileui.R;
-import com.telekurye.tools.Constant;
 
-public class CustomListViewAdapter extends ArrayAdapter<IMission> {
+public class CustomListViewAdapter extends ArrayAdapter<Missions> {
 
 	Context			context;
-	List<IMission>	items;
+	List<Missions>	items;
 
-	public CustomListViewAdapter(Context context, int resourceId, List<IMission> i) {
+	public CustomListViewAdapter(Context context, int resourceId, List<Missions> i) {
 		super(context, resourceId, i);
 		this.context = context;
 		this.items = i;
@@ -37,7 +36,7 @@ public class CustomListViewAdapter extends ArrayAdapter<IMission> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
 		// MissionsBuildings items = (MissionsBuildings) getItem(position);
-		IMission items = getItem(position);
+		Missions items = getItem(position);
 
 		LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 		if (convertView == null) {

@@ -435,8 +435,8 @@ public class Login extends Activity implements OnClickListener {
 
 				publishProgress("Görevler Yükleniyor...", "80");
 				jto.saveMissions(Login.this);
-				publishProgress("Þekil Listesi Yükleniyor...", "90");
-				jto.saveBasarShapeId(Login.this);
+//				publishProgress("Þekil Listesi Yükleniyor...", "90");
+//				jto.saveBasarShapeId(Login.this);
 
 				publishProgress("Tamamlandý!", "100");
 

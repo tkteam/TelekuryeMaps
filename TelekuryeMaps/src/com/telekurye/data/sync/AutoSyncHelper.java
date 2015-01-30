@@ -185,7 +185,7 @@ public class AutoSyncHelper {
 							}
 
 							Boolean hasUpdated = jto.saveMissions(params[0]);
-							jto.saveBasarShapeId(act);
+//							jto.saveBasarShapeId(act);
 							jto.versionControl();
 							jto.saveEarnings(act);
 

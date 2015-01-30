@@ -6,6 +6,7 @@ import java.util.List;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.model.Marker;
+import com.telekurye.data.Missions;
 import com.telekurye.data.VersionUpdate;
 import com.telekurye.data.typetoken.SyncResult;
 import com.telekurye.expandablelist.Parent;
@@ -22,5 +23,7 @@ public class LiveData {
 	public static int													userDailyMissionId	= 0;
 	public static String												Earnings			= "";
 	public static SyncResult<VersionUpdate>								versionControl;
+
+	public static List<Missions>										mStreetsAll;
 
 }
