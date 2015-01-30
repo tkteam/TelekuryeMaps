@@ -7,9 +7,7 @@ import java.util.List;
 
 import android.app.Activity;
 
-import com.telekurye.data.IMission;
 import com.telekurye.data.Missions;
-import com.telekurye.data.MissionsStreets;
 import com.telekurye.tools.Tools;
 
 public class MissionListCreator {
@@ -24,6 +22,7 @@ public class MissionListCreator {
 	private MissionsStreets			ms;
 
 	public MissionListCreator(Activity activity, int grupId, int childId, int streetType) {
+		
 		act = activity;
 		grupid = grupId;
 		childid = childId;

@@ -28,7 +28,6 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
 
 import com.telekurye.data.Missions;
-import com.telekurye.data.MissionsStreets;
 import com.telekurye.data.sync.AutoSyncHelper;
 import com.telekurye.expandablelist.AnimatedExpandableListView;
 import com.telekurye.expandablelist.AnimatedExpandableListView.AnimatedExpandableListAdapter;

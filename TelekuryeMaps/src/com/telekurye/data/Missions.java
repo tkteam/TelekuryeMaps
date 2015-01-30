@@ -139,6 +139,46 @@ public class Missions implements Parcelable, Comparator<Missions> {
 		return data;
 	}
 
+	public List<Missions> GetAllStreets() {
+
+		List<Missions> data = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("UserDailyMissionTypeId", 1);
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+		}
+
+		return data;
+	}
+
+	public List<Missions> GetAllBuildings() {
+
+		List<Missions> data = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("UserDailyMissionTypeId", 2);
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+		}
+
+		return data;
+	}
+
 	public int GetRowCount() {
 		int count = 0;
 

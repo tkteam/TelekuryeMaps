@@ -71,7 +71,7 @@ public class JsonToDatabase {
 
 	public Boolean saveMissions(Activity act) {
 
-		List<Missions> mb;
+		List<Missions> missionList = null;
 
 		Boolean retVal = false;
 
@@ -82,46 +82,38 @@ public class JsonToDatabase {
 			}.getType();
 			SyncResult<ArrayList<Missions>> missions = gson.fromJson(json, listType);
 
-			mb = new ArrayList<Missions>();
-
-			if (missions == null || missions.getProcessStatus() != 200) {
+			if (missions == null || missions.getProcessStatus() != 200 || missions.getTargetObject() == null) {
 				return false;
 			}
 
-			if (missions.getTargetObject() != null) {
-				for (int i = 0; i < missions.getTargetObject().size(); i++) {
+			missionList = missions.getTargetObject();
 
-					Missions mission = missions.getTargetObject().get(i);
+			for (Missions mission : missionList) {
 
-					Dao<Missions, Integer> buildingsDao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
-					QueryBuilder<Missions, Integer> buildingQuery = buildingsDao.queryBuilder();
-					Where<Missions, Integer> where = buildingQuery.where();
-					where.eq("UserDailyMissionId", mission.getUserDailyMissionId());
-					where.and();
-					where.gt("ModifiedDate", mission.getModifiedDate());
-					where.and();
-					where.eq("IsCompleted", false);
-					where.and();
-					where.eq("IsDeleted", false);
+				Dao<Missions, Integer> buildingsDao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+				QueryBuilder<Missions, Integer> buildingQuery = buildingsDao.queryBuilder();
+				Where<Missions, Integer> where = buildingQuery.where();
+				where.eq("UserDailyMissionId", mission.getUserDailyMissionId());
+				where.and();
+				where.gt("ModifiedDate", mission.getModifiedDate());
+				where.and();
+				where.eq("IsCompleted", false);
+				where.and();
+				where.eq("IsDeleted", false);
 
-					PreparedQuery<Missions> pQuery = buildingQuery.prepare();
-					List<Missions> dbBuildings = buildingsDao.query(pQuery);
-					if (dbBuildings.size() != 0) {
-						buildingsDao.delete(dbBuildings);
+				PreparedQuery<Missions> pQuery = buildingQuery.prepare();
+				List<Missions> dbBuildings = buildingsDao.query(pQuery);
 
-					}
-					// mb.add(missions.getTargetObject().get(i));
-					Missions data1 = missions.getTargetObject().get(i);
-
-					// ((Missions) data1).setUserId(new Person().GetAllData().get(0).getId());
-					((Missions) data1).setUserId(Info.UserId);
-					((Missions) data1).Insert();
+				if (dbBuildings.size() != 0) {
+					buildingsDao.delete(dbBuildings);
 				}
-			}
-			retVal = true;
 
-			// LiveData.misBuildings = mb;
-			// LiveData.misStreets = ms;
+				Missions thisMission = mission;
+				thisMission.setUserId(Info.UserId);
+				thisMission.Insert();
+			}
+
+			retVal = true;
 
 			ProcessStatuses ps = new ProcessStatuses();
 			ps.setId(2);
