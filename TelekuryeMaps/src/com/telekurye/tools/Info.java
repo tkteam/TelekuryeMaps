@@ -12,7 +12,7 @@ public class Info {
 
 	public final static int		CURRENT_VERSION			= 63;
 	public static final int		DATABASE_VERSION		= 63;
-	public static final String	DATABASE_NAME			= "telekuryemaps782.db";
+	public static final String	DATABASE_NAME			= "telekuryemaps780.db";
 	public static final String	MAP_DBNAME				= "geolocation6_db";
 
 	public static String		LOGIN_SERVICE_URL		= "http://maksandroid.terralabs.com.tr/Default.aspx";

@@ -120,7 +120,7 @@ public class Missions implements Parcelable, Comparator<Missions> {
 		return data;
 	}
 
-	public List<Missions> GetBuildingsByStreetId(int streetId) {
+	public List<Missions> GetAllMissionsByStreetId(int streetId) {
 
 		List<Missions> data = new ArrayList<Missions>();
 
@@ -128,13 +128,79 @@ public class Missions implements Parcelable, Comparator<Missions> {
 
 			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
 			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
-			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("StreetId", streetId);
+			qBuilder.where().eq("IsDeleted", false).and().eq("IsCompleted", false).and().eq("StreetId", streetId).and().eq("UserId", Info.UserId);
 			PreparedQuery<Missions> pQuery = qBuilder.prepare();
 			data = dao.query(pQuery);
 
 		}
 		catch (SQLException e) {
 			Tools.saveErrors(e);
+		}
+
+		return data;
+	}
+
+	public List<Missions> GetStreetsByStreetId(int streetId) {
+		List<Missions> data = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+			qBuilder.where().eq("IsDeleted", false).and().eq("UserDailyMissionTypeId", 1).and().eq("IsCompleted", false).and().eq("StreetId", streetId).and().eq("UserId", Info.UserId);
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+
+		}
+
+		return data;
+	}
+
+	public static List<Missions> GetAllStreetIdListForShape() {
+
+		List<Missions> missStreets = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+
+			qBuilder.where() //
+					.eq("IsDeleted", false).and() //
+					.eq("BuildingNumber_IsOdd", true).and() //
+					.eq("UserDailyMissionTypeId", 1).and() //
+					.eq("UserId", Info.UserId); //
+
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			missStreets = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+		}
+
+		return missStreets;
+	}
+
+	public List<Missions> GetBuildingsByStreetId(int streetId) {
+		List<Missions> data = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+			qBuilder.where().eq("IsDeleted", false).and().eq("UserDailyMissionTypeId", 2).and().eq("IsCompleted", false).and().eq("StreetId", streetId).and().eq("UserId", Info.UserId);
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+
 		}
 
 		return data;
@@ -180,7 +246,7 @@ public class Missions implements Parcelable, Comparator<Missions> {
 		return data;
 	}
 
-	public List<Missions> GetOddOrNotBuildings(Boolean bool) {
+	public List<Missions> GetOddBuildings(Boolean bool) {
 
 		List<Missions> data = new ArrayList<Missions>();
 
@@ -193,6 +259,32 @@ public class Missions implements Parcelable, Comparator<Missions> {
 					.eq("IsCompleted", false).and() //
 					.eq("BuildingNumber_IsOdd", bool).and() //
 					.eq("UserDailyMissionTypeId", 2).and() //
+					.eq("UserId", Info.UserId); //
+
+			PreparedQuery<Missions> pQuery = qBuilder.prepare();
+			data = dao.query(pQuery);
+
+		}
+		catch (SQLException e) {
+			Tools.saveErrors(e);
+		}
+
+		return data;
+	}
+
+	public List<Missions> GetOddStreets(Boolean bool) {
+
+		List<Missions> data = new ArrayList<Missions>();
+
+		try {
+
+			Dao<Missions, Integer> dao = DatabaseHelper.getDbHelper().getMissionsDataHelper();
+			QueryBuilder<Missions, Integer> qBuilder = dao.queryBuilder();
+			qBuilder.where() //
+					.eq("IsDeleted", false).and() //
+					.eq("IsCompleted", false).and() //
+					.eq("BuildingNumber_IsOdd", bool).and() //
+					.eq("UserDailyMissionTypeId", 1).and() //
 					.eq("UserId", Info.UserId); //
 
 			PreparedQuery<Missions> pQuery = qBuilder.prepare();

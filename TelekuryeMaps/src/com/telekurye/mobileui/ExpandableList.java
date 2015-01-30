@@ -1,9 +1,7 @@
 package com.telekurye.mobileui;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -33,15 +31,12 @@ import com.telekurye.expandablelist.AnimatedExpandableListView;
 import com.telekurye.expandablelist.AnimatedExpandableListView.AnimatedExpandableListAdapter;
 import com.telekurye.expandablelist.Child;
 import com.telekurye.expandablelist.Parent;
-import com.telekurye.tools.Info;
 import com.telekurye.tools.LiveData;
 import com.telekurye.tools.Tools;
 import com.telekurye.utils.OnMissionUpdated;
 
 public class ExpandableList extends Activity {
 
-	private static final String			STR_CHECKED			= " has Checked!";
-	private static final String			STR_UNCHECKED		= " has unChecked!";
 	private int							ParentClickStatus	= -1;
 	private int							ChildClickStatus	= -1;
 	private ArrayList<Parent>			parents;
@@ -60,9 +55,7 @@ public class ExpandableList extends Activity {
 
 		tvShowEmpty = (TextView) findViewById(R.id.tvEmpty);
 
-		LiveData.mStreetsAll = new ArrayList<Missions>();
-
-		FillData();
+		loadHosts(FillData());
 
 		AutoSyncHelper.GetInstance().SetOnMissionUpdated(new OnMissionUpdated() {
 			@Override
@@ -72,72 +65,40 @@ public class ExpandableList extends Activity {
 		});
 	}
 
-	private void FillData() {
+	private ArrayList<Parent> FillData() {
+
+		ArrayList<Parent> list = new ArrayList<Parent>();
 		try {
-			ArrayList<Parent> list = new ArrayList<Parent>();
-
 			Missions data = new Missions();
-			List<Missions> mStreets = data.GetAllStreets();
-
-			List<MissionsStreets> mStreetsRemove = new ArrayList<MissionsStreets>();
-
-			List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
-
-			for (int j = 0; j < mStreetsAll.size(); j++) {
-				if (mStreetsAll.get(j).getBuildingNumber_IsOdd() && !mStreetsAll.get(j).getIsDeleted()) {
-					mStreets.add(mStreetsAll.get(j));
-				}
-			}
-
-			Collections.sort(mStreets, new MissionsStreets());
-
+			List<Missions> mStreets = data.GetOddStreets(true);
+			LiveData.mStreetsAll = mStreets;
+			Collections.sort(mStreets, new Missions());
 			FillList(list, mStreets);
-
-			loadHosts(list);
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);
 		}
-
+		return list;
 	}
 
 	private void FillList(ArrayList<Parent> list, List<Missions> mStreets) {
-		for (int i = 0; i < mStreets.size(); i++) {
+
+		for (Missions street : mStreets) {
+
 			Parent parent = new Parent();
 
-			Missions mb = new Missions();
+			List<Missions> missions = new Missions().GetAllMissionsByStreetId(street.getStreetId());
 
-			List<Missions> mBuilds = new ArrayList<Missions>();
-
-			List<Missions> mBuildssAllUser = mb.GetAllData();
-
-			for (int m = 0; m < mBuildssAllUser.size(); m++) {
-
-				if (mBuildssAllUser.get(m).getUserId() == Info.UserId) {
-					mBuilds.add(mBuildssAllUser.get(m));
-				}
-			}
-
-			int sayac = 0;
-
-			for (int j = 0; j < mBuilds.size(); j++) {
-				if (mStreets.get(i).getStreetId() == mBuilds.get(j).getStreetId() && !mBuilds.get(j).getIsDeleted()) {
-					sayac++;
-				}
-			}
-
-			int sayac2 = sayac + 2;
-
-			parent.setText1("" + mStreets.get(i).getName().trim() + " Sokak");
-			parent.setText2("" + mStreets.get(i).getAddressText().trim());
-			parent.setCounter("[" + Integer.toString(sayac2) + "]");
+			parent.setText1("" + street.getName().trim() + " Sokak");
+			parent.setText2("" + street.getAddressText().trim());
+			parent.setCounter("[" + Integer.toString(missions.size()) + "]");
 			parent.setChildren(new ArrayList<Child>());
-			parent.setStreetId(mStreets.get(i).getStreetId());
-			parent.setLastOperationDate(mStreets.get(i).getLastOperationDate());
-			parent.setTypeId(mStreets.get(i).getStreetTypeId());
-			parent.setBuildingCount(sayac2);
+			parent.setStreetId(street.getStreetId());
+			parent.setLastOperationDate(street.getLastOperationDate());
+			parent.setTypeId(street.getStreetTypeId());
+			parent.setBuildingCount(missions.size());
 
-			if (mStreets.get(i).getStreetTypeId() == 5 || mStreets.get(i).getStreetTypeId() == 0 || mStreets.get(i).getStreetTypeId() == 1) {
+			if (street.getStreetTypeId() == 5 || street.getStreetTypeId() == 0 || street.getStreetTypeId() == 1) {
 
 				Child child = new Child();
 				child.setText1("Küçükten Büyüðe\n\nÖrnek: 1, 2, 3, 4");
@@ -172,48 +133,14 @@ public class ExpandableList extends Activity {
 
 	public void asyncTaskExpandableList() {
 
-		AsyncTask<Void, ArrayList<Parent>, ArrayList<Parent>> syncBack2 = new AsyncTask<Void, ArrayList<Parent>, ArrayList<Parent>>() {
+		AsyncTask<Void, ArrayList<Parent>, Void> syncBack2 = new AsyncTask<Void, ArrayList<Parent>, Void>() {
 
 			@Override
-			protected ArrayList<Parent> doInBackground(Void... params) {
+			protected Void doInBackground(Void... params) {
 
-				ArrayList<Parent> list = new ArrayList<Parent>();
+				publishProgress(FillData());
 
-				// while (true && !this.isCancelled()) {
-				// List<MissionsStreets> mStreetsAll = LiveData.misStreets;
-				list = new ArrayList<Parent>();
-
-				Missions data = new Missions();
-				List<Missions> mStreetsAll = new ArrayList<Missions>();
-				List<Missions> mStreetsAllUser = data.GetAllStreets();
-
-				for (int i = 0; i < mStreetsAllUser.size(); i++) {
-					// if (mStreetsAllUser.get(i).getUserId() == new Person().GetAllData().get(0).getId()) {
-					if (mStreetsAllUser.get(i).getUserId() == Info.UserId) {
-						mStreetsAll.add(mStreetsAllUser.get(i));
-					}
-				}
-
-				List<MissionsStreets> mStreetsRemove = new ArrayList<MissionsStreets>();
-
-				LiveData.mStreetsAll = new ArrayList<MissionsStreets>();
-				LiveData.mStreetsAll.addAll(mStreetsAll);
-
-				List<MissionsStreets> mStreets = new ArrayList<MissionsStreets>();
-
-				for (int j = 0; j < mStreetsAll.size(); j++) {
-					if (mStreetsAll.get(j).getBuildingNumber_IsOdd() && !mStreetsAll.get(j).getIsDeleted()) {
-						mStreets.add(mStreetsAll.get(j));
-					}
-				}
-
-				Collections.sort(mStreets, new MissionsStreets());
-
-				FillList(list, mStreets);
-
-				publishProgress(list);
-
-				return list;
+				return null;
 			}
 
 			@Override
@@ -223,8 +150,6 @@ public class ExpandableList extends Activity {
 			}
 
 		};
-
-		LiveData.syncBack2 = syncBack2;
 
 		int corePoolSize = 60;
 		int maximumPoolSize = 80;
@@ -238,6 +163,7 @@ public class ExpandableList extends Activity {
 	}
 
 	private void loadHosts(final ArrayList<Parent> newParents) {
+
 		if (newParents == null) {
 			return;
 		}
@@ -347,15 +273,11 @@ public class ExpandableList extends Activity {
 					//
 					// }
 
-					System.out.println("1: " + parent.getTypeId());
-					System.out.println("2: " + parent.getStreetId());
-					System.out.println("3: " + childPosition);
-
-					// Intent i = new Intent(ExpandableList.this, StreetInfo.class);
-					// i.putExtra("streettype", parent.getTypeId());
-					// i.putExtra("grupid", parent.getStreetId());
-					// i.putExtra("childid", childPosition);
-					// startActivity(i);
+					Intent i = new Intent(ExpandableList.this, StreetInfo.class);
+					i.putExtra("streettype", parent.getTypeId());
+					i.putExtra("grupid", parent.getStreetId());
+					i.putExtra("childid", childPosition);
+					startActivity(i);
 
 				}
 			});
@@ -467,13 +389,12 @@ public class ExpandableList extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
 		asyncTaskExpandableList();
 	}
 
 	private void showEmpty() {
 
-		if (LiveData.mStreetsAll.size() <= 0) {
+		if (LiveData.mStreetsAll == null || LiveData.mStreetsAll.size() <= 0) {
 			tvShowEmpty.setVisibility(View.VISIBLE);
 			listView.setVisibility(View.GONE);
 		}
