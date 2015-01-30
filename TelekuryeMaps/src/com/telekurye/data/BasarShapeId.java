@@ -18,7 +18,7 @@ import com.telekurye.tools.Tools;
 public class BasarShapeId {
 
 	@DatabaseField(id = true) private Long	BasarShapeId;
-	@DatabaseField private int				DistrictId;
+	@DatabaseField private int				DistrictId; //-**
 
 	public void Insert() {
 		try {
