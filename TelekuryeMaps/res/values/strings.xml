@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Telekurye Maps</string>
+    <string name="album_name">telekurye</string>
+    <string name="new_building">Yeni Dış Kapı No Görevi Ekle</string>
+    <string name="new_building2">Vazgeç</string>
+    
+    
+    <string name="crash_toast_text">Hata Bulundu!</string>
+    <string name="crash_dialog_title">Hata Bulundu! \nHatayı tam olarak nerede aldığınızı yazınız.</string>
+    <string name="crash_dialog_text"></string>
+    <string name="crash_dialog_comment_prompt"></string>
+    <string name="crash_dialog_ok_toast">Teşekkürler!</string>
+
+</resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:weightSum="100" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:height="0dp" >
+
+        <TextView
+            android:id="@+id/tvCarKm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/_btn_kirmizi_mavi"
+            android:gravity="center"
+            android:text="GÖREVİ NASIL GERÇEKLEŞTİRECEKSİNİZ ? "
+            android:textColor="#ffffff"
+            android:textSize="40dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="80"
+        android:orientation="vertical"
+        android:weightSum="100" >
+
+        <Button
+            android:id="@+id/courier_btn1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="50"
+            android:background="@drawable/_btn_mavi_kirmizi"
+            android:drawableTop="@drawable/vehicle2"
+            android:paddingTop="40dp"
+            android:text="KM GİRİŞ EKRANI"
+            android:textColor="#ffffff"
+            android:textSize="40dp" />
+
+        <Button
+            android:id="@+id/courier_btn2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="50"
+            android:background="@drawable/_btn_mavi_kirmizi"
+            android:drawablePadding="10dp"
+            android:drawableTop="@drawable/walkhuman"
+            android:paddingTop="30dp"
+            android:text="GÖREV ALMA EKRANI"
+            android:textColor="#ffffff"
+            android:textSize="40dp" />
+    </LinearLayout>
+
+</LinearLayout>

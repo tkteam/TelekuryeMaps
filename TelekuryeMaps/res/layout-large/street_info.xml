@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:weightSum="100" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="@drawable/_btn_yesil_mavi"
+        android:gravity="center"
+        android:text="Bina Listesi"
+        android:textColor="#ffffff"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="@drawable/_btn_mavi_kirmizi"
+        android:weightSum="100" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="15"
+            android:gravity="center"
+            android:paddingLeft="2dp"
+            android:text="Bina No"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:background="#000000" >
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="80"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="Bina Bilgileri"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_street_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="80"
+        android:divider="@android:color/black"
+        android:dividerHeight="2.0sp" >
+    </ListView>
+
+    <Button
+        android:id="@+id/btn_go_mission"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@drawable/_btn_koyu_mavi_kirmizi"
+        android:text="Devam Et"
+        android:textColor="#ffffff"
+        android:textSize="40sp" />
+
+</LinearLayout>
