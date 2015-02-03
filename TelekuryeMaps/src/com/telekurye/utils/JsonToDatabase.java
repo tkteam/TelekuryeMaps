@@ -301,11 +301,6 @@ public class JsonToDatabase {
 				}
 			}
 
-			ProcessStatuses ps = new ProcessStatuses();
-			ps.setId(5);
-			ps.setStatusName(Info.tagBasarShapeId);
-			ps.setStatusCode(basarShapeId.getProcessStatus());
-			ps.Insert();
 		}
 		catch (Exception e) {
 			Tools.saveErrors(e);

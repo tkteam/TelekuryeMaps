@@ -73,9 +73,6 @@ public class MissionListCreator {
 		if (chId == 0) { // artan çift -> azalan tek
 
 			try {
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				// Collections.reverse(mBuildingsOddNo);
 
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
@@ -83,15 +80,22 @@ public class MissionListCreator {
 					}
 				}
 
-				temp.addAll(mBuildingsEvenNo);
+				if (mBuildingsEvenNo != null && mBuildingsEvenNo.size() > 0) {
+					Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+					temp.addAll(mBuildingsEvenNo);
+				}
 
 				if (showStreets) {
-					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+					if (mThisMissionStreets.get(1) != null) {
 						temp.add(mThisMissionStreets.get(1));
 					}
 				}
 
-				temp.addAll(mBuildingsOddNo);
+				if (mBuildingsOddNo != null && mBuildingsOddNo.size() > 0) {
+					Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
+					temp.addAll(mBuildingsOddNo);
+				}
+
 			}
 			catch (Exception e) {
 				Tools.saveErrors(e);
@@ -102,23 +106,28 @@ public class MissionListCreator {
 
 			try {
 
-				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				// Collections.reverse(mBuildingsEvenNo);
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
 						temp.add(mThisMissionStreets.get(0));
 					}
 				}
-				temp.addAll(mBuildingsEvenNo);
+
+				if (mBuildingsEvenNo != null && mBuildingsEvenNo.size() > 0) {
+					Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
+					temp.addAll(mBuildingsEvenNo);
+				}
 
 				if (showStreets) {
-					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+					if (mThisMissionStreets.get(1) != null) {
 						temp.add(mThisMissionStreets.get(1));
 					}
 				}
-				temp.addAll(mBuildingsOddNo);
+
+				if (mBuildingsOddNo != null && mBuildingsOddNo.size() > 0) {
+					Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+					temp.addAll(mBuildingsOddNo);
+				}
+
 			}
 			catch (Exception e) {
 				Tools.saveErrors(e);
@@ -129,23 +138,27 @@ public class MissionListCreator {
 
 			try {
 
-				Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-				Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				// Collections.reverse(mBuildingsEvenNo);
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
 						temp.add(mThisMissionStreets.get(0));
 					}
 				}
-				temp.addAll(mBuildingsOddNo);
+
+				if (mBuildingsOddNo != null && mBuildingsOddNo.size() > 0) {
+					Collections.sort(mBuildingsOddNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+					temp.addAll(mBuildingsOddNo);
+				}
 
 				if (showStreets) {
-					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+					if (mThisMissionStreets.get(1) != null) {
 						temp.add(mThisMissionStreets.get(1));
 					}
 				}
+				if (mBuildingsEvenNo != null && mBuildingsEvenNo.size() > 0) {
+					Collections.sort(mBuildingsEvenNo, new ReverseSorter()); // büyükten küçüðe sýrala
+					temp.addAll(mBuildingsEvenNo);
+				}
 
-				temp.addAll(mBuildingsEvenNo);
 			}
 			catch (Exception e) {
 				Tools.saveErrors(e);
@@ -156,24 +169,27 @@ public class MissionListCreator {
 
 			try {
 
-				Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
-				// Collections.reverse(mBuildingsOddNo);
-				Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
-
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
 						temp.add(mThisMissionStreets.get(0));
 					}
 				}
 
-				temp.addAll(mBuildingsOddNo);
+				if (mBuildingsOddNo != null && mBuildingsOddNo.size() > 0) {
+					Collections.sort(mBuildingsOddNo, new ReverseSorter()); // büyükten küçüðe sýrala
+					temp.addAll(mBuildingsOddNo);
+				}
 
 				if (showStreets) {
-					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+					if (mThisMissionStreets.get(1) != null) {
 						temp.add(mThisMissionStreets.get(1));
 					}
 				}
-				temp.addAll(mBuildingsEvenNo);
+				if (mBuildingsEvenNo != null && mBuildingsEvenNo.size() > 0) {
+					Collections.sort(mBuildingsEvenNo, new MissionsBuildings()); // küçükten büyüðe sýrala
+					temp.addAll(mBuildingsEvenNo);
+				}
+
 			}
 			catch (Exception e) {
 				Tools.saveErrors(e);
@@ -203,18 +219,19 @@ public class MissionListCreator {
 		if (chId == 0) { // artan çift -> azalan tek
 
 			try {
-				Collections.sort(mBuilds, new MissionsBuildings()); // küçükten büyüðe sýrala
 
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
 						temp.add(mThisMissionStreets.get(0));
 					}
 				}
-
-				temp.addAll(mBuilds);
+				if (mBuilds != null && mBuilds.size() > 0) {
+					Collections.sort(mBuilds, new MissionsBuildings()); // küçükten büyüðe sýrala
+					temp.addAll(mBuilds);
+				}
 
 				if (showStreets) {
-					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+					if (mThisMissionStreets.get(1) != null) {
 						temp.add(mThisMissionStreets.get(1));
 					}
 				}
@@ -229,19 +246,20 @@ public class MissionListCreator {
 		else if (chId == 1) { // azalan çift -> artan tek
 
 			try {
-				Collections.sort(mBuilds, new MissionsBuildings()); // büyükten küçüðe sýrala
-				Collections.reverse(mBuilds);
 
 				if (showStreets) {
 					if (mThisMissionStreets.get(0) != null) {
 						temp.add(mThisMissionStreets.get(0));
 					}
 				}
-
-				temp.addAll(mBuilds);
+				if (mBuilds != null && mBuilds.size() > 0) {
+					Collections.sort(mBuilds, new MissionsBuildings()); // büyükten küçüðe sýrala
+					Collections.reverse(mBuilds);
+					temp.addAll(mBuilds);
+				}
 
 				if (showStreets) {
-					if (mThisMissionStreets.size() > 1 && mThisMissionStreets.get(1) != null) {
+					if (mThisMissionStreets.get(1) != null) {
 						temp.add(mThisMissionStreets.get(1));
 					}
 				}
