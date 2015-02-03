@@ -62,19 +62,19 @@ public class AppConfig {
 	}
 
 	public void restartDevice(Activity act) {
-		Toast.makeText(act, "Cihaz Yeniden BaÅŸlatÄ±lÄ±yor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Cihaz Yeniden Baþlatýlýyor...", Toast.LENGTH_LONG).show();
 		ShellHelper.Reboot();
 	}
 
 	public void clearDatabase(Activity act) {
-		Toast.makeText(act, "TÃ¼m Veriler Sliniyor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Tüm Veriler Sliniyor...", Toast.LENGTH_LONG).show();
 
 		new DatabaseHelper(act).clearDatabase();
 	}
 
 	public void installApp(Activity act) {
 
-		Toast.makeText(act, "Uygulama YÃ¼kleniyor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Uygulama Yükleniyor...", Toast.LENGTH_LONG).show();
 		String file = Environment.getExternalStorageDirectory() + File.separator + Info.UPDATE_DOWNLOAD_PATH + File.separator + "telekuryeConfig.apk";
 		Intent i = new Intent(Intent.ACTION_VIEW);
 		i.setDataAndType(Uri.fromFile(new File(file)), "application/vnd.android.package-archive");
@@ -84,14 +84,14 @@ public class AppConfig {
 	}
 
 	public void uninstallApp(Activity act) {
-		Toast.makeText(act, "Uygulama KaldÄ±rÄ±lÄ±yor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Uygulama Kaldýrýlýyor...", Toast.LENGTH_LONG).show();
 		Uri packageURI = Uri.parse("package:" + "com.telekurye.mobileui");
 		Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);
 		act.startActivity(uninstallIntent);
 	}
 
 	public void openFileManager(Activity act) {
-		Toast.makeText(act, "Dosya YÃ¶neticisi AÃ§Ä±lÄ±yor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Dosya Yöneticisi Açýlýyor...", Toast.LENGTH_LONG).show();
 		Intent i = new Intent();
 		i.setAction("com.sec.android.app.myfiles.PICK_DATA");
 		i.putExtra("CONTENT_TYPE", "*/*");
@@ -100,19 +100,19 @@ public class AppConfig {
 	}
 
 	public void openChrome(Activity act) {
-		Toast.makeText(act, "TarayÄ±cÄ± AÃ§Ä±lÄ±yor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Tarayýcý Açýlýyor...", Toast.LENGTH_LONG).show();
 		Intent intent = new Intent("android.intent.action.VIEW", Uri.parse("http://www.google.com.tr"));
 		act.startActivity(intent);
 	}
 
 	public void openSettings(Activity act) {
-		Toast.makeText(act, "Ayarlar AÃ§Ä±lÄ±yor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Ayarlar Açýlýyor...", Toast.LENGTH_LONG).show();
 		act.startActivityForResult(new Intent(android.provider.Settings.ACTION_APPLICATION_SETTINGS), 0);
 
 	}
 
 	public void openSettingsThisApp(Activity act) {
-		Toast.makeText(act, "Uygulama AyarlarÄ± AÃ§Ä±lÄ±yor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Uygulama Ayarlarý Açýlýyor...", Toast.LENGTH_LONG).show();
 		Uri packageURI = Uri.parse("package:" + "com.telekurye.mobileui");
 		Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", packageURI);
 		act.startActivity(intent);
@@ -121,7 +121,7 @@ public class AppConfig {
 
 	public void clearPhotosDirectory(Activity act) throws IOException {
 
-		Toast.makeText(act, "TÃ¼m FotoÄŸraflar Siliniyor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Tüm Fotoðraflar Siliniyor...", Toast.LENGTH_LONG).show();
 
 		File targetDirectory = new File(Environment.getExternalStorageDirectory() + File.separator + Info.PHOTO_STORAGE_PATH);
 
@@ -135,7 +135,7 @@ public class AppConfig {
 
 	public void clearDownloadDirectory(Activity act) throws IOException {
 
-		Toast.makeText(act, "TÃ¼m Dosyalar Siliniyor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Tüm Dosyalar Siliniyor...", Toast.LENGTH_LONG).show();
 
 		File targetDirectory = new File(Environment.getExternalStorageDirectory() + File.separator + Info.UPDATE_DOWNLOAD_PATH);
 
@@ -148,7 +148,7 @@ public class AppConfig {
 	}
 
 	public void downloadAndInstallApk(Activity act) throws IOException, MalformedURLException, ClientProtocolException, FileNotFoundException {
-		Toast.makeText(act, "Dosya Ä°ndiriliyor...", Toast.LENGTH_LONG).show();
+		Toast.makeText(act, "Dosya Ýndiriliyor...", Toast.LENGTH_LONG).show();
 		new Thread(new Runnable() {
 
 			@Override
@@ -156,7 +156,7 @@ public class AppConfig {
 				try {
 					// String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps" + Info.CURRENT_VERSION + ".apk";
 
-					String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps62.apk";
+					String DownloadUrl = "http://maksandroid.terralabs.com.tr/AndroidVersions/TelekuryeMaps+(Info.CURRENT_VERSION+1)+.apk";
 
 					HttpClient client = new DefaultHttpClient();
 
@@ -212,7 +212,7 @@ public class AppConfig {
 				super.onPreExecute();
 
 				progressDialog.setProgress(0);
-				progressDialog.setTitle("VeritabanÄ± EklenmiÅŸ Versiyon Ä°ndiriliyor LÃ¼tfen Bekleyiniz...");
+				progressDialog.setTitle("Veritabaný Eklenmiþ Versiyon Ýndiriliyor Lütfen Bekleyiniz...");
 
 			}
 
@@ -244,7 +244,7 @@ public class AppConfig {
 						fos.write(buffer, 0, len1);
 						downloadedSize += len1;
 						int percent = (int) (((float) downloadedSize / (float) TotalFileSize) * 100);
-						publishProgress("VeritabanÄ± EklenmiÅŸ Versiyon Ä°ndiriliyor LÃ¼tfen Bekleyiniz...", Integer.toString(percent));
+						publishProgress("Veritabaný Eklenmiþ Versiyon Ýndiriliyor Lütfen Bekleyiniz...", Integer.toString(percent));
 					}
 
 					fos.flush();

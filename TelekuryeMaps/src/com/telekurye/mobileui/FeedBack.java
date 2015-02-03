@@ -315,6 +315,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	private void fillComponent() {
 
+		btnTypeStatus = false;
+
 		ll_mission_type_info.setVisibility(View.VISIBLE);
 		ll_building_name_info.setVisibility(View.VISIBLE);
 
