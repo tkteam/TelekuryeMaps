@@ -9,9 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -104,8 +102,8 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private TextView						tv_StreetOrBuildingType, tv_persons, tv_persons_values, tv_building_type_info;
 	private TextView						tv_building_type_info_value, tv_street_name, tv_independent_section_count;
 	private TextView						tv_floor_count, tvLocInfo;
-	private LinearLayout					ll_user_feedback, ll_mission_type_info, ll_apno, llMapFragment, llImages;
-	private EditText						new_et_apno_value, new_et_apname_value, et_independent_section_count, et_floor_count;
+	private LinearLayout					ll_building_name_info, ll_mission_type_info, ll_user_feedback, ll_apno, llMapFragment, llImages;
+	private EditText						et_independent_section_count, et_floor_count;														// ,new_et_apno_value, new_et_apname_value;
 	private Button							btnStreetOrBuildingType, btnSaveFeedback, btnMapZoom, btnCapturePicture;
 	private CheckBox						cbSagKapi, cbOnKapi, cbSolKapi;
 	private ProgressDialog					progressDialog;
@@ -176,6 +174,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private Thread							uiUpdateThread;
 	private boolean							IsForcedUrbanStreet				= false;
 	private boolean							IsFirstForcedUrbanStreet		= true;
+	int										currentTab						= 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -194,9 +193,10 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		ll_user_feedback = (LinearLayout) findViewById(R.id.ll_user_feedback);
 		ll_mission_type_info = (LinearLayout) findViewById(R.id.ll_mission_type_info);
 		ll_apno = (LinearLayout) findViewById(R.id.ll_apno);
+		ll_building_name_info = (LinearLayout) findViewById(R.id.ll_building_name_info);
 
-		new_et_apno_value = (EditText) findViewById(R.id.new_et_apno_value);
-		new_et_apname_value = (EditText) findViewById(R.id.new_et_apname_value);
+		// new_et_apno_value = (EditText) findViewById(R.id.new_et_apno_value);
+		// new_et_apname_value = (EditText) findViewById(R.id.new_et_apname_value);
 		et_floor_count = (EditText) findViewById(R.id.et_floor_count);
 		et_independent_section_count = (EditText) findViewById(R.id.et_independent_section_count);
 
@@ -315,6 +315,20 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 	private void fillComponent() {
 
+		ll_mission_type_info.setVisibility(View.VISIBLE);
+		ll_building_name_info.setVisibility(View.VISIBLE);
+
+		tv_apname.setVisibility(View.VISIBLE);
+		tv_apname_value.setVisibility(View.VISIBLE);
+		tv_apno.setVisibility(View.VISIBLE);
+		tv_apno_value.setVisibility(View.VISIBLE);
+		// new_et_apname_value.setVisibility(View.VISIBLE);
+		// new_et_apno_value.setVisibility(View.VISIBLE);
+		tv_independent_section_count.setVisibility(View.VISIBLE);
+		et_independent_section_count.setVisibility(View.VISIBLE);
+		tv_floor_count.setVisibility(View.VISIBLE);
+		et_floor_count.setVisibility(View.VISIBLE);
+
 		btnStreetOrBuildingType.setEnabled(true);
 		et_independent_section_count.setEnabled(true);
 		et_independent_section_count.setText("");
@@ -336,8 +350,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				// -----
 				tv_apname.setText("Sokak Adý : ");
-				tv_apname_value.setVisibility(View.VISIBLE);
-				new_et_apname_value.setVisibility(View.GONE);
+				// new_et_apname_value.setVisibility(View.GONE);
 
 				if (mMissionForFeedback.get(MissionCounter).getName() != null && !mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
 					tv_apname_value.setText(mMissionForFeedback.get(MissionCounter).getName() + " Sokak");
@@ -346,12 +359,12 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					tv_apname_value.setText("");
 				}
 				// ------
-				ll_mission_type_info.setVisibility(View.VISIBLE);
+
 				btnStreetOrBuildingType.setText("Seçiniz");
 				tv_building_type_info.setText("Sokak Tipi Bilgisi : ");
 
 				// -----
-				new_et_apno_value.setVisibility(View.GONE);
+				// new_et_apno_value.setVisibility(View.GONE);
 				tv_apno.setVisibility(View.GONE);
 				ll_apno.setVisibility(View.GONE);
 				// tv_apno.setText("Sokak No : ");
@@ -418,8 +431,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 				tv_mission_status_value.setText("Dýþ Kapý No Görevi");
 
-				tv_apname_value.setVisibility(View.VISIBLE);
-				new_et_apname_value.setVisibility(View.GONE);
+				// new_et_apname_value.setVisibility(View.GONE);
 				if (mMissionForFeedback.get(MissionCounter).getName() != null && !mMissionForFeedback.get(MissionCounter).getName().trim().equalsIgnoreCase("")) {
 					tv_apname_value.setText(mMissionForFeedback.get(MissionCounter).getName() + " Apartmaný");
 				}
@@ -427,8 +439,6 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 					tv_apname_value.setText("");
 				}
 				tv_apname.setText("Bina Adý : ");
-
-				ll_mission_type_info.setVisibility(View.VISIBLE);
 
 				tv_building_type_info.setText("Bina Tipi Bilgisi : ");
 
@@ -443,7 +453,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				tv_apno.setVisibility(View.VISIBLE);
 				ll_apno.setVisibility(View.VISIBLE);
 				tv_apno_value.setVisibility(View.VISIBLE);
-				new_et_apno_value.setVisibility(View.GONE);
+				// new_et_apno_value.setVisibility(View.GONE);
 				tv_apno.setText("Dýþ Kapý No : ");
 				tv_apno_value.setText(mMissionForFeedback.get(MissionCounter).getBuildingNumber());
 
@@ -522,7 +532,15 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				Tools.showShortCustomToast(this, "Bina/Sokak Tipi seçilmedi.");
 				return;
 			}
-			if ((et_floor_count.getText().toString().trim().equalsIgnoreCase("") && (isNewBuilding || mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2)) //
+
+			// if ((et_floor_count.getText().toString().trim().equalsIgnoreCase("") && (isNewBuilding || mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2)) //
+			// && (TypeId != 1 && TypeId != 2 && TypeId != 12 && TypeId != 13 && TypeId != 15)) {
+			// Tools.showShortCustomToast(this, "Lütfen Kat Sayýsýný Giriniz.");
+			// return;
+			// }
+
+			if ((et_floor_count.getText().toString().trim().equalsIgnoreCase("") //
+					&& !isNewBuilding && mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 2) //
 					&& (TypeId != 1 && TypeId != 2 && TypeId != 12 && TypeId != 13 && TypeId != 15)) {
 				Tools.showShortCustomToast(this, "Lütfen Kat Sayýsýný Giriniz.");
 				return;
@@ -592,30 +610,35 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				mNewFeedback.setUserDailyMissionId(lDateTime);
 				mNewFeedback.setStreetId(mMissionForFeedback.get(0).getStreetId());
 
-				if (!new_et_apname_value.getText().toString().trim().equalsIgnoreCase("")) {
-					mNewFeedback.setBuildingName(new_et_apname_value.getText().toString());
-				}
+				// if (!new_et_apname_value.getText().toString().trim().equalsIgnoreCase("")) {
+				// mNewFeedback.setBuildingName(new_et_apname_value.getText().toString());
+				// }
+				//
+				// if (!new_et_apno_value.getText().toString().trim().equalsIgnoreCase("")) {
+				// mNewFeedback.setBuildingNumber(new_et_apno_value.getText().toString());
+				// }
 
-				if (!new_et_apno_value.getText().toString().trim().equalsIgnoreCase("")) {
-					mNewFeedback.setBuildingNumber(new_et_apno_value.getText().toString());
-				}
+				// if (!et_floor_count.getText().toString().trim().equalsIgnoreCase("")) {
+				// mNewFeedback.setFloorCount(Integer.parseInt(et_floor_count.getText().toString()));
+				// }
+				// else {
+				// mNewFeedback.setFloorCount(0);
+				// }
+				//
+				// if (!et_independent_section_count.getText().toString().trim().equalsIgnoreCase("")) {
+				// mNewFeedback.setIndependentSectionCount(Integer.parseInt(et_independent_section_count.getText().toString()));
+				// }
+				// else {
+				// mNewFeedback.setIndependentSectionCount(0);
+				// }
 
-				if (!et_floor_count.getText().toString().trim().equalsIgnoreCase("")) {
-					mNewFeedback.setFloorCount(Integer.parseInt(et_floor_count.getText().toString()));
+				if (TypeId == 1 || TypeId == 11 || TypeId == 12 || TypeId == 13 || TypeId == 15 || TypeId == 16 || TypeId == 17) {
+					mNewFeedback.setOutDoorPositionStatu(0);
 				}
 				else {
-					mNewFeedback.setFloorCount(0);
+					mNewFeedback.setOutDoorPositionStatu(checkboxStatus);
 				}
-
-				if (!et_independent_section_count.getText().toString().trim().equalsIgnoreCase("")) {
-					mNewFeedback.setIndependentSectionCount(Integer.parseInt(et_independent_section_count.getText().toString()));
-				}
-				else {
-					mNewFeedback.setIndependentSectionCount(0);
-				}
-
 				mNewFeedback.setIndependentSectionTypeId(TypeId);
-
 				mNewFeedback.setIsCompleted(false);
 				// mNewFeedback.setTypeId(TypeId);
 				mNewFeedback.setGPSLat(GPSLat);
@@ -635,11 +658,11 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				basarShapeId = 0;
 				mNewFeedback.Insert();
 
-				new_et_apname_value.setText("");
-				new_et_apno_value.setText("");
+				// new_et_apname_value.setText("");
+				// new_et_apno_value.setText("");
 
-				currentMarker.setTitle(mMissionForFeedback.get(0).getName() + " Sokak, Dýþ Kapý No: " + new_et_apno_value.getText().toString());
-				currentMarker.setSnippet(new_et_apname_value.getText().toString() + " Apartmaný");
+				// currentMarker.setTitle(mMissionForFeedback.get(0).getName() + " Sokak, Dýþ Kapý No: " + new_et_apno_value.getText().toString());
+				// currentMarker.setSnippet(new_et_apname_value.getText().toString() + " Apartmaný");
 
 				llImages.removeAllViews();
 				LiveData.photoinfo = new ArrayList<PhotoInfo>();
@@ -695,7 +718,15 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 			mFeedBack.setTypeId(TypeId);
 		}
 		else {
+
 			mFeedBack.setIndependentSectionTypeId(TypeId);
+
+			if (TypeId == 1 || TypeId == 11 || TypeId == 12 || TypeId == 13 || TypeId == 15 || TypeId == 16 || TypeId == 17) {
+				mFeedBack.setOutDoorPositionStatu(0);
+			}
+			else {
+				mFeedBack.setOutDoorPositionStatu(checkboxStatus);
+			}
 
 			if (!et_floor_count.getText().toString().equalsIgnoreCase("")) {
 				mFeedBack.setFloorCount(Integer.parseInt(et_floor_count.getText().toString()));
@@ -721,7 +752,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		mFeedBack.setSignedLat(SignedLat);
 		mFeedBack.setSignedLng(SignedLng);
-		mFeedBack.setOutDoorPositionStatu(checkboxStatus);
+
 		mFeedBack.setOperationDate(new Date());
 
 		mFeedBack.setBasarShapeId(basarShapeId);
@@ -764,16 +795,18 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 				newBuildingMission();
 				return;
 			}
+			else {
 
-			Tools.showShortCustomToast(this, "Sokak Görevi Tamamlandý");
-			LiveData.streetMarkers.clear();
+				Tools.showShortCustomToast(this, "Sokak Görevi Tamamlandý");
+				LiveData.streetMarkers.clear();
 
-			for (MissionsStreets str : completedMissionStreets) {
-				str.setIsCompleted(true);
-				str.Update();
+				for (MissionsStreets str : completedMissionStreets) {
+					str.setIsCompleted(true);
+					str.Update();
+				}
+				finish();
 			}
 
-			finish();
 		}
 		else {
 			fillComponent(); // sonraki görevin bilgileri yükleniyor
@@ -835,7 +868,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 						et_floor_count.setText("");
 						et_floor_count.setHint("Seçilemez");
 
-						new_et_apno_value.setText("");
+						// new_et_apno_value.setText("");
 					}
 					else {
 						et_independent_section_count.setEnabled(true);
@@ -911,30 +944,56 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		if (!Info.ISTEST) {
 
 			if (tabId.equals("Bilgi")) {
-
+				currentTab = 0;
 			}
 			else if (tabId.equals("Foto")) {
 				if (!isMarkerSet) {
-					Tools.showShortCustomToast(this, "Harita üzerinden konum seçilmedi!");
+					Tools.showShortCustomToast(this, "Harita üzerinde konum seçilmedi!");
 					tabHost.setCurrentTab(0);
 					return;
 				}
+				if (!btnTypeStatus) {
+					tabHost.setCurrentTab(0);
+					Tools.showShortCustomToast(this, "Lütfen önce bina tipini seçiniz!");
+					return;
+				}
+				currentTab = 1;
 			}
 			else if (tabId.equals("Kapý")) {
 
 				if (!isNewBuilding && mMissionForFeedback.get(MissionCounter).getUserDailyMissionTypeId() == 1) {
-					tabHost.setCurrentTab(1);
-					return;
-				}
-
-				if (LiveData.photoinfo.size() != Info.PHOTO_COUNT) {
-					tabHost.setCurrentTab(1);
+					tabHost.setCurrentTab(currentTab);
 					return;
 				}
 				if (!isMarkerSet) {
+					tabHost.setCurrentTab(0);
+					Tools.showShortCustomToast(this, "Harita üzerinde konum seçilmedi!");
+					return;
+				}
+				if (!btnTypeStatus) {
+					tabHost.setCurrentTab(0);
+					Tools.showShortCustomToast(this, "Lütfen önce bina tipini seçiniz!");
+					return;
+				}
+				if (LiveData.photoinfo.size() != Info.PHOTO_COUNT) {
+					int rslt = Info.PHOTO_COUNT - LiveData.photoinfo.size();
+
+					if (rslt < Info.PHOTO_COUNT) {
+						Tools.showShortCustomToast(this, "Lütfen " + rslt + " adet daha fotoðraf çekiniz.");
+					}
+					else {
+						Tools.showShortCustomToast(this, "Lütfen " + Info.PHOTO_COUNT + " adet fotoðraf çekiniz.");
+					}
+
 					tabHost.setCurrentTab(1);
 					return;
 				}
+				if (TypeId == 1 || TypeId == 11 || TypeId == 12 || TypeId == 13 || TypeId == 15 || TypeId == 16 || TypeId == 17) {
+					tabHost.setCurrentTab(currentTab);
+					Tools.showShortCustomToast(this, "Seçtiðiniz bina tipi için kapý cephesi seçilemez!");
+					return;
+				}
+				currentTab = 2;
 			}
 		}
 
@@ -2102,6 +2161,7 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 	private void newBuildingMission() {
 
 		isNewBuilding = true;
+		btnTypeStatus = false;
 
 		LiveData.photoinfo.clear();
 		llImages.removeAllViews();
@@ -2123,24 +2183,25 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 
 		tv_mission_status_value.setText("Yeni Dýþ Kapý No Görevi");
 
-		tv_apname.setText("Bina Adý :");
-		tv_apname_value.setVisibility(View.GONE);
-		new_et_apname_value.setVisibility(View.VISIBLE);
-		new_et_apname_value.setText("");
-		new_et_apname_value.setHint("Bina adý var ise buraya yazýnýz...");
+		// tv_apname.setText("Bina Adý :");
+		// tv_apname_value.setVisibility(View.GONE);
+		// new_et_apname_value.setVisibility(View.VISIBLE);
+		// new_et_apname_value.setText("");
+		// new_et_apname_value.setHint("Bina adý var ise buraya yazýnýz...");
 
 		btnStreetOrBuildingType.setText("Seçiniz");
 
 		btnStreetOrBuildingType.setEnabled(true);
 
 		ll_mission_type_info.setVisibility(View.GONE);
+		ll_building_name_info.setVisibility(View.GONE);
 		ll_apno.setVisibility(View.VISIBLE);
-		tv_apno.setVisibility(View.VISIBLE);
-		tv_apno.setText("Dýþ Kapý No :");
-		tv_apno_value.setVisibility(View.GONE);
-		new_et_apno_value.setVisibility(View.VISIBLE);
-		new_et_apno_value.setText("");
-		new_et_apno_value.setHint("Giriniz");
+		// tv_apno.setVisibility(View.VISIBLE);
+		// tv_apno.setText("Dýþ Kapý No :");
+		// tv_apno_value.setVisibility(View.GONE);
+		// new_et_apno_value.setVisibility(View.VISIBLE);
+		// new_et_apno_value.setText("");
+		// new_et_apno_value.setHint("Giriniz");
 
 		ll_user_feedback.setVisibility(View.VISIBLE);
 		et_floor_count.setText("");
@@ -2158,13 +2219,24 @@ public class FeedBack extends Activity implements OnTabChangeListener, android.l
 		cbSolKapi.setChecked(false);
 		cbSagKapi.setChecked(false);
 
-		et_independent_section_count.setEnabled(true);
-		et_independent_section_count.setText("");
-		et_independent_section_count.setHint("Giriniz");
+		// et_independent_section_count.setEnabled(true);
+		// et_independent_section_count.setText("");
+		// et_independent_section_count.setHint("Giriniz");
 
 		et_floor_count.setEnabled(true);
 		et_floor_count.setText("");
 		et_floor_count.setHint("Giriniz");
+
+		tv_apname.setVisibility(View.GONE);
+		tv_apname_value.setVisibility(View.GONE);
+		tv_apno.setVisibility(View.GONE);
+		tv_apno_value.setVisibility(View.GONE);
+		// new_et_apname_value.setVisibility(View.GONE);
+		// new_et_apno_value.setVisibility(View.GONE);
+		tv_independent_section_count.setVisibility(View.GONE);
+		et_independent_section_count.setVisibility(View.GONE);
+		tv_floor_count.setVisibility(View.GONE);
+		et_floor_count.setVisibility(View.GONE);
 
 		ShowSelectedMarkers();
 
