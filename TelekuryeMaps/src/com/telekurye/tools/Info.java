@@ -10,8 +10,8 @@ public class Info {
 
 	public static Boolean		isDBinAssets			= true;
 
-	public final static int		CURRENT_VERSION			= 64;
-	public static final int		DATABASE_VERSION		= 64;
+	public final static int		CURRENT_VERSION			= 66;
+	public static final int		DATABASE_VERSION		= 66;
 	public static final String	DATABASE_NAME			= "telekuryemaps778.db";
 	public static final String	MAP_DBNAME				= "geolocation7_db";
 
